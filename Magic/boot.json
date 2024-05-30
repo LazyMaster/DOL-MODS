@@ -1,0 +1,224 @@
+{
+  "name": "DOL_Magic",
+  "version": "1.3.71",
+  "styleFileList": [],
+  "scriptFileList": [
+    "addon/DM.js"
+  ],
+  "tweeFileList": [
+    "addon/DM_perk.twee",
+    "addon/widget.twee"
+  ],
+  "imgFileList": [],
+  "additionFile": [],
+  "addonPlugin": [
+    {
+      "modName": "TweeReplacer",
+      "addonName": "TweeReplacerAddon",
+      "modVersion": "1.0.0",
+      "params": [
+        {
+          "passage": "overlayReplace",
+          "findString": "OverlayContent>><<traits>><</replace>>\n\t\t<</button>>",
+          "replace": "OverlayContent>><<traits>><</replace>>\n\t\t<</button>><<DM_overlay_button>>"
+        },
+        {
+          "passage": "Transformation Widgets",
+          "findString": "<<widget \"fallenTransform\">>\n\t<<if $angel gte 6>>",
+          "replace": "<<widget \"fallenTransform\">>\n\t<<if $angel gte 6 and !$DM.perk_switch.Angel_NoFallen>>"
+        },
+        {
+          "passage": "Transformation Widgets",
+          "findString": "\t\t<<earnFeat \"Fallen Angel\">>\n\t<<elseif $angel gte 4>>",
+          "replace": "\t\t<<earnFeat \"Fallen Angel\">>\n\t<<elseif $angel gte 4 and !$DM.perk_switch.Angel_NoFallen>>"
+        },
+        {
+          "passage": "Transformation Widgets",
+          "findString": "\t<<if $angel gt 0>>\n\t\t<<angelTransform 99>>\n\t<</if>>",
+          "replace": "\t<<if $angel gt 0 and !$DM.perk_switch.Angel_NoFallen>>\n\t\t<<angelTransform 99>>\n\t<</if>>"
+        },
+        {
+          "passage": "Widgets End Combat",
+          "findString": "\t<<if $demonabsorb gte 1",
+          "replace": "\t<<DM_Combat_End>><<if $demonabsorb gte 1"
+        },
+        {
+          "passage": "Widgets Orgasm",
+          "findString": "<<widget \"breastfeed\">>\n\t<<set $_milk_released to random(10, 50)>>",
+          "replace": "<<widget \"breastfeed\">>\n\t<<set $_milk_released to random(10, 50 + $milk_volume/20)>>"
+        },
+        {
+          "passage": "Widgets Sydney",
+          "findString": "<<if $promiscuity gte 55 and $sydneyromance is 1 and !$daily.sydney.crawl>>",
+          "replace": "<<DM_ExpelIdlers>><<if $promiscuity gte 55 and $sydneyromance is 1 and !$daily.sydney.crawl>>"
+        },
+        {
+          "passage": "Sydney Crawl",
+          "findString": "<<if [\"early\",\"late\"].includes($schoolstate)>>",
+          "replace": "<<if [\"early\",\"late\"].includes($schoolstate) or $DM.daily.expel_idlers>>"
+        },
+        {
+          "passage": "Temple Confess Start",
+          "findString": "Temple Confess]]>><<pass 30>><</link>>",
+          "replace": "Temple Confess]]>><<pass 30>><</link>><<EA_CallCorrupt>><<EA_CallSidney>>"
+        },
+        {
+          "passage": "Temple Confess",
+          "findString": "sydney_promised_1\" 4>>",
+          "replace": "sydney_promised_1\" $DM.CallSidney_On>>"
+        },
+        {
+          "passage": "Temple Confess",
+          "findString": "sydney_promised_2\" 3>>",
+          "replace": "sydney_promised_2\" $DM.CallSidney_On>>"
+        },
+        {
+          "passage": "Temple Confess",
+          "findString": "sydney_romance\" 2>>",
+          "replace": "sydney_romance\" $DM.CallSidney_On>>"
+        },
+        {
+          "passage": "Temple Confess",
+          "findString": "sydney_love\" 1>>",
+          "replace": "sydney_love\" $DM.CallSidney_On>>>>"
+        },
+        {
+          "passage": "Temple Confess",
+          "findString": "sydney_kylar\" 0.2>>",
+          "replace": "sydney_kylar\" $DM.CallSidney_On>>"
+        },
+        {
+          "passage": "Temple Confess",
+          "findString": "0.7>>",
+          "replace": "$DM.CallCorrupt_On>>",
+          "all": true
+        },
+        {
+          "passage": "Temple Confess",
+          "findString": "fake\" $DM.CallCorrupt_On",
+          "replace": "fake\" 0.7"
+        },
+        {
+          "passage": "Widgets Actions Generation",
+          "findString": "<<mouthActions>>",
+          "replace": "<<mouthActions>><<DM_mouthaction_add>>"
+        },
+        {
+          "passage": "Widgets Effects Man",
+          "findString": "<<if $mouthaction is \"ask\" and $askAction is \"askrough\"",
+          "replace": "<<DM_mouth_effect_add>><<if $mouthaction is \"ask\" and $askAction is \"askrough\""
+        },
+        {
+          "passage": "Widgets Docks",
+          "findString": "<<if $skul_dock[_args[0]].state is \"known\">>",
+          "replace": "<<if $skul_dock[_args[0]].state is \"known\" or $DM.perk_switch.Transpass_perk and $skul_dock[_args[0]].state isnot \"empty\">>"
+        },
+        {
+          "passage": "Widgets Blackjack",
+          "findString": "<<if $estatePersistent.markedCards and $estatePersistent.markedCards.has(`${_c.name}${_c.suits[0]}`)>>",
+          "replace": "<<=setup.DM.Goinit()>><<if $estatePersistent.markedCards and $estatePersistent.markedCards.has(`${_c.name}${_c.suits[0]}`) or $DM.perk_switch.Transpass_perk >>",
+          "all": true
+        },
+        {
+          "passage": "Brothel Stage",
+          "findString": "<<if $brothelshowdata.type isnot \"none\" and Time.weekDay is 6",
+          "replace": "<<DM_Brothel_Convince>><<if $brothelshowdata.type isnot \"none\" and (Time.weekDay is 6 or $DM.daily.Brothel)"
+        },
+        {
+          "passage": "Widgets Brothel",
+          "findString": "<<widget \"startbrothelshow\">>",
+          "replace": "<<widget \"startbrothelshow\">><<DM_Brothel_Show_start>>"
+        },
+        {
+          "passage": "Widgets Lake",
+          "findString": "Lake Meditate]]>><<pass 60>><<set $phase to 2>><<willpower 1>>",
+          "replace": "Lake Meditate]]>><<pass 60>><<set $phase to 2>><<willpower 1>><<=setup.DM.mag_daily_get('w')>>"
+        },
+        {
+          "passage": "Widgets Lake",
+          "findString": "Lake Meditate]]>><<pass 60>><<set $phase to 3>><<willpower 1>>",
+          "replace": "Lake Meditate]]>><<pass 60>><<set $phase to 3>><<willpower 1>><<=setup.DM.mag_daily_get('b')>>"
+        },
+        {
+          "passage": "Characteristics",
+          "findString": "<<if numberOfEarSlime() gte 2 and $earSlime.growth gt 50>>",
+          "replace": "<<DM_shackles_willpower>><<if numberOfEarSlime() gte 2 and $earSlime.growth gt 50>>"
+        }
+      ]
+    },
+    {
+      "modName": "ReplacePatcher",
+      "addonName": "ReplacePatcherAddon",
+      "modVersion": "1.0.0",
+      "params": {
+        "js": [
+          {
+            "from": "fragment.append(dailySchoolEffects());",
+            "to": "fragment.append(wikifier(\"DM_daily\"));fragment.append(dailySchoolEffects());",
+            "fileName": "time.js"
+          },
+          {
+            "from": "statChange.worldCorruption(\"soft\", V.world_corruption_hard);",
+            "to": "setup.DM.weeklypass()\n\t;statChange.worldCorruption(\"soft\", V.world_corruption_hard);",
+            "fileName": "time.js"
+          },
+          {
+            "from": "V.awareness >= 100",
+            "to": "(V.awareness >= 100 || V.DM.Noawareness)",
+            "fileName": "actions.js"
+          },
+          {
+            "from": "V.awareness >= 200",
+            "to": "(V.awareness >= 200 || V.DM.Noawareness)",
+            "fileName": "actions.js"
+          },
+          {
+            "from": "V.awareness >= 300",
+            "to": "(V.awareness >= 300 || V.DM.Noawareness)",
+            "fileName": "actions.js",
+            "all": true
+          },
+          {
+            "from": "V.awareness >= 400",
+            "to": "(V.awareness >= 400 || V.DM.Noawareness)",
+            "fileName": "actions.js"
+          },
+          {
+            "from": "if (numberOfEarSlime() >= 2 && V.earSlime.growth > 50)",
+            "to": "result = Math.floor(result * setup.DM.willpower_modifier());\tif (numberOfEarSlime() >= 2 && V.earSlime.growth > 50)",
+            "fileName": "ingame.js"
+          },
+          {
+            "from": "if (numberOfEarSlime() && V.earSlime.event)",
+            "to": "sWikifier(setup.DM.effect_message());\tif (numberOfEarSlime() && V.earSlime.event)",
+            "fileName": "effect.js"
+          }
+        ]
+      }
+    },
+    {
+      "modName": "ModLoader DoL ImageLoaderHook",
+      "addonName": "ImageLoaderAddon",
+      "modVersion": "^2.3.0",
+      "params": []
+    }
+  ],
+  "dependenceInfo": [
+    {
+      "modName": "ModLoader",
+      "version": ">=1.1.0"
+    },
+    {
+      "modName": "ModLoader DoL ImageLoaderHook",
+      "version": ">=1.0.0"
+    },
+    {
+      "modName": "TweeReplacer",
+      "version": ">=1.0.0"
+    },
+    {
+      "modName": "ReplacePatcher",
+      "version": ">=1.0.0"
+    }
+  ]
+}

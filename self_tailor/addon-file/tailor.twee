@@ -1,0 +1,11 @@
+:: ST Trailor tool buy
+
+<<if $money gte 10000>>
+    你購買了裁縫工具
+    <<set $ST_tool_own to true>>
+    <<set $money -= 10000>>
+<<else>>
+    你錢不夠。
+<</if>>
+<br>
+<<link [[離開商品架|Tailor Shop]]>><</link>>

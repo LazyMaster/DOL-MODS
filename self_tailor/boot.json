@@ -1,0 +1,43 @@
+{
+  "name": "self_tailor",
+  "version": "1.0.11",
+  "styleFileList": [],
+  "scriptFileList": [],
+  "tweeFileList": [
+    "addon-file/tailor.twee",
+    "addon-file/tailor_widget.twee"
+  ],
+  "addonPlugin": [
+    {
+      "modName": "TweeReplacer",
+      "addonName": "TweeReplacerAddon",
+      "modVersion": "1.0.0",
+      "params": [
+        {
+          "passage": "Widgets Wardrobe",
+          "findString": "<div class=\"wardrobe-action\">",
+          "replace": "<<ST_FixCloth>><div class=\"wardrobe-action\">"
+        },
+        {
+          "passage": "Tailor Shop",
+          "findString": "<<getouticon>>",
+          "replace": "<<ST_BuyTailorTool>><<getouticon>>"
+        }
+      ]
+    },
+    {
+      "modName": "ModLoader DoL ImageLoaderHook",
+      "addonName": "ImageLoaderAddon",
+      "modVersion": "^2.3.0",
+      "params": []
+    }
+  ],
+  "dependenceInfo": [
+    {
+      "modName": "ModLoader DoL ImageLoaderHook",
+      "version": "^2.3.0"
+    }
+  ],
+  "additionFile": [],
+  "imgFileList": []
+}

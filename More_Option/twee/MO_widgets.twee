@@ -1,0 +1,146 @@
+:: MO widgets [widget]
+
+<<widget "EazierDol_setting">>	
+<br><<link [[更多設定|MO Config]]>><</link>>
+<</widget>>
+<<widget "MO_setting_Menu">>
+	<br>
+    更多設定MOD
+	<br>
+    <<EazierDol_setting_init>>
+    <label><<checkbox "$EazierDol_fox" false true autocheck>> 狐狸偷東西更容易提升</label><br>
+    <label><<checkbox "$EazierDol_fly" false true autocheck>> 天使惡魔翅膀加強</label><br>
+	<label><<checkbox "$MO_puritymax" false true autocheck>> 純潔上限不被童貞影響</label><br>
+	<label><<checkbox "$MO_enhance_pray" false true autocheck>> 神殿祈禱增強</label><br>
+	<label><<checkbox "$MO_Farm_event_eazier" false true autocheck>> 農場事件更容易發生(WIP)</label><br>
+	<label><<checkbox "$EazierDol_TentacleForest" false true autocheck>> 觸手森林需求-1</label><br>
+	<br>
+	羅賓賺的錢<br>
+	<label><<radiobutton "$EazierDol_Robinrich" 300 autocheck>> 300(預設)</label>|
+	<label><<radiobutton "$EazierDol_Robinrich" 400 autocheck>> 400(剛好還債)</label>|
+	<label><<radiobutton "$EazierDol_Robinrich" 500 autocheck>> 500</label>|
+	<label><<radiobutton "$EazierDol_Robinrich" 1000 autocheck>> 1000</label>|
+	<label><<radiobutton "$EazierDol_Robinrich" 2000 autocheck>> 2000</label>
+	<br><br>
+    <label><<checkbox "$EazierDol_maso" false true autocheck>> 被虐不衰減</label><br>
+    <label><<checkbox "$EazierDol_sadi" false true autocheck>> 虐待不衰減</label><br>
+	<br><br>
+	慾望更容易滿足<br>
+	<label><<radiobutton "$EazierDol_control" 0 autocheck>> -0 </label>|
+	<label><<radiobutton "$EazierDol_control" 1 autocheck>> -1 </label>|
+	<label><<radiobutton "$EazierDol_control" 2 autocheck>> -2 </label>|
+	<label><<radiobutton "$EazierDol_control" 3 autocheck>> -3 </label>|
+	<label><<radiobutton "$EazierDol_control" 4 autocheck>> -4 </label>|
+	<label><<radiobutton "$EazierDol_control" 5 autocheck>> -5 </label>
+	<br><br>
+	農場開墾加速<br>
+	<label><<radiobutton "$EazierDol_farm" 1 autocheck>> x1 </label>|
+	<label><<radiobutton "$EazierDol_farm" 2 autocheck>> x2 </label>|
+	<label><<radiobutton "$EazierDol_farm" 5 autocheck>> x5 </label>|
+	<label><<radiobutton "$EazierDol_farm" 10 autocheck>> x10 </label>|
+	<label><<radiobutton "$EazierDol_farm" 20 autocheck>> x20 </label>
+	<br><br>
+	神殿工作加速<br>
+	<label><<radiobutton "$EazierDol_TempleWorkSpeed" 1 autocheck>> x1 </label>|
+	<label><<radiobutton "$EazierDol_TempleWorkSpeed" 2 autocheck>> x2 </label>|
+	<label><<radiobutton "$EazierDol_TempleWorkSpeed" 5 autocheck>> x5 </label>|
+	<label><<radiobutton "$EazierDol_TempleWorkSpeed" 10 autocheck>> x10 </label>|
+	<label><<radiobutton "$EazierDol_TempleWorkSpeed" 20 autocheck>> x20 </label>
+	<br><br>
+	魚缸倍數(大小和天數)<br>
+	
+	<label><<radiobutton "$EazierDol_FishTank" 1 autocheck>> x1 </label>|
+	<label><<radiobutton "$EazierDol_FishTank" 2 autocheck>> x2 </label>|
+	<label><<radiobutton "$EazierDol_FishTank" 5 autocheck>> x5 </label>|
+	<label><<radiobutton "$EazierDol_FishTank" 10 autocheck>> x10 </label>|
+	<label><<radiobutton "$EazierDol_FishTank" 20 autocheck>> x20 </label>|
+	<label><<radiobutton "$EazierDol_FishTank" 1000 autocheck>> x1000 </label>
+	<br><br>
+	脫衣舞觀眾克制<br>
+	
+	<label><<radiobutton "$MO_audience" 1 autocheck>> x1 </label>|
+	<label><<radiobutton "$MO_audience" 2 autocheck>> x2 </label>|
+	<label><<radiobutton "$MO_audience" 5 autocheck>> x5 </label>|
+	<label><<radiobutton "$MO_audience" 10 autocheck>> x10 </label>|
+	<label><<radiobutton "$MO_audience" 20 autocheck>> x20 </label>
+	<br><br>
+	米奇名聲效果倍率<br>
+	<label><<radiobutton "$MO_pubfame" 1 autocheck>> x1 </label>|
+	<label><<radiobutton "$MO_pubfame" 2 autocheck>> x2 </label>|
+	<label><<radiobutton "$MO_pubfame" 5 autocheck>> x5 </label>|
+	<label><<radiobutton "$MO_pubfame" 10 autocheck>> x10 </label>|
+	<label><<radiobutton "$MO_pubfame" 20 autocheck>> x20 </label>
+	<br><br>
+	島嶼語言學習速度<br>
+	<label><<radiobutton "$MO_islander_language" 1 autocheck>> x1 </label>|
+	<label><<radiobutton "$MO_islander_language" 2 autocheck>> x2 </label>|
+	<label><<radiobutton "$MO_islander_language" 5 autocheck>> x5 </label>|
+	<label><<radiobutton "$MO_islander_language" 10 autocheck>> x10 </label>|
+	<label><<radiobutton "$MO_islander_language" 20 autocheck>> x20 </label>
+	<br><br>
+<</widget>>
+
+<<widget "EazierDol_setting_init">>
+	<<if $EazierDol_control is undefined>>
+		<<set $EazierDol_control to 0>>
+	<</if>>
+	<<if $EazierDol_maso is undefined>>
+		<<set $EazierDol_maso to false>>
+	<</if>>
+	<<if $EazierDol_sadi is undefined>>
+		<<set $EazierDol_sadi to false>>
+	<</if>>
+	<<if $EazierDol_farm is undefined>>
+		<<set $EazierDol_farm to 1>>
+	<</if>>
+	<<if $EazierDol_Robinrich is undefined>>
+		<<set $EazierDol_Robinrich to 300>>
+	<</if>>
+	<<if $EazierDol_TempleWorkSpeed is undefined>>
+		<<set $EazierDol_TempleWorkSpeed to 1>>
+	<</if>>
+	<<if $EazierDol_FishTank is undefined>>
+		<<set $EazierDol_FishTank to 1>>
+	<</if>>
+	<<if $MO_audience is undefined>>
+		<<set $MO_audience to 1>>
+	<</if>>
+	<<if $MO_pubfame is undefined>>
+		<<set $MO_pubfame to 1>>
+	<</if>>
+<</widget>>
+<<widget "MO_Containers_mult">>
+	<<set _container to $container.home>>
+	<<set _container.maxCount to (_container.upgrades.capacity + 1) * $EazierDol_FishTank>>
+	<<if _container.upgrades.foodStorage>>
+		<<set _container.maxDaysWithoutFood to (_container.upgrades.foodStorage) * 7 * $EazierDol_FishTank>>
+		<<if _container.upgrades.foodStorage is 3>><<set _container.maxDaysWithoutFood to 30 * $EazierDol_FishTank>><</if>>
+	<<else>>
+		<<set _container.maxDaysWithoutFood to 3 * $EazierDol_FishTank>>
+	<</if>>
+<</widget>>
+<<widget "MO_puritymax_replace">>
+	<<if $MO_puritymax>>
+		<<set $purity = Math.clamp($purity, 0, 1000)>>
+	<<else>>
+		<<set $purity = Math.clamp($purity, 0, 999)>>
+	<</if>>
+<</widget>>
+<<widget "MO_Farm_event_add">>
+	<<if $MO_Farm_event_eazier>>
+		<<set $farm_work.event_time = 60>>
+	<</if>>
+<</widget>>
+<<widget "MO_Farm_builder_encourage">>
+	<<if $MO_Farm_event_eazier and Time.dayState isnot "night" and $farm.build isnot undefined and $farm.build isnot 0 and Time.hour gte 6>>
+		<<socialiseicon>><<link [[接近工人 (0:15)|MO Farm_builder_encourage]]>><<pass 15>><</link>><br>
+	<</if>>
+<</widget>>
+
+:: MO Farm_builder_encourage
+<<generate1>><<generate2>><<generate3>>
+<br>
+你靠近了工人，和他們聊天。<br>
+他們盯著你。<br>
+<br>
+<<link [[鼓勵 (0:15)|Farm Builders Encourage]]>><<pass 15>><</link>><br>

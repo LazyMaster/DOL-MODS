@@ -1,0 +1,20 @@
+:: ST Trailor Widget [widget]
+
+<<widget "ST_FixCloth">>
+    <<if $ST_tool_own>>
+        <div class="wardrobe-action">
+            <<link "修復衣物">>
+                <<set _equip to setup.clothingLayer.all>>
+                <<for _i to 0; _i lt _equip.length; _i++>>
+                    <<set $worn[_equip[_i]].integrity = clothingData(_equip[_i],$worn[_equip[_i]],'integrity_max')>>
+                <</for>>
+                <<updatewardrobe>>
+            <</link>>
+        </div> |
+    <</if>>
+<</widget>>
+<<widget "ST_BuyTailorTool">>
+    <<if $ST_tool_own isnot true>>
+        <<shopicon "tailor">><<link [[購買裁縫工具(£100)|ST Trailor tool buy]]>><</link>><br><br>
+    <</if>>
+<</widget>>

@@ -1,0 +1,61 @@
+:: BE setting
+
+
+<br><br>
+BJ Extend 設定
+<br><br>
+
+眼睛選擇
+<<listbox "$BE.eyes_type" autoselect>>
+	<<option "Default" "">>
+	<<option "BE_Big" "BE_eyes_0/">>
+<</listbox>>
+<br><br>
+
+眼瞼選擇
+<<listbox "$BE.lashes_type" autoselect>>
+	<<option "Default" "">>
+	<<option "BE_Big" "BE_lashes_0/">>
+	<<option "BE_Mid" "BE_lashes_1/">>
+<</listbox>>
+<br><br>
+胸部選擇
+<<listbox "$BE.breasts_type" autoselect>>
+	<<option "Default" "">>
+	<<option "Wax" "BE_breasts_0/">>
+	<<option "Wax_with_cloth" "BE_breasts_1/">>
+	<<option "Costom(在BE_breasts_2添加自己的胸部 沒有會報錯)" "BE_breasts_2/">>
+
+<</listbox>>
+<br><br>
+SIDE選擇(WIP)
+<<listbox "$BE.side_type" autoselect>>
+	<<option "Default" "">>
+	<<option "0" "BE_side_0/">>
+	<<option "1" "BE_side_1/">>
+	<<option "2" "BE_side_2/">>
+	<<option "3" "BE_side_3/">>
+
+<</listbox>>
+<br><br>
+
+眼高潮條件
+<<listbox "$BE.Eye_condition" autoselect>>
+	<<option "NO" "">>
+	<<option "Blush5" "B5">>
+	<<option "Orgasm" "OG">>
+<</listbox>>
+<br>
+嘴高潮條件
+<<listbox "$BE.Mouse_condition" autoselect>>
+	<<option "NO" "">>
+	<<option "Blush5" "B5">>
+	<<option "Orgasm" "OG">>
+<</listbox>>
+<br><br>
+<label><<checkbox "$BE.half_close" false true autocheck>> 眼睛總是半開</label><br>
+<label><<checkbox "$BE.easyerblush" 0 1 autocheck>> 更容易臉紅</label><br>
+<!---<label><<checkbox "$BE.leftarm_back" false true autocheck>> 把左手放到身體後面</label><br>--->
+<br><br>
+<br><<link [[確認|BE setting]]>><</link>>
+<br><<link [[離開|Attitudes]]>><</link>>

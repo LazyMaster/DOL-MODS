@@ -1,0 +1,105 @@
+:: EroAngel Widget [widget]
+
+<<widget "EroAngel_setting">>
+	<br><br>
+    EroAngel 設定
+	<br>
+    <<EroAngel_setting_init>>
+    <label><<checkbox "$EroAngel_NoFallen" false true autocheck>> 天使不墮落</label>
+	<br>
+	<label><<checkbox "$EroAngel_angelforgive" false true autocheck>> 超級寬恕</label>
+	<br>
+	<label><<checkbox "$EroAngel_angelpray" false true autocheck>> 每日一次，祈禱增加天使化</label>
+	<br>
+	<label><<checkbox "$EroAngel_robpurity" false true autocheck>> 純潔掠奪</label>
+	<br><br>
+	<<if $angel gte 6>>
+		純潔點數: <<print $EroAngel_angelpoint>> 這個點數證明了你的純潔，似乎可以用來做些什麼。
+		<br>
+		<<link [[加點|EroAngel_Perk]]>><</link>>
+	<</if>>
+	<br><br>
+<</widget>>
+
+<<widget "EroAngel_setting_init">>
+	<<if $EroAngel_daily_prayed is undefined>>
+		<<set $EroAngel_daily_prayed to 0>>
+	<</if>>
+	<<if $EroAngel_angelpoint is undefined>>
+		<<set $EroAngel_angelpoint to 0>>
+	<</if>>
+	<<if $EroAngel_robpurity is undefined>>
+		<<set $EroAngel_robpurity to 0>>
+	<</if>>
+	<<if $EA_sydneyConfession is undefined>>
+		<<set $EA_sydneyConfession to false>>
+	<</if>>
+<</widget>>
+<<widget "EroAngel_dayly">>
+	<<set $EroAngel_daily_prayed to 0>>
+	<<set $EroAngel_daily_expel_idlers to false>>
+	<<if $EroAngel_doll>>
+		<<if Time.isSchoolDay(Time.yesterday) and $location isnot "prison">> 
+			<<set $doll_work_times to 0>>
+			<<set $doll_work_times += !Number(V.daily.school.attended.science)>>
+			<<set $doll_work_times += !Number(V.daily.school.attended.maths);
+			<<set $doll_work_times += !Number(V.daily.school.attended.english);
+			<<set $doll_work_times += !Number(V.daily.school.attended.history);
+			<<set $doll_work_times += !Number(V.daily.school.attended.swimming);
+			<<set V.daily.school.attended.science to true>>
+			<<set V.daily.school.attended.maths to true>>
+			<<set V.daily.school.attended.english to true>>
+			<<set V.daily.school.attended.history to true>>
+			<<set V.daily.school.attended.swimming to true>>
+		<</if>>
+	<</if>>
+<</widget>>
+
+<<widget "EroAngel_ExpelIdlers">>
+	<<if !$EroAngel_daily_expel_idlers and $EroAngel_expel_idlers>>
+		<<socialiseicon>>
+		<<link [[驅逐閒人|Library Rental Counter]]>> 
+			<<set $EroAngel_daily_expel_idlers to true>>
+		<</link>><<angel>> 
+		<br>
+	<</if>>
+<</widget>>
+<<widget "EA_CallCorrupt">>
+	<<EroAngel_setting_init>>
+	<<set $EA_CallCorrupt_On to 0.7>>
+	<<if $confessionsTaken gte 5 and $EA_Call>>
+		<br>
+		<<link [[吸引腐敗|Temple Confess]]>> <<pass 30>>
+			<<set $EA_CallCorrupt_On to 700>>
+		<</link>><<angel>> (可能會失敗)
+	<</if>>
+<</widget>>
+<<widget "EA_CallSidney">>
+	<<set $EA_CallSidney_On to 1>>
+	<<sydneySchedule>>
+	<<if _sydney_location is "temple" and $sydney_templeWork is "pray" and !$daily.sydneyConfession and C.npc.Sydney.init is 1 and $confessionsTaken gte 5 and $EA_Call>>
+		<br>
+		<<link [[感召悉尼|Temple Confess]]>> <<pass 30>>
+			<<set $EA_CallSidney_On to 1000>>
+		<</link>><<angel>> (可能會失敗)
+	<</if>>
+<</widget>>
+
+<<widget "EA_mouthaction_add">>
+	<<if $EA_Encourage_on isnot true and $EA_Encourage_perk>>
+		<<set _mouthaction["鼓舞"] to "EA_Encourage">>
+	<</if>>
+<</widget>>
+<<widget "EA_mouth_effect_add">>
+	<<if $mouthaction is "EA_Encourage">>
+		<<set $mouthaction to 0>>
+		<<set $enemyarousalmax to 2500>>
+		<<set $EA_Encourage_on to true>>
+	<</if>>
+<</widget>>
+<<widget "EA_Combat_End">>
+	<<if $EroAngel_angelforgive and $angelforgive is 1>>
+		<<set $trauma -= 100>><<set $pain to 0>><<set $stress to Math.min($stressmax - 500 , $stress)>>
+	<</if>>
+	<<set $EA_Encourage_on to false>>
+<</widget>>

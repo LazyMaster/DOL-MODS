@@ -1,0 +1,246 @@
+:: DM Widget [widget]
+
+
+<<widget "DM_setting">>
+	<br><<link [[魔法|DM_Perk]]>><</link>>
+<</widget>>
+
+<<widget "DM_overlay">>
+	<<=setup.DM.Goinit()>>
+	<<if $combat>>
+		<br>
+		你現在沒空。
+	<<elseif $DM.bookread>>
+		<<DM_overlay_magic_menu>>
+	<<else>>
+		<<set $DM.bookread to true>>
+		<br>
+		你在身上發現了一本奇怪的書，你有一種直覺：這是一本魔法書，你可以用它使用魔法。
+		<br><<link '探索'>><<=setup.DM.Goinit()>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>><br>
+	<</if>>
+<</widget>>
+<<widget "DM_overlay_magic_menu">>
+	<<set $DM.menutype to 'overlay'>>
+	<br>
+	<<link "扉頁">><<set $DM.menutree to 'front_page'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
+	<<link "專精">><<set $DM.menutree to 'magic_learn'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
+	<<link "鍊金術">><<set $DM.menutree to 'alche'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
+	<<link "法術">><<set $DM.menutree to 'magic_spell'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>><br>
+	<br>
+	<<=setup.DM.describe()>><br>
+	<br>
+	<<if $DM.menutree is undefined or $DM.menutree is 'front_page'>>
+		<<DM_overlay_menu_front_page>>
+	<<elseif $DM.menutree is 'magic_learn'>>
+		<<DM_overlay_menu_magic_learn>>
+	<<elseif $DM.menutree is 'magic_spell'>>
+		<<DM_overlay_menu_spell>>
+	<<elseif $DM.menutree is 'tatoo_remove'>>
+		<<DM_overlay_menu_Tatoo_remove>>
+	<<elseif $DM.menutree is 'alche'>>
+		<<DM_overlay_menu_alche>>
+	<<elseif $DM.menutree is 'text'>>
+		<<DM_text>>
+	<</if>>
+<</widget>>
+
+<<widget "DM_overlay_menu_front_page">>
+	<span class="gold">白魔法</span>: <<print $DM.WhiteMagic_pt>><br>
+	<span class="gold">聖潔，順從，被虐。</span><br>
+	<br>
+	<span class="purple">黑魔法</span>: <<print $DM.BlackMagic_pt>><br>
+	<span class="purple">墮落，反抗，暴力。</span><br>
+	<br>
+	<<=setup.DM.mag_daily()>>
+	每日吸能:<br><br>
+	因為你的<<if $DM.daily_purity gte 0>>純潔<<else>>墮落<</if>>: <<print_magic_get $DM.daily_purity>><br>
+	因為你的<<if $DM.daily_submissive gte 0>>順從<<else>>反抗<</if>>: <<print_magic_get $DM.daily_submissive>><br>
+	因為你的被虐: <<print_magic_get $DM.daily_masochism>><br>
+	因為你的虐待: <<print_magic_get $DM.daily_sadism>><br>
+	<<if $angel gte 6>>
+		因為你的天使化: <<print_magic_get 50>><br>
+	<</if>>
+	<<if $demon gte 6>>
+		因為你的惡魔化: <<print_magic_get -50>><br>
+	<</if>>
+	<br>
+	總和:(已算親和加成)<br>
+	<<print_magic_get $DM.daily_w>>
+	<<print_magic_get $DM.daily_b>>
+	<br><br>
+<</widget>>
+
+<<widget "DM_overlay_menu_magic_learn">>
+	<span class="gold">白魔法</span>: <<print $DM.WhiteMagic_pt>>|<span class="purple">黑魔法</span>: <<print $DM.BlackMagic_pt>>
+	<br><br>
+	<<link "白魔法">><<set $DM.f_key to 'BW' >><<set $DM.f_value to 'W'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
+	<<link "黑魔法">><<set $DM.f_key to 'BW' >><<set $DM.f_value to 'B'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
+	<<link "戰鬥魔法">><<set $DM.f_key to 'spell' >><<set $DM.f_value to true>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
+	<br><br>
+	<<=setup.DM.Perk_Buy_filter(V.DM.f_key,V.DM.f_value)>>
+<</widget>>
+<<widget "DM_overlay_menu_spell">>
+	<span class="gold">白魔法</span>: <<print $DM.WhiteMagic_pt>>|<span class="purple">黑魔法</span>: <<print $DM.BlackMagic_pt>>
+	<br><br>
+	<<link "白魔法">><<set $DM.f_key to 'BW' >><<set $DM.f_value to 'W'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
+	<<link "黑魔法">><<set $DM.f_key to 'BW' >><<set $DM.f_value to 'B'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
+	<br><br>
+	<<=setup.DM.Spell_Buy_filter(V.DM.f_key,V.DM.f_value)>>
+<</widget>>
+<<widget "DM_overlay_menu_alche">>
+	<span class="gold">白魔法</span>: <<print $DM.WhiteMagic_pt>>|<span class="purple">黑魔法</span>: <<print $DM.BlackMagic_pt>>
+	<br><br>
+	<<link "全部">><<set $DM.f_key to 'alche' >><<set $DM.f_value to true>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
+	<<link "白魔法">><<set $DM.f_key to 'BW' >><<set $DM.f_value to 'W'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
+	<<link "黑魔法">><<set $DM.f_key to 'BW' >><<set $DM.f_value to 'B'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
+	<br><br>
+	你的白魔法人偶: <<print $DM.slave_w>> 具<br>
+	你的黑魔法人偶: <<print $DM.slave_b>> 具<br><br>
+	<<=setup.DM.Alche_Buy_filter(V.DM.f_key,V.DM.f_value)>>
+<</widget>>
+<<widget "DM_overlay_menu_Tatoo_remove">>
+	<<for _active_bodypart range setup.bodyparts>>
+		<<if $skin[_active_bodypart].pen is "tattoo">>
+			<<=setup.DM.Linkbuttun('消除','<<bodywriting_clear $_active_bodypart>>')>><<tattoo _active_bodypart>>上的<<bodypart _active_bodypart>>.
+			<br>
+		<</if>>
+	<</for>>
+<</widget>>
+<<widget "DM_overlay_button">>
+	<<button "魔法書">>
+		<<toggleTab>>
+		<<set $tempDisable to true>>
+		<<replace #customOverlayContent>><<DM_overlay>><</replace>>
+	<</button>>
+<</widget>>
+
+
+<<widget "DM_WhiteMagic_menu">>
+	<<=setup.DM.Perk_Buy_list(V.DM.W_spell_list)>>
+<</widget>>
+
+<<widget "DM_BlackMagic_menu">>
+	<<=setup.DM.Perk_Buy_list(V.DM.B_spell_list)>>
+<</widget>>
+
+<<widget "print_magic_get">>
+	<<if _args[0] is 0>>
+		沒有
+	<<elseif _args[0] gt 0>>
+		<span class="gold"> 白魔法: <<print _args[0]>></span>
+	<<else>>
+		<span class="purple"> 黑魔法: <<print -1 * _args[0]>></span>
+	<</if>>
+
+<</widget>>
+<<widget "DM_daily">>
+	<<=setup.DM.Goinit()>>
+	<<=setup.DM.mag_daily_get('a')>>
+
+	<<set $DM.daily.Convince to false>>
+	<<set $DM.daily.expel_idlers to false>>
+	<<if $DM.doll>>
+		<<if Time.isSchoolDay(Time.yesterday) and $location isnot "prison">> 
+			<<set $doll_work_times to 0>>
+			<<set $doll_work_times += !Number(V.daily.school.attended.science)>>
+			<<set $doll_work_times += !Number(V.daily.school.attended.maths)>>
+			<<set $doll_work_times += !Number(V.daily.school.attended.english)>>
+			<<set $doll_work_times += !Number(V.daily.school.attended.history)>>
+			<<set $doll_work_times += !Number(V.daily.school.attended.swimming)>>
+			<<set V.daily.school.attended.science to true>>
+			<<set V.daily.school.attended.maths to true>>
+			<<set V.daily.school.attended.english to true>>
+			<<set V.daily.school.attended.history to true>>
+			<<set V.daily.school.attended.swimming to true>>
+		<</if>>
+	<</if>>
+<</widget>>
+
+<<widget "DM_get_pt_d">>
+	<<if _args[0] gte 0>>
+		<<set $DM.WhiteMagic_pt += _args[0]>>
+	<<else>>
+		<<set $DM.BlackMagic_pt -= _args[0]>>
+	<</if>>
+<</widget>>
+
+<<widget "DM_trans_blackjack">>
+	<<if $DM.daily.Transpass_perk>>
+		<br>
+	<</if>>
+<</widget>>
+
+<<widget "DM_ExpelIdlers">>
+	<<=setup.DM.Goinit()>>
+	<<if !$DM.daily.expel_idlers and $DM.perk_switch.expel_idlers and _sydneyStatus.includes("corrupt")>>
+		<<socialiseicon>>
+		<<link [[驅逐閒人|Library Rental Counter]]>> 
+			<<set $DM.daily.expel_idlers to true>>
+		<</link>>
+		<br>
+	<</if>>
+<</widget>>
+<<widget "EA_CallCorrupt">>
+	<<=setup.DM.Goinit()>>
+	<<set $DM.CallCorrupt_On to 0.7>>
+	<<if $confessionsTaken gte 5 and $DM.perk_switch.Call>>
+		<br>
+		<<link [[吸引腐敗|Temple Confess]]>> <<pass 30>>
+			<<set $DM.CallCorrupt_On to 700>>
+		<</link>> (可能會失敗)
+	<</if>>
+<</widget>>
+<<widget "EA_CallSidney">>
+	<<=setup.DM.Goinit()>>
+	<<set $DM.CallSidney_On to 1>>
+	<<sydneySchedule>>
+	<<if _sydney_location is "temple" and $sydney_templeWork is "pray" and !$daily.sydneyConfession and C.npc.Sydney.init is 1 and $confessionsTaken gte 5 and $DM.perk_switch.Call>>
+		<br>
+		<<link [[感召悉尼|Temple Confess]]>> <<pass 30>>
+			<<set $DM.CallSidney_On to 1000>>
+		<</link>> (可能會失敗)
+	<</if>>
+<</widget>>
+<<widget "DM_Brothel_Convince">>
+	<<=setup.DM.Goinit()>>
+	<<if $DM.perk_switch.Convince and !$DM.daily.Convince and $brothelshowdata.type isnot "none">>
+		<br>
+		<<socialiseicon>>
+		<<link [[說服演出現在開始|Brothel Stage]]>> 
+			<<set $DM.daily.Convince to true>>
+			<<set $DM.daily.Brothel to true>>
+			<<set $brothelshowdata.done to false>>
+		<</link>><br><br>
+	<</if>>
+<</widget>>
+
+<<widget "DM_Brothel_Show_start">>
+	<<=setup.DM.Goinit()>>
+	<<if $DM.daily.Brothel>>
+		<<set $DM.daily.Brothel to false>>
+		<<set $brothelshowdata.done to false>>
+	<</if>>
+<</widget>>
+
+<<widget "DM_mouthaction_add">>
+	<<=setup.DM.Goinit()>>
+	<<=setup.DM.spellaction_add()>>
+<</widget>>
+<<widget "DM_mouth_effect_add">>
+	<<=setup.DM.spelleffect_add()>>
+<</widget>>
+<<widget "DM_Combat_End">>
+	<<=setup.DM.spellend_add()>>
+<</widget>>
+<<widget "DM_shackles_willpower">>
+	<<if $DM.shackles_willpower>>
+		<<set _willpowerConfig.modifier to Math.floor(_willpowerConfig.modifier * (1 - $DM.shackles_willpower * 0.1 ))>>
+		<<set _willpowerConfig.modTypes.bad.pushUnique("枷鎖")>>
+	<</if>>
+<</widget>>	
+
+<<widget "DM_text">>
+	<<=setup.DM.describe()>>
+<</widget>>	
+
+

@@ -1,0 +1,227 @@
+{
+  "name": "Dol_MoreOption",
+  "version": "1.2.48",
+  "styleFileList": [],
+  "scriptFileList_inject_early": [],
+  "scriptFileList": [],
+  "tweeFileList": [
+    "twee/MO_options.twee",
+    "twee/MO_widgets.twee"
+  ],
+  "imgFileList": [],
+  "additionFile": [
+    "addon-replace/fox_crime.txt"
+  ],
+  "addonPlugin": [
+    {
+      "modName": "TweeReplacer",
+      "addonName": "TweeReplacerAddon",
+      "modVersion": "1.0.0",
+      "params": [
+        {
+          "passage": "Widgets Attitudes",
+          "findString": "<<loveInterestFunction>>",
+          "replace": "<<loveInterestFunction>><<EazierDol_setting>>"
+        },
+        {
+          "passage": "Widgets",
+          "findString": "\t\t\t\t\t<<set $_foxCrimeRequired = Math.floor(50 * (1 + $foxbuild))>>",
+          "replaceFile": "addon-replace/fox_crime.txt"
+        },
+        {
+          "passage": "Widgets Deviancy",
+          "findString": "\t<<set $_scaledDeviancyMax to 20 * $_n>>",
+          "replace": "\t<<EazierDol_setting_init>><<set $_scaledDeviancyMax to 20 * ($_n + $EazierDol_control)>>",
+          "all": true
+        },
+        {
+          "passage": "Widgets Exhibitionism",
+          "findString": "\t<<set $_scaledExhibitionismMax to 20 * $_n>>",
+          "replace": "\t<<EazierDol_setting_init>><<set $_scaledExhibitionismMax to 20 * ($_n + $EazierDol_control)>>",
+          "all": true
+        },
+        {
+          "passage": "Widgets Promiscuity",
+          "findString": "\t<<set $_scaledPromiscuityMax to 20 * $_n>>",
+          "replace": "\t<<EazierDol_setting_init>><<set $_scaledPromiscuityMax to 20 * ($_n + $EazierDol_control)>>",
+          "all": true
+        },
+        {
+          "passage": "Coast Path",
+          "findString": "<<if $harpy gte 6 and $birdFly gte 1>>",
+          "replace": "<<if $harpy gte 6 or ($EazierDol_fly and ($angel gte 6 or $demon gte 6 or $fallenangel gte 2))>>",
+          "all": true
+        },
+        {
+          "passage": "Coast Path Farmland",
+          "findString": "<<if $harpy gte 6 and $birdFly gte 1>>",
+          "replace": "<<if $harpy gte 6 or ($EazierDol_fly and ($angel gte 6 or $demon gte 6 or $fallenangel gte 2))>>",
+          "all": true
+        },
+        {
+          "passage": "Moor",
+          "findString": "<<if $harpy gte 6 and $birdFly gte 1>>",
+          "replace": "<<if $harpy gte 6 or ($EazierDol_fly and ($angel gte 6 or $demon gte 6 or $fallenangel gte 2))>>",
+          "all": true
+        },
+        {
+          "passage": "Monster Tower",
+          "findString": "<<if $harpy gte 6 and $birdFly gte 1>>",
+          "replace": "<<if $harpy gte 6 or ($EazierDol_fly and ($angel gte 6 or $demon gte 6 or $fallenangel gte 2))>>",
+          "all": true
+        },
+        {
+          "passage": "Tentacle Forest Cliff",
+          "findString": "<<elseif $town_projects.diving gte 5>>",
+          "replace": "<<elseif $town_projects.diving gte 5 or $EazierDol_TentacleForest>>",
+          "all": true
+        },
+        {
+          "passage": "Farm Widgets",
+          "findString": "<<set $farm.clearing -= 1>>",
+          "replace": "<<EazierDol_setting_init>><<set $farm.clearing -= $EazierDol_farm>>",
+          "all": true
+        },
+        {
+          "passage": "Farm Widgets",
+          "findString": "<<set $farm_work.event_time to random(60, 300)>>",
+          "replace": "<<set $farm_work.event_time to random(60, 300)>><<MO_Farm_event_add>>"
+        },
+        {
+          "passage": "Farm Widgets",
+          "findString": "<<if $farm_work.alex is \"shower\" and !$daily.farmAlexShowerSpy>>",
+          "replace": "<<MO_Farm_builder_encourage>><<if $farm_work.alex is \"shower\" and !$daily.farmAlexShowerSpy>>"
+        },
+        {
+          "passage": "Temple Confess Purge Sex Finish Corrupt",
+          "findString": "<<grace 3>>",
+          "replace": "<<set _gget to 3 * $EazierDol_TempleWorkSpeed>><<grace _gget>>"
+        },
+        {
+          "passage": "Temple Garden",
+          "findString": "\t\t\t\t<<set $temple_garden += ",
+          "replace": "\t\t\t\t<<EazierDol_setting_init>><<set $temple_garden += $EazierDol_TempleWorkSpeed * ",
+          "all": true
+        },
+        {
+          "passage": "Temple Quarters",
+          "findString": "\t\t\t<<pass 60>><<grace 1 monk>><<housekeeping 1 1000>><</link>><<ghousekeeping>><<ggrace monk>>",
+          "replace": "\t\t\t<<EazierDol_setting_init>><<pass 60>><<grace $EazierDol_TempleWorkSpeed monk>><<housekeeping $EazierDol_TempleWorkSpeed 1000>><</link>><<ghousekeeping>><<ggrace monk>>"
+        },
+        {
+          "passage": "Temple Quarters",
+          "findString": "\t\t\t\t\t<<set $temple_quarters += ",
+          "replace": "\t\t\t\t\t<<EazierDol_setting_init>><<set $temple_quarters += $EazierDol_TempleWorkSpeed * ",
+          "all": true
+        },
+        {
+          "passage": "Elk Compound",
+          "findString": "<<if $compoundcard isnot 2>>",
+          "replace": "<<if $feats.currentSave[\"Illicit Science\"] is undefined or $compoundcard isnot 2>>"
+        },
+        {
+          "passage": "Widgets containers",
+          "findString": "|Containers]]>><<pass 5>>",
+          "replace": "|Containers]]>><<pass 5>><<MO_Containers_mult>>",
+          "all": true
+        },
+        {
+          "passage": "Widgets Dance Audience",
+          "findString": "if $audiencearousal gte",
+          "replace": "if $audiencearousal gte ($MO_audience ? $MO_audience : 1) * ",
+          "all": true
+        },
+        {
+          "passage": "Widgets Clamp",
+          "findString": "set $audiencearousal to Math.clamp($audiencearousal, 0, 100)",
+          "replace": "set $audiencearousal to Math.clamp($audiencearousal, 0, $MO_audience * 100)",
+          "all": true
+        },
+        {
+          "passage": "Widgets Clamp",
+          "findString": "<<set $purity = Math.clamp($purity, 0, 999)>>",
+          "replace": "<<MO_puritymax_replace>>"
+        },
+        {
+          "passage": "Widgets Temple",
+          "findString": "<<lawareness>><<lstress>><<larousal>>",
+          "replace": "<<if $MO_enhance_pray>><<purity 1>><<awareness -1>><<gpurity>><</if>>  <<lawareness>><<lstress>><<larousal>>"
+        },
+        {
+          "passage": "Widgets Pub Fame",
+          "findString": "<<if $fame[$_fame] + $_fameChange gt 2000>>",
+          "replace": "<<set $_fameChange *= ($MO_pubfame ? $MO_pubfame : 1)>><<if $fame[$_fame] + $_fameChange gt 2000>>"
+        },
+        {
+          "passage": "Widgets Island",
+          "findString": "$islander_language += (_args[0] * 3)",
+          "replace": "$islander_language += (_args[0] * 3 * ($MO_islander_language ? $MO_islander_language : 1))"
+        }
+      ]
+    },
+    {
+      "modName": "ReplacePatcher",
+      "addonName": "ReplacePatcherAddon",
+      "modVersion": "1.0.0",
+      "params": {
+        "js": [
+          {
+            "from": "V.masochism *= 0.985;",
+            "to": "wikifier(\"EazierDol_setting_init\");if (!(V.EazierDol_maso))\n\t{\n\tV.masochism *= 0.985;\n\t}",
+            "fileName": "time.js"
+          },
+          {
+            "from": "V.sadism *= 0.985;",
+            "to": "wikifier(\"EazierDol_setting_init\");if (!(V.EazierDol_sadi))\n\t{\n\tV.sadism *= 0.985;\n\t}",
+            "fileName": "time.js"
+          },
+          {
+            "from": "V.robinmoney -= 400;",
+            "to": "V.robinmoney -= 400;wikifier(\"EazierDol_setting_init\");if( V.robinmoney >= 0 && V.robindebt >= V.robindebtlimit){V.robindebt--;} ",
+            "fileName": "time.js"
+          },
+          {
+            "from": "V.robinmoney += 300",
+            "to": "wikifier(\"EazierDol_setting_init\");V.robinmoney += V.EazierDol_Robinrich",
+            "fileName": "time.js"
+          },
+          {
+            "from": "if (V.robinmoney <= 0 && V.robindebt >= 0) {",
+            "to": "if (V.robinmoney < 0 && V.robindebt >= 0) {",
+            "fileName": "time.js"
+          },
+          {
+            "from": "const max = V.virginityProtected || (V.player.virginity.vaginal === true && V.player.virginity.penile === true) ? 1000 : 999;",
+            "to": "const max = V.virginityProtected || (V.player.virginity.vaginal === true && V.player.virginity.penile === true || V.MO_puritymax) ? 1000 : 999;",
+            "fileName": "stat-changes.js"
+          },
+          {
+            "from": "document.getElementById(\"hpi_take_pills\").innerHTML = item.hpi_take_pills ?",
+            "to": "document.getElementById(\"hpi_take_pills\").innerHTML = item.hpi_take_pills ?",
+            "fileName": "bedroom-pills.js"
+          }
+        ]
+      }
+    },
+    {
+      "modName": "ModLoader DoL ImageLoaderHook",
+      "addonName": "ImageLoaderAddon",
+      "modVersion": "^2.3.0",
+      "params": []
+    }
+  ],
+  "dependenceInfo": [
+    {
+      "modName": "TweeReplacer",
+      "version": "^1.0.0"
+    },
+    {
+      "modName": "ReplacePatcher",
+      "version": "^1.0.0"
+    },
+    {
+      "modName": "ModLoader DoL ImageLoaderHook",
+      "version": "^2.3.0"
+    }
+  ]
+}
