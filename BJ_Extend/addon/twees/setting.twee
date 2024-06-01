@@ -5,36 +5,25 @@
 BJ Extend 設定
 <br><br>
 
+頭選擇
+<<=setup.BE.simple_type_choice('head',2)>>
+嘴選擇
+<<=setup.BE.simple_type_choice('mouth',2)>>
 眼睛選擇
-<<listbox "$BE.eyes_type" autoselect>>
-	<<option "Default" "">>
-	<<option "BE_Big" "BE_eyes_0/">>
-<</listbox>>
-<br><br>
-
-眼瞼選擇
-<<listbox "$BE.lashes_type" autoselect>>
-	<<option "Default" "">>
-	<<option "BE_Big" "BE_lashes_0/">>
-	<<option "BE_Mid" "BE_lashes_1/">>
-<</listbox>>
-<br><br>
+<<=setup.BE.simple_type_choice('eyes',2)>>
 胸部選擇
-<<listbox "$BE.breasts_type" autoselect>>
-	<<option "Default" "">>
-	<<option "Wax" "BE_breasts_0/">>
-	<<option "Wax_with_cloth" "BE_breasts_1/">>
-	<<option "Costom(在BE_breasts_2添加自己的胸部 沒有會報錯)" "BE_breasts_2/">>
+<<=setup.BE.simple_type_choice('breasts',3,["Wax","Wax_with_cloth","Costom(在BE_breasts_2添加自己的胸部 沒有會報錯)"])>>
+穴選擇
+<<=setup.BE.simple_type_choice('pussy',3)>>
 
-<</listbox>>
-<br><br>
-SIDE選擇(WIP)
+SIDE框顏色
+<<=setup.BE.colour_choice("$BE.border_colour")>>
+
+SIDE框選擇(WIP)
 <<listbox "$BE.side_type" autoselect>>
 	<<option "Default" "">>
 	<<option "0" "BE_side_0/">>
 	<<option "1" "BE_side_1/">>
-	<<option "2" "BE_side_2/">>
-	<<option "3" "BE_side_3/">>
 
 <</listbox>>
 <br><br>
@@ -51,6 +40,18 @@ SIDE選擇(WIP)
 	<<option "NO" "">>
 	<<option "Blush5" "B5">>
 	<<option "Orgasm" "OG">>
+<</listbox>>
+<br><br>
+左睫毛覆蓋頭髮
+<<listbox "$BE.left_lashes" autoselect>>
+	<<option "No" false>>
+	<<option "Yes" true>>
+<</listbox>>
+<br><br>
+右睫毛覆蓋頭髮
+<<listbox "$BE.right_lashes" autoselect>>
+	<<option "No" false>>
+	<<option "Yes" true>>
 <</listbox>>
 <br><br>
 <label><<checkbox "$BE.half_close" false true autocheck>> 眼睛總是半開</label><br>

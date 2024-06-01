@@ -1,8 +1,0 @@
-					<<EroAngel_setting_init>>
-					<<if $angel gte 6 and $EroAngel_robpurity>>
-						<span class="gold">奪走<<him>>的純潔讓你更純潔了。</span>
-						<<stress -1000>><<trauma -1000>><<purity 1>><<lllstress>><<llltrauma>><<ggpurity>>
-					<</if>>
-					<<set $EroAngel_angelpoint += 1>>
-					<<transform angel 1>>
-                    <<arousal 2000>><<ggarousal>>

@@ -4,18 +4,7 @@
     <br><<link [[BJ Extend 設定|BE setting]]>><</link>>
 <</widget>>
 <<widget "BJ_Canvas_add">>
-
-	<<if !$BE>>
-		<<set $BE to {
-            "lashes_type" : "",
-            "eyes_type" : "",
-            "breasts_type" : "",
-            "side_type" : "",
-
-            "org_last_blush" : "0",
-            "easyerblush" : "0"
-        }>>
-	<</if>> 
+	<<=setup.BE.update()>>
     
 	<<if $vaginastate is "penetrated">>
 		<<set _modeloptions.pussy = 1>>
@@ -70,10 +59,10 @@
 	<</if>>
 
     <!--Layer Load-->
+	<<set _modeloptions.BE_border_colour to $BE.border_colour>>
+	<<set _modeloptions.BE_left_lashes to $BE.left_lashes>>
+	<<set _modeloptions.BE_right_lashes to $BE.right_lashes>>
 
-    <<set _modeloptions.BE_eyes_type to $BE.eyes_type>>
-    <<set _modeloptions.BE_lashes_type to $BE.lashes_type>>	
-	<<set _modeloptions.BE_breasts_type to $BE.breasts_type>>
-	<<set _modeloptions.BE_side_type to $BE.side_type>>
+    <<=setup.BE.layer_loader()>>
 
 <</widget>>
