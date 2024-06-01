@@ -1,6 +1,6 @@
 {
   "name": "BJ_Extend",
-  "version": "1.3.35",
+  "version": "1.3.36",
   "styleFileList": [],
   "scriptFileList_earlyload": [],
   "scriptFileList_inject_early": [],
@@ -69,6 +69,7 @@
     "img/face/default/pussy_cum1.png",
     "img/face/default/pussy_cum2.png",
     "img/face/default/right_lashes_mask.png",
+    "img/face/default/side_border.png",
     "img/face/default/BE_eyes_0/eyelids.png",
     "img/face/default/BE_eyes_0/eyelids_halfclosed.png",
     "img/face/default/BE_eyes_0/irisempty_halfclosed_left.png",
@@ -266,6 +267,7 @@
   "additionFile": [
     "img/face/default/left_lashes_mask.png~",
     "img/face/default/right_lashes_mask.png~",
+    "img/face/default/side_border.png~",
     "img/face/default/BE_eyes_0/eyelids.png~",
     "img/face/default/BE_eyes_0/eyelids_halfclosed.png~",
     "img/face/default/BE_eyes_0/lashes.png~",
