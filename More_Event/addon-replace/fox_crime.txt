@@ -1,0 +1,13 @@
+					<<if $EazierDol_fox is true>>
+						<<set $_foxCrimeRequired = Math.floor(50 * (1 + ($foxbuild / 10)))>>
+						<<for _i = 0; _i < 10; _i++>>
+							<<if $foxCrimeProgress gte $_foxCrimeRequired>>
+								<<transform fox 1>>
+								<<set $foxCrimeMessage to true>>
+								<<set $foxCrimeProgress to Math.clamp($foxCrimeProgress, 0, ($foxCrimeProgress - $_foxCrimeRequired))>>
+								<<set $_foxCrimeRequired = Math.floor(50 * (1 + ($foxbuild / 10)))>>
+							<</if>>
+						<</for>>
+					<<else>>
+						<<set $_foxCrimeRequired = Math.floor(50 * (1 + $foxbuild))>>
+					<</if>>

@@ -1,6 +1,6 @@
 {
   "name": "Dol_MoreOption",
-  "version": "1.2.49",
+  "version": "1.2.51",
   "styleFileList": [],
   "scriptFileList_inject_early": [],
   "scriptFileList": [],
@@ -86,11 +86,6 @@
           "passage": "Farm Widgets",
           "findString": "<<set $farm_work.event_time to random(60, 300)>>",
           "replace": "<<set $farm_work.event_time to random(60, 300)>><<MO_Farm_event_add>>"
-        },
-        {
-          "passage": "Farm Widgets",
-          "findString": "<<if $farm_work.alex is \"shower\" and !$daily.farmAlexShowerSpy>>",
-          "replace": "<<MO_Farm_builder_encourage>><<if $farm_work.alex is \"shower\" and !$daily.farmAlexShowerSpy>>"
         },
         {
           "passage": "Temple Confess Purge Sex Finish Corrupt",
@@ -199,6 +194,11 @@
             "from": "document.getElementById(\"hpi_take_pills\").innerHTML = item.hpi_take_pills ?",
             "to": "document.getElementById(\"hpi_take_pills\").innerHTML = item.hpi_take_pills ?",
             "fileName": "bedroom-pills.js"
+          },
+          {
+            "from": "fragment.append(dailySchoolEffects());",
+            "to": "fragment.append(wikifier(\"MO_daily\"));fragment.append(dailySchoolEffects());",
+            "fileName": "time.js"
           }
         ]
       }

@@ -1,0 +1,78 @@
+:: ME widgets [widget]
+
+<<widget "ME_Farm_builder_encourage">>
+	<<if Time.dayState isnot "night" and $farm.build isnot undefined and $farm.build isnot 0 and Time.hour gte 6>>
+		<<socialiseicon>><<link [[接近工人 (0:15)|ME Farm_builder_encourage]]>><<pass 15>><</link>><br>
+	<</if>>
+<</widget>>
+<<widget "ME_Farm_Tower_Seduce">>
+	<<if $farm.tower_guard and Time.dayState isnot "night" and Time.hour gte 6>>
+		<<loadNPC 0 "farm_tower_guard">><<person1>>
+		<<socialiseicon>><<link [[誘惑 |ME Farm_Guard_tower_sex_Start]]>><</link>><br>
+	<</if>>
+<</widget>>
+<<widget "ME_daily">>
+
+<</widget>>
+
+:: ME Farm_Guard_tower_sex_Start
+你站在瞭望台的邊上，對著守衛翹起屁股。<br>
+<<print $NPCList[0].name>>看著你愣了一下，然後露出了微笑 “為什麼不呢？”<br><br>
+<<link [[Next|ME Farm_Guard_tower_sex]]>><<set $sexstart to 1>><</link>>
+
+:: ME Farm_Guard_tower_sex
+<<if $sexstart is 1>>
+	<<set $sexstart to 0>>
+	<<consensual>>
+	<<set $consensual to 1>>
+	<<neutral 1>>
+	<<maninit>>
+	<<npc_attempt_sex>>
+	<<set $outside to 0>>
+	<<enable_rescue>>
+<</if>>
+<<effects>>
+<<switch random(1, 10)>>
+	<<case 1>>
+		你看到艾利克斯在農田努力工作。
+	<<case 2>>
+		“這個工作真不錯，還有免費的婊子可以幹。”
+	<<case 3>>
+		“艾利克斯知道你這麼淫蕩嗎？”
+	<<case 4>>
+		“啊……真舒服……”
+	<<default>>
+<</switch>>
+
+<<effectsman>>
+<<alarmstate>>
+<<man>>
+<<stateman>>
+<br><br>
+<<actionsman>>
+
+<<if _combatend>>
+	<span id="next"><<link [[繼續|ME Farm_Guard_tower_sex_finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[繼續|ME Farm_Guard_tower_sex]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: ME Farm_Guard_tower_sex_finish
+<<set $outside to 0>><<effects>>
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<ejaculation>>
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+<<else>>
+	<<clotheson>>
+	<<endcombat>>
+<</if>>
+他離開了你。“謝了，我不會和艾利克斯說的。”<br><br>
+<<link [[繼續|Farm Tower]]>><</link>>
+
+:: ME Farm_builder_encourage
+<<generate1>><<generate2>><<generate3>>
+工人們在努力工作。<br>
+<br>
+<<link [[接近 (0:15)|Farm Builders Encourage]]>><<pass 15>><</link>><br>

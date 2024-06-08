@@ -1,6 +1,6 @@
 {
   "name": "DOL_Magic",
-  "version": "1.3.71",
+  "version": "1.4.5",
   "styleFileList": [],
   "scriptFileList": [
     "addon/DM.js"
@@ -143,6 +143,11 @@
           "passage": "Characteristics",
           "findString": "<<if numberOfEarSlime() gte 2 and $earSlime.growth gt 50>>",
           "replace": "<<DM_shackles_willpower>><<if numberOfEarSlime() gte 2 and $earSlime.growth gt 50>>"
+        },
+        {
+          "passage": "Widgets Canvas Model Main",
+          "findString": "<!-- Tears -->",
+          "replace": "<<=setup.DM.Goinit()>><!-- Tears -->"
         }
       ]
     },

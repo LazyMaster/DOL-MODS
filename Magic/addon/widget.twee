@@ -22,11 +22,33 @@
 <<widget "DM_overlay_magic_menu">>
 	<<set $DM.menutype to 'overlay'>>
 	<br>
-	<<link "扉頁">><<set $DM.menutree to 'front_page'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
-	<<link "專精">><<set $DM.menutree to 'magic_learn'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
-	<<link "鍊金術">><<set $DM.menutree to 'alche'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
-	<<link "法術">><<set $DM.menutree to 'magic_spell'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>><br>
-	<br>
+	<<link "扉頁">>
+		<<set $DM.menutree to 'front_page'>>
+		<<replace #customOverlayContent>><<DM_overlay>><</replace>>
+	<</link>>|
+	<<link "專精">>
+		<<set $DM.menutree to 'magic_learn'>>
+		<<set $DM.f_pairs to [['Effect_only',undefined]]>>
+		<<replace #customOverlayContent>><<DM_overlay>><</replace>>
+	<</link>>|
+	<<link "鍊金術">>
+		<<set $DM.menutree to 'alche'>>
+		<<set $DM.f_pairs to [['alche',true]]>>
+		<<replace #customOverlayContent>><<DM_overlay>><</replace>>
+	<</link>>|
+	<<link "法術">>
+		<<set $DM.menutree to 'magic_spell'>>
+		<<set $DM.f_pairs to [['Effect_only',true]]>>
+		<<replace #customOverlayContent>><<DM_overlay>><</replace>>
+	<</link>>|
+	<<if $DM.perk_body_control>>
+		<<link "肉體操作">>
+			<<set $DM.f_pairs to [['perk_require','perk_body_control']]>>
+			<<set $DM.menutree to 'buy_list'>>
+			<<replace #customOverlayContent>><<DM_overlay>><</replace>>
+		<</link>>|
+	<</if>>
+	<br><br>
 	<<=setup.DM.describe()>><br>
 	<br>
 	<<if $DM.menutree is undefined or $DM.menutree is 'front_page'>>
@@ -39,6 +61,8 @@
 		<<DM_overlay_menu_Tatoo_remove>>
 	<<elseif $DM.menutree is 'alche'>>
 		<<DM_overlay_menu_alche>>
+	<<elseif $DM.menutree is 'buy_list'>>
+		<<DM_overlay_menu_buy_list>>
 	<<elseif $DM.menutree is 'text'>>
 		<<DM_text>>
 	<</if>>
@@ -51,8 +75,11 @@
 	<span class="purple">黑魔法</span>: <<print $DM.BlackMagic_pt>><br>
 	<span class="purple">墮落，反抗，暴力。</span><br>
 	<br>
+	<br>
+	法力池: <<print $DM.Mana>> / <<print $DM.Mana_max>>
+	<br>
 	<<=setup.DM.mag_daily()>>
-	每日吸能:<br><br>
+	每日吸能:<<print $DM.daily_M>><br>
 	因為你的<<if $DM.daily_purity gte 0>>純潔<<else>>墮落<</if>>: <<print_magic_get $DM.daily_purity>><br>
 	因為你的<<if $DM.daily_submissive gte 0>>順從<<else>>反抗<</if>>: <<print_magic_get $DM.daily_submissive>><br>
 	因為你的被虐: <<print_magic_get $DM.daily_masochism>><br>
@@ -73,31 +100,36 @@
 <<widget "DM_overlay_menu_magic_learn">>
 	<span class="gold">白魔法</span>: <<print $DM.WhiteMagic_pt>>|<span class="purple">黑魔法</span>: <<print $DM.BlackMagic_pt>>
 	<br><br>
-	<<link "白魔法">><<set $DM.f_key to 'BW' >><<set $DM.f_value to 'W'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
-	<<link "黑魔法">><<set $DM.f_key to 'BW' >><<set $DM.f_value to 'B'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
-	<<link "戰鬥魔法">><<set $DM.f_key to 'spell' >><<set $DM.f_value to true>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
+	<<link "全部">><<set $DM.f_pairs to [['Effect_only',undefined]]>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
+	<<link "白魔法">><<set $DM.f_pairs to [['Effect_only',undefined],['BW','W']]>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
+	<<link "黑魔法">><<set $DM.f_pairs to [['Effect_only',undefined],['BW','B']]>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
+	<<link "戰鬥魔法">><<set $DM.f_pairs to [['Effect_only',undefined],['spell',true]]>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
 	<br><br>
-	<<=setup.DM.Perk_Buy_filter(V.DM.f_key,V.DM.f_value)>>
+	<<=setup.DM.List_Generator(V.DM.f_pairs)>>
 <</widget>>
 <<widget "DM_overlay_menu_spell">>
 	<span class="gold">白魔法</span>: <<print $DM.WhiteMagic_pt>>|<span class="purple">黑魔法</span>: <<print $DM.BlackMagic_pt>>
 	<br><br>
-	<<link "白魔法">><<set $DM.f_key to 'BW' >><<set $DM.f_value to 'W'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
-	<<link "黑魔法">><<set $DM.f_key to 'BW' >><<set $DM.f_value to 'B'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
+	<<link "全部">><<set $DM.f_pairs to [['Effect_only',tru]e]>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
+	<<link "白魔法">><<set $DM.f_pairs to [['Effect_only',true],['BW','W']]>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
+	<<link "黑魔法">><<set $DM.f_pairs to [['Effect_only',true],['BW','B']]>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
 	<br><br>
-	<<=setup.DM.Spell_Buy_filter(V.DM.f_key,V.DM.f_value)>>
+	<<=setup.DM.List_Generator(V.DM.f_pairs)>>
 <</widget>>
 <<widget "DM_overlay_menu_alche">>
 	<span class="gold">白魔法</span>: <<print $DM.WhiteMagic_pt>>|<span class="purple">黑魔法</span>: <<print $DM.BlackMagic_pt>>
 	<br><br>
-	<<link "全部">><<set $DM.f_key to 'alche' >><<set $DM.f_value to true>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
-	<<link "白魔法">><<set $DM.f_key to 'BW' >><<set $DM.f_value to 'W'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
-	<<link "黑魔法">><<set $DM.f_key to 'BW' >><<set $DM.f_value to 'B'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
-	<br><br>
 	你的白魔法人偶: <<print $DM.slave_w>> 具<br>
 	你的黑魔法人偶: <<print $DM.slave_b>> 具<br><br>
-	<<=setup.DM.Alche_Buy_filter(V.DM.f_key,V.DM.f_value)>>
+	<<=setup.DM.List_Generator(V.DM.f_pairs)>>
 <</widget>>
+<<widget "DM_overlay_menu_buy_list">>
+	<span class="gold">白魔法</span>: <<print $DM.WhiteMagic_pt>>|<span class="purple">黑魔法</span>: <<print $DM.BlackMagic_pt>>
+	<br><br>
+	<<=setup.DM.List_Generator(V.DM.f_pairs)>>
+<</widget>>
+
+
 <<widget "DM_overlay_menu_Tatoo_remove">>
 	<<for _active_bodypart range setup.bodyparts>>
 		<<if $skin[_active_bodypart].pen is "tattoo">>
@@ -114,14 +146,6 @@
 	<</button>>
 <</widget>>
 
-
-<<widget "DM_WhiteMagic_menu">>
-	<<=setup.DM.Perk_Buy_list(V.DM.W_spell_list)>>
-<</widget>>
-
-<<widget "DM_BlackMagic_menu">>
-	<<=setup.DM.Perk_Buy_list(V.DM.B_spell_list)>>
-<</widget>>
 
 <<widget "print_magic_get">>
 	<<if _args[0] is 0>>

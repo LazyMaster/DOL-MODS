@@ -1,0 +1,67 @@
+{
+  "name": "Dol_MoreEvent",
+  "version": "1.0.13",
+  "styleFileList": [],
+  "scriptFileList_inject_early": [],
+  "scriptFileList": [],
+  "tweeFileList": [
+    "twee/ME_widgets.twee"
+  ],
+  "imgFileList": [],
+  "additionFile": [
+    "addon-replace/fox_crime.txt"
+  ],
+  "addonPlugin": [
+    {
+      "modName": "TweeReplacer",
+      "addonName": "TweeReplacerAddon",
+      "modVersion": "1.0.0",
+      "params": [
+        {
+          "passage": "Farm Widgets",
+          "findString": "<<if $farm_work.alex is \"shower\" and !$daily.farmAlexShowerSpy>>",
+          "replace": "<<ME_Farm_builder_encourage>><<if $farm_work.alex is \"shower\" and !$daily.farmAlexShowerSpy>>"
+        },
+        {
+          "passage": "Farm Tower",
+          "findString": "<<getouticon>>",
+          "replace": "<<ME_Farm_Tower_Seduce>><<getouticon>>"
+        }
+      ]
+    },
+    {
+      "modName": "ReplacePatcher",
+      "addonName": "ReplacePatcherAddon",
+      "modVersion": "1.0.0",
+      "params": {
+        "js": [
+          {
+            "from": "fragment.append(dailySchoolEffects());",
+            "to": "fragment.append(wikifier(\"ME_daily\"));fragment.append(dailySchoolEffects());",
+            "fileName": "time.js"
+          }
+        ]
+      }
+    },
+    {
+      "modName": "ModLoader DoL ImageLoaderHook",
+      "addonName": "ImageLoaderAddon",
+      "modVersion": "^2.3.0",
+      "params": []
+    }
+  ],
+  "dependenceInfo": [
+    {
+      "modName": "TweeReplacer",
+      "version": "^1.0.0"
+    },
+    {
+      "modName": "ReplacePatcher",
+      "version": "^1.0.0"
+    },
+    {
+      "modName": "ModLoader DoL ImageLoaderHook",
+      "version": "^2.3.0"
+    }
+  ]
+}

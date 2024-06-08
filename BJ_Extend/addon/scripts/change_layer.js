@@ -14,6 +14,9 @@ Renderer.CanvasModels["main"].layers.eyelids.srcfn=function(options) {
 Renderer.CanvasModels["main"].layers.lashes.srcfn=function(options) {
     return 'img/face/' + options.facestyle + '/'+ options.BE_eyes_type  + 'lashes' + (options.eyes_half ? "_halfclosed" : "") + '.png'
 }
+Renderer.CanvasModels["main"].layers.brows.srcfn=function(options) {
+    return 'img/face/' + options.facestyle + '/'+ options.BE_brows_type  + 'brow' + options.brows + '.png'
+}
 
 Renderer.CanvasModels["main"].layers.breasts.srcfn=function(options){
     if (options.mannequin) {
@@ -151,7 +154,8 @@ setup.BE = {
         "side_type" : "BE_side_0/",
         "pussy_type": "",
         "head_type": "",
-        "mouth_type": ""
+        "mouth_type": "",
+        "brows_type": ""
     },
     'type_b_list' : {
         "eyes_type" : false,
@@ -159,7 +163,8 @@ setup.BE = {
         "side_type" : false,
         "pussy_type": false,
         "head_type": false,
-        "mouth_type": false
+        "mouth_type": false,
+        "brows_type": false
     },
     'init': {
         "org_last_blush" : "0",
@@ -209,7 +214,7 @@ setup.BE = {
 	        _text += '  <<option \"' + buttum + '\" \"' + buttums[buttum] + '\">>'
         }
         _text += '<</listbox>>'
-        _text += '<br><br>'
+        _text += '<br>'
         return _text
     },
     colour_choice(vari){

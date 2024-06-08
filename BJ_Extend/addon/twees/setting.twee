@@ -8,9 +8,11 @@ BJ Extend 設定
 頭選擇
 <<=setup.BE.simple_type_choice('head',2)>>
 嘴選擇
-<<=setup.BE.simple_type_choice('mouth',2)>>
+<<=setup.BE.simple_type_choice('mouth',3)>>
 眼睛選擇
 <<=setup.BE.simple_type_choice('eyes',2)>>
+眉選擇
+<<=setup.BE.simple_type_choice('brows',2)>>
 胸部選擇
 <<=setup.BE.simple_type_choice('breasts',3,["Wax","Wax_with_cloth","Costom(在BE_breasts_2添加自己的胸部 沒有會報錯)"])>>
 穴選擇
