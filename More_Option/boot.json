@@ -1,11 +1,10 @@
 {
   "name": "Dol_MoreOption",
-  "version": "1.2.51",
+  "version": "1.2.54",
   "styleFileList": [],
   "scriptFileList_inject_early": [],
   "scriptFileList": [],
   "tweeFileList": [
-    "twee/MO_options.twee",
     "twee/MO_widgets.twee"
   ],
   "imgFileList": [],
@@ -44,6 +43,12 @@
           "passage": "Widgets Promiscuity",
           "findString": "\t<<set $_scaledPromiscuityMax to 20 * $_n>>",
           "replace": "\t<<EazierDol_setting_init>><<set $_scaledPromiscuityMax to 20 * ($_n + $EazierDol_control)>>",
+          "all": true
+        },
+        {
+          "passage": "Coast Path",
+          "findString": "<<if $harpy gte 6 and $birdFly gte 1>>",
+          "replace": "<<if $harpy gte 6 or ($EazierDol_fly and ($angel gte 6 or $demon gte 6 or $fallenangel gte 2))>>",
           "all": true
         },
         {
@@ -176,7 +181,7 @@
             "fileName": "time.js"
           },
           {
-            "from": "V.robinmoney += 300",
+            "from": "V.robinmoney += (V.robin.stayup >= 1 ? 250 : 300)",
             "to": "wikifier(\"EazierDol_setting_init\");V.robinmoney += V.EazierDol_Robinrich",
             "fileName": "time.js"
           },

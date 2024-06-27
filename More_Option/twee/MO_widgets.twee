@@ -14,7 +14,7 @@
 	<label><<checkbox "$MO_enhance_pray" false true autocheck>> 神殿祈禱增強</label><br>
 	<label><<checkbox "$MO_Farm_event_eazier" false true autocheck>> 農場事件更容易發生(WIP)</label><br>
 	<label><<checkbox "$MO_niceanimal" false true autocheck>> 農場動物的尊敬不會自動衰減</label><br>
-	<label><<checkbox "$MO_farm_collect" false true autocheck>> 農場產物每日自動收取</label><br>
+	<label><<checkbox "$MO_farm_collect" false true autocheck>> 農場副產物每日自動收取</label><br>
 	<label><<checkbox "$EazierDol_TentacleForest" false true autocheck>> 觸手森林需求-1</label><br>
 	
 	<br>
@@ -135,18 +135,22 @@
 	<</if>>
 <</widget>>
 <<widget "MO_daily">>
-	<<if $MO_niceanimal>>
-		<<if $farm.woodland gte 3>>
-			<<farm_pigs -2>>
-		<<elseif $farm.woodland gte 1>> 
-			<<farm_pigs -1>>
+	<<if $MO_niceanimal and $farm>>
+		<<if $farm.woodland>>
+			<<if $farm.woodland gte 3>>
+				<<farm_pigs -2>>
+			<<elseif $farm.woodland gte 1>> 
+				<<farm_pigs -1>>
+			<</if>>
 		<</if>>
-		<<if $farm.kennel gte 3>>
-			<<farm_dogs -1>>
-			<<farm_cattle -1>>
-		<</if>>
+		<<if $farm.kennel>>
+			<<if $farm.kennel gte 3>>
+				<<farm_dogs -1>>
+				<<farm_cattle -1>>
+			<</if>>	
+		<</if>>	
 	<</if>>
-	<<if $MO_farm_collect>>
+	<<if $MO_farm_collect and $farm and $farm.stock>>
 		<<tending_give truffle $farm.stock.truffles>><<set $farm.stock.truffles to 0>>
 		<<tending_give chicken_egg $farm.stock.eggs>><<set $farm.stock.eggs to 0>>
 		<<tending_give bottle_of_milk $farm.stock.milk>><<set $farm.stock.milk to 0>>
@@ -155,13 +159,7 @@
 
 
 
-:: MO Farm_builder_encourage
-<<generate1>><<generate2>><<generate3>>
-<br>
-你靠近了工人，和他們聊天。<br>
-他們盯著你。<br>
-<br>
-<<link [[鼓勵 (0:15)|Farm Builders Encourage]]>><<pass 15>><</link>><br>
+
 :: MO Config
 
 <<MO_setting_Menu>>

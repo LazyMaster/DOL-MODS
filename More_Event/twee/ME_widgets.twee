@@ -30,20 +30,21 @@
 	<<npc_attempt_sex>>
 	<<set $outside to 0>>
 	<<enable_rescue>>
+	<<set $_ME_times to 0>>
 <</if>>
 <<effects>>
-<<switch random(1, 10)>>
-	<<case 1>>
+<<switch $_ME_times>>
+	<<case 0>>
 		你看到艾利克斯在農田努力工作。
-	<<case 2>>
+	<<case 1>>
 		“這個工作真不錯，還有免費的婊子可以幹。”
-	<<case 3>>
+	<<case 2>>
 		“艾利克斯知道你這麼淫蕩嗎？”
-	<<case 4>>
-		“啊……真舒服……”
+	<<case 3>>
+		“如果艾利克斯知道這件事，會很難過的...”
 	<<default>>
 <</switch>>
-
+<<set $_ME_times += 1>>
 <<effectsman>>
 <<alarmstate>>
 <<man>>

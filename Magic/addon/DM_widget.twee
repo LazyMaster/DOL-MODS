@@ -36,11 +36,13 @@
 		<<set $DM.f_pairs to [['alche',true]]>>
 		<<replace #customOverlayContent>><<DM_overlay>><</replace>>
 	<</link>>|
-	<<link "法術">>
-		<<set $DM.menutree to 'magic_spell'>>
-		<<set $DM.f_pairs to [['Effect_only',true]]>>
+	<!------------->
+	<<link "基礎法術">>
+		<<set $DM.f_pairs to [['base','perk_body_control']]>>
+		<<set $DM.menutree to 'buy_list'>>
 		<<replace #customOverlayContent>><<DM_overlay>><</replace>>
 	<</link>>|
+	<!------------->
 	<<if $DM.perk_body_control>>
 		<<link "肉體操作">>
 			<<set $DM.f_pairs to [['perk_require','perk_body_control']]>>
@@ -110,7 +112,7 @@
 <<widget "DM_overlay_menu_spell">>
 	<span class="gold">白魔法</span>: <<print $DM.WhiteMagic_pt>>|<span class="purple">黑魔法</span>: <<print $DM.BlackMagic_pt>>
 	<br><br>
-	<<link "全部">><<set $DM.f_pairs to [['Effect_only',tru]e]>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
+	<<link "全部">><<set $DM.f_pairs to [['Effect_only',true]]>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
 	<<link "白魔法">><<set $DM.f_pairs to [['Effect_only',true],['BW','W']]>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
 	<<link "黑魔法">><<set $DM.f_pairs to [['Effect_only',true],['BW','B']]>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
 	<br><br>
@@ -124,7 +126,7 @@
 	<<=setup.DM.List_Generator(V.DM.f_pairs)>>
 <</widget>>
 <<widget "DM_overlay_menu_buy_list">>
-	<span class="gold">白魔法</span>: <<print $DM.WhiteMagic_pt>>|<span class="purple">黑魔法</span>: <<print $DM.BlackMagic_pt>>
+	法力池: <<print $DM.Mana>> / <<print $DM.Mana_max>>
 	<br><br>
 	<<=setup.DM.List_Generator(V.DM.f_pairs)>>
 <</widget>>

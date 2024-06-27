@@ -1,6 +1,6 @@
 {
   "name": "BJ_Extend",
-  "version": "1.3.48",
+  "version": "1.3.50",
   "styleFileList": [],
   "scriptFileList_earlyload": [],
   "scriptFileList_inject_early": [],
@@ -61,6 +61,7 @@
     "img/face/default/left_lashes_mask.png",
     "img/face/default/mouthcry.png",
     "img/face/default/mouthfrown.png",
+    "img/face/default/mouthneutral.png",
     "img/face/default/mouthorg.png",
     "img/face/default/mouthsmile.png",
     "img/face/default/pussy0.png",

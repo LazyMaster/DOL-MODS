@@ -1,13 +1,13 @@
 {
   "name": "DOL_Magic",
-  "version": "1.4.5",
+  "version": "1.4.7",
   "styleFileList": [],
   "scriptFileList": [
     "addon/DM.js"
   ],
   "tweeFileList": [
     "addon/DM_perk.twee",
-    "addon/widget.twee"
+    "addon/DM_widget.twee"
   ],
   "imgFileList": [],
   "additionFile": [],

@@ -92,16 +92,6 @@ setup.DM = {
             'noswich':1,
             cost_function(n){return n*100 + 200}
         },
-        "angel_tran":{
-            'max':1,
-            'BW':'W',
-            'name': '增加天使化',
-            'descript':'<br>現在天使化:<<print $angelbuild>>',
-            'cost': 10,
-            'Effect_only':true,
-            'noswich':1,
-            'Effect':"<<transform angel 1>>",
-        },
         "shackles_willpower":{
             'max':5,
             'BW':'W',
@@ -109,10 +99,22 @@ setup.DM = {
             'descript':'你的意志會下降<<print $DM.shackles_willpower>>0%，但法力的獲取會增加<<print $DM.shackles_willpower>>倍。',
             'cost': 0,
             'reducible' : true,
-            require_f(){
-                return V.DM.W_Master >= 10
-            },
             'shackles':true
+        },
+        //Spell Unlock
+        "perk_body_control":{
+            'max':1,
+            'BW':'B',
+            'name': '肉體操作',
+            'descript':'解鎖改變身體狀態的法術。',
+            'cost': 500
+        },
+        "perk_trans_control":{
+            'max':1,
+            'BW':'B',
+            'name': '轉化操作',
+            'descript':'能夠轉化成曾經變成的型態。',
+            'cost': 500
         },
         "virginity_control":{
             'max':1,
@@ -121,6 +123,7 @@ setup.DM = {
             'descript':'解鎖恢復貞潔的法術，但魔法也無法恢復初吻和牽手。',
             'cost': 1000,
         },
+        //貞潔操作
         "virginity_vigina":{
             'max':1,
             'BW':'M',
@@ -177,6 +180,8 @@ setup.DM = {
                 return V.player.virginity.oral !== true
             }
         },
+        //--------------------------------------
+        //基礎法術
         "wash":{
             'max':1,
             'BW':'M',
@@ -185,7 +190,8 @@ setup.DM = {
             'cost': 10,
             'Effect_only':true,
             'noswich':1,
-            'Effect':"<<updatesidebarimg>><<wash>><<bodywriting_clear>><<for _active_bodypart range setup.bodyparts>><<if $skin[_active_bodypart].pen is \"tattoo\">><<bodywriting_clear $_active_bodypart>><</if>><</for>><<setFont true>>"
+            'Effect':"<<wash>><<for _active_bodypart range setup.bodyparts>><<bodywriting_clear $_active_bodypart>><</for>><<updatesidebarimg>>",
+            'base':1
         },
         "tiredness_remove":{
             'max':1,
@@ -201,7 +207,8 @@ setup.DM = {
             Effect_f(){
                 V.tiredness = 0;
                 wikifier('<<updatesidebarimg>>');
-            }
+            },
+            'base':1
         },
         "stress_remove":{
             'max':1,
@@ -217,7 +224,8 @@ setup.DM = {
             Effect_f(){
                 V.stress = 0;
                 wikifier('<<updatesidebarimg>>');
-            }
+            },
+            'base':1
         },
         "arousal_remove":{
             'max':1,
@@ -233,8 +241,57 @@ setup.DM = {
             Effect_f(){
                 V.arousal = 0;
                 wikifier('<<updatesidebarimg>>');
-            }
+            },
+            'base':1
+        },        "Vow_lie":{
+            'max':1,
+            'BW':'M',
+            'name': '欺騙誓言',
+            'descript':'欺騙神殿的貞操誓言。',
+            'cost': 10,
+            'Effect_only':true,
+            'noswich':1,
+            'Effect':"<<set $player.virginity.temple to true>><<set $NPCName[$NPCNameList.indexOf(\"Sydney\")].virginity.temple to true>>",
+            'base':1
         },
+        "trauma_charge":{
+            'max':1,
+            'BW':'M',
+            'name': '快速充能',
+            'descript':'能夠馬上獲得法力，但會得到極大的創傷。',
+            'cost': 0,
+            'Effect_only':true,
+            'noswich':1,
+            Effect_f(){
+                if (V.trauma <= V.traumamax){
+                    V.trauma = Math.floor((V.traumamax))
+                }
+                wikifier('<<updatesidebarimg>>');
+            },
+            cost_function(n){
+                if (V.trauma <= V.traumamax){
+                    let _delta_trauma = Math.floor((V.traumamax - V.trauma)/5)
+                    wikifier('<<updatesidebarimg>>');
+                    return -1 * _delta_trauma
+                }
+                return 0
+            },
+            'base':1
+        },
+        "orgasm_charge":{
+            'max':1,
+            'BW':'M',
+            'name': '自我高潮',
+            'descript':'讓自己的快感達到最高。',
+            'cost': 10,
+            'Effect_only':true,
+            'noswich':1,
+            Effect_f(){
+                V.arousal = V.arousalmax;
+            },
+            'base':1
+        },
+        //能力開關
         "expel_idlers":{
             'max':1,
             'BW':'W',
@@ -263,6 +320,45 @@ setup.DM = {
             'descript':'對學科的記憶不會下降。',
             'cost': 300
         },
+        "Angel_NoFallen":{
+            'max':1,
+            'BW':'W',
+            'name': '不再墮落',
+            'descript':'讓天使不因為失貞而墮落。',
+            'cost': 200
+        },
+        "Greenthumb":{
+            'max':1,
+            'BW':'W',
+            'name': '園藝大師',
+            'descript':'得到特性園藝大師',
+            'cost': 50,
+            'noswich':1,
+            'Effect':"<<set $backgroundTraits.pushUnique(\"greenthumb\")>>"
+        },"Noawareness":{
+            'max':1,
+            'BW':'B',
+            'name': '本能學識',
+            'descript':'不需要意識來解鎖動作。',
+            'cost': 100
+        },
+        "doll":{
+            'max':1,
+            'BW':'B',
+            'name': '替身人偶',
+            'descript':'創造一個假人替你上課。',
+            'cost': 400
+        },
+
+        "Transpass_perk":{
+            'max':1,
+            'BW':'B',
+            'name': '透視',
+            'descript':'能看到一些東西。',
+            'cost': 200
+        },
+        //-----------------------
+        //人偶
         "slave_w":{
             'max':1,
             'BW':'M',
@@ -273,7 +369,20 @@ setup.DM = {
             cost_function(n){return 1000 + 200 * n},
             'alche':true,
             'effect_describe':'人偶變成社畜的樣子，步伐沉重的離開了。'
+        },        "slave_b":{
+            'max':1,
+            'BW':'M',
+            'name': '工作人偶(黑)',
+            'Effect_only':true,
+            'descript':'創造一個假人替你賺錢。',
+            'Effect':'<<set $DM.slave_b += 1>>',
+            cost_function(n){return 1000 + 200 * n},
+            'cost': 1000,
+            'alche':true,
+            'effect_describe':'人偶變成脫衣舞女的樣子，步伐沉重的離開了。'
         },
+        //-------------------------------
+        //戰鬥技能
         "Encourage_perk":{
             'max':5,
             'BW':'W',
@@ -295,27 +404,51 @@ setup.DM = {
             'spell_effect':'<<set $pain -= 50>><<set $arousal -= 3000>>',
             'spell_end_effect':'<<set $trauma -= 100>><<set $stress to Math.min($stressmax - 1000 , $stress)>>'
         },
-        "Angel_NoFallen":{
-            'max':1,
-            'BW':'W',
-            'name': '不再墮落',
-            'descript':'讓天使不因為失貞而墮落。',
-            'cost': 200
+        "pain":{
+            'max':10,
+            'BW':'B',
+            'name': '痛苦',
+            'descript':'能給敵人痛苦，等級越高越強烈。',
+            'cost': 200,
+            'spell':true,
+            'spell_effect':'<<set _to_damag to 5 + 2 * $DM.pain>><<defiance _to_damag>>',
+            'spell_end_effect':'',
+            times_f(n){
+                if (n <= 3){return n}
+                return 3
+            }
         },
-        "Greenthumb":{
-            'max':1,
-            'BW':'W',
-            'name': '園藝大師',
-            'descript':'得到特性園藝大師',
-            'cost': 50,
-            'noswich':1,
-            'Effect':"<<set $backgroundTraits.pushUnique(\"greenthumb\")>>"
+        "fastgun":{
+            'max':5,
+            'BW':'B',
+            'name': '早洩',
+            'descript':'能讓做愛對手更快高潮，效果隨技能增強。',
+            'cost': 200,
+            'spell':true,
+            'spell_effect':'<<set $enemyarousalmax to Math.ceil((0.8 - 0.05 * $DM.fastgun) * $enemyarousalmax)>>',
+            'spell_end_effect':'',
+            times_f(_){return 1}
         },
+        "enlactate":{
+            'max':1,
+            'BW':'B',
+            'name': '催乳',
+            'descript':'能讓做愛對手分泌乳汁。',
+            'cost': 200,
+            'spell':true,
+            'spell_effect':'<<set $NPCList[$mouthtarget].lactation to 1>>',
+            'spell_end_effect':'',
+            times_f(_){return 1},
+            spell_condition_f(){
+                return V.NPCList[V.mouthtarget] && V.NPCList[V.mouthtarget].gender === 'f'
+            }
+        },
+        //-----------------------------
         "B_Master":{
             'max':100,
             'BW':'B',
-            'name': '黑魔法學識',
-            'descript':'更容易獲得黑魔法。(獲得速度*<<print 1 + Math.floor($DM.B_Master*0.1)>>.<<print $DM.B_Master - Math.floor($DM.B_Master*0.1)*10>>)',
+            'name': '墮落之道',
+            'descript':'你對墮落的鑽研',
             'cost': 500,
             'noswich':1,
             cost_function(n){return n*100 + 200}
@@ -330,6 +463,7 @@ setup.DM = {
             'noswich':1,
             'Effect':"<<transform demon 1>>",
         },
+        //枷鎖
         "shackles_arousal":{
             'max':5,
             'BW':'B',
@@ -337,21 +471,10 @@ setup.DM = {
             'descript':'你的慾望下限會上升<<print $DM.shackles_arousal*1000>>，但法力的獲取會增加<<print $DM.shackles_arousal>>倍。',
             'cost': 0,
             'reducible' : true,
-            require_f(){
-                return V.DM.B_Master >= 10
-            },
             'shackles':true
         },
-        "Vow_lie":{
-            'max':1,
-            'BW':'M',
-            'name': '欺騙誓言',
-            'descript':'欺騙神殿的貞操誓言。',
-            'cost': 10,
-            'Effect_only':true,
-            'noswich':1,
-            'Effect':"<<set $player.virginity.temple to true>><<set $NPCName[$NPCNameList.indexOf(\"Sydney\")].virginity.temple to true>>"
-        },
+
+        //身體操作
         "milk_gain":{
             'max':20,
             'BW':'B',
@@ -470,13 +593,7 @@ setup.DM = {
             },
             'perk_require':'perk_body_control'
         },
-        "perk_body_control":{
-            'max':1,
-            'BW':'B',
-            'name': '肉體操縱',
-            'descript':'解鎖改變身體狀態的法術',
-            'cost': 500
-        },
+
         "milk_charge":{
             'max':1,
             'BW':'M',
@@ -541,113 +658,9 @@ setup.DM = {
             },
             'perk_require':'perk_body_control'
         },
-        "Noawareness":{
-            'max':1,
-            'BW':'B',
-            'name': '本能學識',
-            'descript':'不需要意識來解鎖動作。',
-            'cost': 100
-        },
-        "doll":{
-            'max':1,
-            'BW':'B',
-            'name': '替身人偶',
-            'descript':'創造一個假人替你上課。',
-            'cost': 400
-        },
-        "slave_b":{
-            'max':1,
-            'BW':'M',
-            'name': '工作人偶(黑)',
-            'Effect_only':true,
-            'descript':'創造一個假人替你賺錢。',
-            'Effect':'<<set $DM.slave_b += 1>>',
-            cost_function(n){return 1000 + 200 * n},
-            'cost': 1000,
-            'alche':true,
-            'effect_describe':'人偶變成脫衣舞女的樣子，步伐沉重的離開了。'
-        },
-        "Transpass_perk":{
-            'max':1,
-            'BW':'B',
-            'name': '透視',
-            'descript':'能看到一些東西。',
-            'cost': 200
-        },
-        "pain":{
-            'max':10,
-            'BW':'B',
-            'name': '痛苦',
-            'descript':'能給敵人痛苦，等級越高越強烈。',
-            'cost': 200,
-            'spell':true,
-            'spell_effect':'<<set _to_damag to 5 + 2 * $DM.pain>><<defiance _to_damag>>',
-            'spell_end_effect':'',
-            times_f(n){
-                if (n <= 3){return n}
-                return 3
-            }
-        },
-        "fastgun":{
-            'max':5,
-            'BW':'B',
-            'name': '早洩',
-            'descript':'能讓做愛對手更快高潮，效果隨技能增強。',
-            'cost': 200,
-            'spell':true,
-            'spell_effect':'<<set $enemyarousalmax to Math.ceil((0.8 - 0.05 * $DM.fastgun) * $enemyarousalmax)>>',
-            'spell_end_effect':'',
-            times_f(_){return 1}
-        },
-        "enlactate":{
-            'max':1,
-            'BW':'B',
-            'name': '催乳',
-            'descript':'能讓做愛對手分泌乳汁。',
-            'cost': 200,
-            'spell':true,
-            'spell_effect':'<<set $NPCList[$mouthtarget].lactation to 1>>',
-            'spell_end_effect':'',
-            times_f(_){return 1},
-            spell_condition_f(){
-                return V.NPCList[V.mouthtarget] && V.NPCList[V.mouthtarget].gender === 'f'
-            }
-        },
-        "trauma_charge":{
-            'max':1,
-            'BW':'M',
-            'name': '快速充能',
-            'descript':'能夠馬上獲得法力，但會得到極大的創傷。',
-            'cost': 0,
-            'Effect_only':true,
-            'noswich':1,
-            Effect_f(){
-                if (V.trauma <= V.traumamax){
-                    V.trauma = Math.floor((V.traumamax))
-                }
-                wikifier('<<updatesidebarimg>>');
-            },
-            cost_function(n){
-                if (V.trauma <= V.traumamax){
-                    let _delta_trauma = Math.floor((V.traumamax - V.trauma)/5)
-                    wikifier('<<updatesidebarimg>>');
-                    return -1 * _delta_trauma
-                }
-                return 0
-            }
-        },
-        "orgasm_charge":{
-            'max':1,
-            'BW':'M',
-            'name': '自我高潮',
-            'descript':'讓自己的快感達到最高。',
-            'cost': 10,
-            'Effect_only':true,
-            'noswich':1,
-            Effect_f(){
-                V.arousal = V.arousalmax;
-            }
-        }
+        //----------------------------
+        
+        
     },
     "WIP":{
         "remove_tatoo":{
@@ -681,13 +694,12 @@ setup.DM = {
                 }
         }
         //開關
+        if (V.DM[perk_name] && this.Perks[perk_name].reducible){
+            _text += this.Linkbuttun('降級','<<set $DM.'+ perk_name +' -= 1>>') + '|'
+        }
         _text += this.perk_switch(perk_name);
         //使用
         if(!_ismax){
-            _text += '<br>'
-            if (V.DM[perk_name] && this.Perks[perk_name].reducible){
-                _text += this.Linkbuttun('降級','<<set $DM.'+ perk_name +' -= 1>>') + '|'
-            }
             let _typemap = {
                 'W': V.DM.WhiteMagic_pt,
                 'B': V.DM.BlackMagic_pt,
@@ -737,12 +749,17 @@ setup.DM = {
         return this.Perks[perk_name].cost
     },
     printcost(perk_name){
-        let _text = "("
-        if (this.Perks[perk_name].BW === 'B') _text += "<span class=\"purple\">";
-        if (this.Perks[perk_name].BW === 'W') _text += "<span class=\"gold\">";
+        let _text = ""
+        let _color_dict = {
+            'B':"<span class=\"purple\">",
+            'W':"<span class=\"gold\">",
+            'M':"<span class=\"blue\">",
+            undefined:""
+        }
+         _text += _color_dict[this.Perks[perk_name].BW]
         _text +=  (-1 * this.getcost(perk_name));
-        if (['B', 'W'].includes(this.Perks[perk_name].BW)) _text += '</span>';
-        _text += ')'
+        if (this.Perks[perk_name].BW) _text += '</span>';
+        _text ='(' + _text + ')'
         return _text
     },
     printtimes(perk_name){
