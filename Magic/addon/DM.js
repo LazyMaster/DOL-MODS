@@ -19,6 +19,44 @@ function DM_MinArousal_decorator(_f) {
 
 
 setup.DM = {
+    'classes':['base','meat','mind control','alchemy'],
+    'classes_cn':{
+        'base':'渾沌',
+        'meat':'血肉',
+        'mind control':'惑控',
+        'alchemy':'鍊金',
+
+    },
+    'stat_transform':{
+        'base':{
+            'orgasmstat':{
+                'name':'高潮',
+                'cost':100
+            }
+        },
+        'meat':{
+            'milk_produced_stat':{
+                'name':'產乳',
+                'cost':1000
+            }
+        },
+        'mind control':{
+            'dancestat':{
+                'name':'跳舞經驗',
+                'cost':50
+            },
+            'prostitutionstat':{
+                'name':'賣淫經驗',
+                'cost':5
+            },
+            'masseur_stat':{
+                'name':'按摩經驗',
+                'cost':5
+            }
+        },
+        'alchemy':{
+        },
+    },
     'init': {
         'minarousal_updated':false,
         "WhiteMagic_pt":0,
@@ -28,14 +66,14 @@ setup.DM = {
         'perk_switch':{},
         'spell_used':{},
         'daily':{},
-        'B_spell_list':[],
-        'W_spell_list':[],
         'menutype':'overlay',
         'slave_w':0,
         'slave_b':0,
         'desctibe_perk':false,
         'desctibe_m':false,
-        'f_pairs':[]
+        'f_pairs':[],
+        'class_pt':{},
+        'stat_transform_history':{}
     },
     Goinit(){
         if (!this.init.minarousal_updated){
@@ -53,15 +91,7 @@ setup.DM = {
                 else {V.DM[key] = this.init[key]}
             }
         }
-        V.DM.B_spell_list = [];
-        V.DM.W_spell_list = [];
-        for(let key in this.Perks){
-            if (V.DM[key] === undefined){
-                V.DM[key] = 0
-            }
-            if      (this.Perks[key].BW === 'B'){V.DM.B_spell_list.push(key)}
-            else if (this.Perks[key].BW === 'W'){V.DM.W_spell_list.push(key)}
-        }
+
         if (V.backgroundTraits.includes("greenthumb")){V.DM["Greenthumb"] = 1}
         V.DM.WhiteMagic_pt = Math.round(V.DM.WhiteMagic_pt);
         V.DM.BlackMagic_pt = Math.round(V.DM.BlackMagic_pt);
@@ -83,50 +113,41 @@ setup.DM = {
         return _text
     },
     "Perks":{
-        "W_Master":{
-            'max':100,
-            'BW':'W',
-            'name': '白魔法學識',
-            'descript':'更容易獲得白魔法(獲得速度*<<print 1 + Math.floor($DM.W_Master*0.1)>>.<<print $DM.W_Master - Math.floor($DM.W_Master*0.1)*10>>)',
-            'cost': 500,
-            'noswich':1,
-            cost_function(n){return n*100 + 200}
-        },
+
+        //shackles---------------------
         "shackles_willpower":{
+            'class':'mind control',
             'max':5,
-            'BW':'W',
+            'cost_type':'Class_PT',
             'name': '意志枷鎖',
             'descript':'你的意志會下降<<print $DM.shackles_willpower>>0%，但法力的獲取會增加<<print $DM.shackles_willpower>>倍。',
             'cost': 0,
             'reducible' : true,
             'shackles':true
         },
-        //Spell Unlock
-        "perk_body_control":{
-            'max':1,
-            'BW':'B',
-            'name': '肉體操作',
-            'descript':'解鎖改變身體狀態的法術。',
-            'cost': 500
+        "shackles_arousal":{
+            'class':'mind control',
+            'max':5,
+            'cost_type':'Class_PT',
+            'name': '慾望枷鎖',
+            'descript':'你的慾望下限會上升<<print $DM.shackles_arousal*1000>>，但法力的獲取會增加<<print $DM.shackles_arousal>>倍。',
+            'cost': 0,
+            'reducible' : true,
+            'shackles':true
         },
-        "perk_trans_control":{
-            'max':1,
-            'BW':'B',
-            'name': '轉化操作',
-            'descript':'能夠轉化成曾經變成的型態。',
-            'cost': 500
-        },
+        //---------------------------------------------------------------------------------
+        //貞潔操作
+        //---------------------------------------------------------------------------------
         "virginity_control":{
             'max':1,
-            'BW':'W',
+            'cost_type':'Class_PT',
             'name': '貞潔操作',
             'descript':'解鎖恢復貞潔的法術，但魔法也無法恢復初吻和牽手。',
             'cost': 1000,
         },
-        //貞潔操作
         "virginity_vigina":{
             'max':1,
-            'BW':'M',
+            'cost_type':'M',
             'name': '小穴童貞修復',
             'descript':'恢復貞潔。',
             'cost': 100,
@@ -135,12 +156,12 @@ setup.DM = {
             'Effect':"<<set $player.virginity.vaginal to true>>",
             'perk_require':'virginity_control',
             require_f(){
-                return V.player.virginity.vaginal !== true
+                return V.player.virginity.vaginal === true
             }
         },
         "virginity_penis":{
             'max':1,
-            'BW':'M',
+            'cost_type':'M',
             'name': '陰莖童貞修復',
             'descript':'恢復貞潔。',
             'cost': 100,
@@ -149,12 +170,14 @@ setup.DM = {
             'Effect':"<<set $player.virginity.penile to true>>",
             'perk_require':'virginity_control',
             require_f(){
-                return V.player.virginity.penile !== true
+                if (V.player.virginity.penile === true){
+                    return '這個法術對你沒效'
+                }
             }
         },
         "virginity_anal":{
             'max':1,
-            'BW':'M',
+            'cost_type':'M',
             'name': '肛門童貞修復',
             'descript':'恢復貞潔。',
             'cost': 100,
@@ -163,12 +186,14 @@ setup.DM = {
             'Effect':"<<set $player.virginity.anal to true>>",
             'perk_require':'virginity_control',
             require_f(){
-                return V.player.virginity.anal !== true
+                if (V.player.virginity.anal === true){
+                    return '這個法術對你沒效'
+                }
             }
         },
         "virginity_oral":{
             'max':1,
-            'BW':'M',
+            'cost_type':'M',
             'name': '口腔童貞修復',
             'descript':'恢復貞潔。',
             'cost': 100,
@@ -177,14 +202,28 @@ setup.DM = {
             'Effect':"<<set $player.virginity.oral to true>>",
             'perk_require':'virginity_control',
             require_f(){
-                return V.player.virginity.oral !== true
+                if (V.player.virginity.oral === true){
+                    return '這個法術對你沒效'
+                }
             }
         },
-        //--------------------------------------
-        //基礎法術
-        "wash":{
+        //---------------------------------------------------------------------------------
+        //塑能 對能量的控制
+        //---------------------------------------------------------------------------------
+        
+
+        "Transpass_perk":{
+            'class':'base',
             'max':1,
-            'BW':'M',
+            'cost_type':'Class_PT',
+            'name': '透視',
+            'descript':'能看到一些東西。',
+            'cost': 200
+        },
+        "wash":{
+            'class':'base',
+            'max':1,
+            'cost_type':'M',
             'name': '清潔溜溜',
             'descript':'用魔法清理自己。',
             'cost': 10,
@@ -194,8 +233,9 @@ setup.DM = {
             'base':1
         },
         "tiredness_remove":{
+            'class':'base',
             'max':1,
-            'BW':'M',
+            'cost_type':'M',
             'name': '消除疲勞',
             'descript':'用魔法消除疲勞。',
             'cost': 100,
@@ -211,8 +251,9 @@ setup.DM = {
             'base':1
         },
         "stress_remove":{
+            'class':'mind control',
             'max':1,
-            'BW':'M',
+            'cost_type':'M',
             'name': '消除壓力',
             'descript':'用魔法消除壓力。',
             'cost': 100,
@@ -228,8 +269,9 @@ setup.DM = {
             'base':1
         },
         "arousal_remove":{
+            'class':'base',
             'max':1,
-            'BW':'M',
+            'cost_type':'M',
             'name': '快感平息',
             'descript':'用魔法消除興奮。',
             'cost': 100,
@@ -243,9 +285,11 @@ setup.DM = {
                 wikifier('<<updatesidebarimg>>');
             },
             'base':1
-        },        "Vow_lie":{
+        },        
+        "Vow_lie":{
             'max':1,
-            'BW':'M',
+            'class':'base',
+            'cost_type':'M',
             'name': '欺騙誓言',
             'descript':'欺騙神殿的貞操誓言。',
             'cost': 10,
@@ -254,33 +298,10 @@ setup.DM = {
             'Effect':"<<set $player.virginity.temple to true>><<set $NPCName[$NPCNameList.indexOf(\"Sydney\")].virginity.temple to true>>",
             'base':1
         },
-        "trauma_charge":{
-            'max':1,
-            'BW':'M',
-            'name': '快速充能',
-            'descript':'能夠馬上獲得法力，但會得到極大的創傷。',
-            'cost': 0,
-            'Effect_only':true,
-            'noswich':1,
-            Effect_f(){
-                if (V.trauma <= V.traumamax){
-                    V.trauma = Math.floor((V.traumamax))
-                }
-                wikifier('<<updatesidebarimg>>');
-            },
-            cost_function(n){
-                if (V.trauma <= V.traumamax){
-                    let _delta_trauma = Math.floor((V.traumamax - V.trauma)/5)
-                    wikifier('<<updatesidebarimg>>');
-                    return -1 * _delta_trauma
-                }
-                return 0
-            },
-            'base':1
-        },
         "orgasm_charge":{
+            'class':'mind control',
             'max':1,
-            'BW':'M',
+            'cost_type':'M',
             'name': '自我高潮',
             'descript':'讓自己的快感達到最高。',
             'cost': 10,
@@ -291,102 +312,112 @@ setup.DM = {
             },
             'base':1
         },
-        //能力開關
+        //--------------------------------------------------------------------------
+        //心靈 精神控制
+        //--------------------------------------------------------------------------
         "expel_idlers":{
+            'class':'mind control',
             'max':1,
-            'BW':'W',
+            'cost_type':'Class_PT',
             'name': '驅逐閒人',
             'descript':'似乎在某些場景有用。',
-            'cost': 100
+            'cost': 10
         },
         "Call":{
+            'class':'mind control',
             'max':1,
-            'BW':'W',
+            'cost_type':'Class_PT',
             'name': '感召',
             'descript':'似乎在某些場景有用。',
-            'cost': 100
+            'cost': 10
         },
         "Convince":{
+            'class':'mind control',
             'max':1,
-            'BW':'W',
+            'cost_type':'Class_PT',
             'name': '說服',
             'descript':'似乎在某些場景有用。',
-            'cost': 100
+            'cost': 10
+        },
+        "Noawareness":{
+            'class':'mind control',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '本能學識',
+            'descript':'不需要意識來解鎖動作。',
+            'cost': 10
         },
         "Noforget":{
+            'class':'mind control',
             'max':1,
-            'BW':'W',
+            'cost_type':'Class_PT',
             'name': '超級記憶',
             'descript':'對學科的記憶不會下降。',
-            'cost': 300
+            'cost': 30
+        },        
+        "Greenthumb":{
+            'class':'mind control',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '園藝大師',
+            'descript':'精通園藝',
+            'cost': 0,
+            'noswich':1,
+            'Effect':"<<set $backgroundTraits.pushUnique(\"greenthumb\")>>"
         },
+        //--------------------------------------------------------------------------
+        //轉化 對轉化的控制------------------------------------------------------------------
+        //--------------------------------------------------------------------------
         "Angel_NoFallen":{
             'max':1,
-            'BW':'W',
+            'cost_type':'Class_PT',
             'name': '不再墮落',
             'descript':'讓天使不因為失貞而墮落。',
             'cost': 200
         },
-        "Greenthumb":{
-            'max':1,
-            'BW':'W',
-            'name': '園藝大師',
-            'descript':'得到特性園藝大師',
-            'cost': 50,
-            'noswich':1,
-            'Effect':"<<set $backgroundTraits.pushUnique(\"greenthumb\")>>"
-        },"Noawareness":{
-            'max':1,
-            'BW':'B',
-            'name': '本能學識',
-            'descript':'不需要意識來解鎖動作。',
-            'cost': 100
-        },
+        //------------------------------------------
+        //鍊金術 對物質的控制
+        //------------------------------------------
         "doll":{
+            'class':'alchemy',
             'max':1,
-            'BW':'B',
+            'cost_type':'Class_PT',
             'name': '替身人偶',
             'descript':'創造一個假人替你上課。',
-            'cost': 400
+            'cost': 10
         },
-
-        "Transpass_perk":{
-            'max':1,
-            'BW':'B',
-            'name': '透視',
-            'descript':'能看到一些東西。',
-            'cost': 200
-        },
-        //-----------------------
-        //人偶
         "slave_w":{
+            'class':'alchemy',
             'max':1,
-            'BW':'M',
+            'cost_type':'Class_PT',
             'name': '工作人偶(白)',
             'Effect_only':true,
             'descript':'創造一個假人替你賺錢。',
             'Effect':'<<set $DM.slave_w += 1>>',
-            cost_function(n){return 1000 + 200 * n},
+            cost_function(n){return 10 + 2 * n},
             'alche':true,
             'effect_describe':'人偶變成社畜的樣子，步伐沉重的離開了。'
-        },        "slave_b":{
+        },        
+        "slave_b":{
+            'class':'alchemy',
             'max':1,
-            'BW':'M',
+            'cost_type':'Class_PT',
             'name': '工作人偶(黑)',
             'Effect_only':true,
             'descript':'創造一個假人替你賺錢。',
             'Effect':'<<set $DM.slave_b += 1>>',
-            cost_function(n){return 1000 + 200 * n},
-            'cost': 1000,
+            cost_function(n){return 10 + 2 * n},
             'alche':true,
             'effect_describe':'人偶變成脫衣舞女的樣子，步伐沉重的離開了。'
         },
         //-------------------------------
-        //戰鬥技能
+        //黑魔法
+        //-------------------------------
         "Encourage_perk":{
+            'class':'mind control',
             'max':5,
-            'BW':'W',
-            'name': '激勵',
+            'cost_type':'Class_PT',
+            'name': '強欲',
             'descript':'能讓做愛對手更持久，效果隨技能增強。',
             'cost': 100,
             'spell':true,
@@ -395,8 +426,9 @@ setup.DM = {
             times_f(_){return 1}
         },
         "Endure_perk":{
+            'class':'mind control',
             'max':5,
-            'BW':'W',
+            'cost_type':'Class_PT',
             'name': '忍耐',
             'descript':'消除疼痛，降低快感，且戰鬥後不會暈倒。',
             'cost': 100,
@@ -405,8 +437,9 @@ setup.DM = {
             'spell_end_effect':'<<set $trauma -= 100>><<set $stress to Math.min($stressmax - 1000 , $stress)>>'
         },
         "pain":{
+            'class':'mind control',
             'max':10,
-            'BW':'B',
+            'cost_type':'Class_PT',
             'name': '痛苦',
             'descript':'能給敵人痛苦，等級越高越強烈。',
             'cost': 200,
@@ -419,8 +452,9 @@ setup.DM = {
             }
         },
         "fastgun":{
+            'class':'mind control',
             'max':5,
-            'BW':'B',
+            'cost_type':'Class_PT',
             'name': '早洩',
             'descript':'能讓做愛對手更快高潮，效果隨技能增強。',
             'cost': 200,
@@ -430,8 +464,9 @@ setup.DM = {
             times_f(_){return 1}
         },
         "enlactate":{
+            'class':'meat',
             'max':1,
-            'BW':'B',
+            'cost_type':'Class_PT',
             'name': '催乳',
             'descript':'能讓做愛對手分泌乳汁。',
             'cost': 200,
@@ -443,41 +478,13 @@ setup.DM = {
                 return V.NPCList[V.mouthtarget] && V.NPCList[V.mouthtarget].gender === 'f'
             }
         },
-        //-----------------------------
-        "B_Master":{
-            'max':100,
-            'BW':'B',
-            'name': '墮落之道',
-            'descript':'你對墮落的鑽研',
-            'cost': 500,
-            'noswich':1,
-            cost_function(n){return n*100 + 200}
-        },
-        "demon_tran":{
-            'max':1,
-            'BW':'M',
-            'name': '增加惡魔化',
-            'descript':'<br>現在惡魔化:<<print $demonbuild>>',
-            'cost': 10,
-            'Effect_only':true,
-            'noswich':1,
-            'Effect':"<<transform demon 1>>",
-        },
-        //枷鎖
-        "shackles_arousal":{
-            'max':5,
-            'BW':'B',
-            'name': '慾望枷鎖',
-            'descript':'你的慾望下限會上升<<print $DM.shackles_arousal*1000>>，但法力的獲取會增加<<print $DM.shackles_arousal>>倍。',
-            'cost': 0,
-            'reducible' : true,
-            'shackles':true
-        },
-
-        //身體操作
+        //---------------------------------------------------
+        //血肉
+        //---------------------------------------------------
         "milk_gain":{
+            'class':'meat',
             'max':20,
-            'BW':'B',
+            'cost_type':'Class_PT',
             'name': '豐壤',
             'descript':'增加母乳量。<br>現在母乳容量:<<print $milk_volume>><br>現在母乳容量最大值:<<print $milk_max>>',
             'cost': 50,
@@ -489,11 +496,11 @@ setup.DM = {
                 if (V.cow >= 6){V.milk_max  = 6000 + 300 * V.DM.milk_gain}
                 else{V.milk_max  = 3000 + 300 * V.DM.milk_gain}
             },
-            'perk_require':'perk_body_control'
         },
         "breast_size_g":{
+            'class':'meat',
             'max':1,
-            'BW':'M',
+            'cost_type':'M',
             'name': '乳房增大',
             'descript':'增加胸部大小',
             'cost': 100,
@@ -506,11 +513,17 @@ setup.DM = {
                     wikifier('<<updatesidebarimg>>');
                 }
             },
-            'perk_require':'perk_body_control'
+            'perk_require':'perk_body_control',
+            require_f(){
+                if (V.player.breastsize >= V.breastsizemax){
+                    return '你的胸部似乎不能變大了'
+                }
+            }
         },
         "breast_size_l":{
+            'class':'meat',
             'max':1,
-            'BW':'M',
+            'cost_type':'M',
             'name': '乳房縮小',
             'descript':'降低胸部大小',
             'cost': 100,
@@ -523,14 +536,19 @@ setup.DM = {
                     wikifier('<<updatesidebarimg>>');
                 }
             },
-            'perk_require':'perk_body_control'
+            require_f(){
+                if (V.player.breastsize <= V.breastsizemin){
+                    return '你的胸部似乎不能變小了'
+                }
+            }
         },
         "bhair_size_g":{
+            'class':'meat',
             'max':1,
-            'BW':'M',
+            'cost_type':'M',
             'name': '後髮增長',
             'descript':'增加後髮長度',
-            'cost': 10,
+            'cost': 5,
             'noswich':1,
             'Effect_only':true,
             'body_control':1,
@@ -540,14 +558,20 @@ setup.DM = {
                 wikifier('<<calchairlengthstage>>');
                 wikifier('<<updatesidebarimg>>');
             },
-            'perk_require':'perk_body_control'
+            'perk_require':'perk_body_control',
+            require_f(){
+                if (V.hairlength >= 1000){
+                    return '你的後髮似乎不能變長了'
+                }
+            }
         },
         "bhair_size_l":{
+            'class':'meat',
             'max':1,
-            'BW':'M',
+            'cost_type':'M',
             'name': '後髮縮短',
             'descript':'減少後髮長度',
-            'cost': 10,
+            'cost': 5,
             'noswich':1,
             'Effect_only':true,
             'body_control':1,
@@ -557,14 +581,20 @@ setup.DM = {
                 wikifier('<<calchairlengthstage>>');
                 wikifier('<<updatesidebarimg>>');
             },
-            'perk_require':'perk_body_control'
+            'perk_require':'perk_body_control' 
+            ,require_f(){
+                if (V.hairlength <= 0){
+                    return '你的後髮似乎不能變短了'
+                }
+            }
         },
         "fhair_size_g":{
+            'class':'meat',
             'max':1,
-            'BW':'M',
+            'cost_type':'M',
             'name': '前髮增長',
             'descript':'增加前髮長度',
-            'cost': 10,
+            'cost': 5,
             'noswich':1,
             'Effect_only':true,
             'body_control':1,
@@ -574,14 +604,19 @@ setup.DM = {
                 wikifier('<<calchairlengthstage>>');
                 wikifier('<<updatesidebarimg>>');
             },
-            'perk_require':'perk_body_control'
+            require_f(){
+                if (V.fringelength >= 1000){
+                    return '你的前髮似乎不能變長了'
+                }
+            }
         },
         "fhair_size_l":{
+            'class':'meat',
             'max':1,
-            'BW':'M',
+            'cost_type':'M',
             'name': '前髮縮短',
             'descript':'減少前髮長度',
-            'cost': 10,
+            'cost': 5,
             'noswich':1,
             'Effect_only':true,
             'body_control':1,
@@ -592,11 +627,17 @@ setup.DM = {
                 wikifier('<<updatesidebarimg>>');
             },
             'perk_require':'perk_body_control'
+            ,require_f(){
+                if (V.fringelength <= 0){
+                    return '你的前髮似乎不能變短了'
+                }
+            }
         },
 
         "milk_charge":{
+            'class':'meat',
             'max':1,
-            'BW':'M',
+            'cost_type':'M',
             'name': '母乳補充',
             'descript':'補充母乳到當前最大值。',
             'cost': 50,
@@ -612,8 +653,9 @@ setup.DM = {
             'perk_require':'perk_body_control'
         },
         "milk_volume_charge":{
+            'class':'meat',
             'max':1,
-            'BW':'M',
+            'cost_type':'M',
             'name': '乳腺擴張',
             'descript':'補充母乳容量到當前最大值。',
             'cost': 50,
@@ -629,8 +671,9 @@ setup.DM = {
             'perk_require':'perk_body_control'
         },
         "parasite_grow":{
+            'class':'meat',
             'max':1,
-            'BW':'M',
+            'cost_type':'M',
             'name': '苗床生長',
             'descript':'讓寄生蟲的孕育時間加速',
             'cost': 100,
@@ -646,7 +689,7 @@ setup.DM = {
                                 parasite.daysLeft = 0;
                                 if(!parasite.stats.speed) parasite.stats.speed = 100
                                 parasite.stats.speed = Math.min(parasite.stats.speed - 50 , 100)
-                                parasite.stats.speed = parasite.stats.speed < 0 ? 0:parasite.stats.speed
+                                parasite.stats.speed = parasite.stats.speed < 1 ? 1:parasite.stats.speed
                             }
                         });
                     }
@@ -665,7 +708,7 @@ setup.DM = {
     "WIP":{
         "remove_tatoo":{
             'max':1,
-            'BW':'W',
+            'cost_type':'Class_PT',
             'name': '消除紋身',
             'descript':'用魔法消除紋身。',
             'cost': 200,
@@ -675,53 +718,54 @@ setup.DM = {
         }
     },
     Perk_Buy(perk_name){
-        //前置
-        if (this.Perks[perk_name].require_f    && !this.Perks[perk_name].require_f()){return ""}
-        if (this.Perks[perk_name].perk_require && !V.DM.perk_switch[this.Perks[perk_name].perk_require]){return ""}
-
+        let _perkdata = this.Perks[perk_name]
         let _text = "";
         //描述
-        _text += (this.Perks[perk_name].name + ":" + this.Perks[perk_name].descript );
-        if (this.Perks[perk_name].spell){_text += this.printtimes(perk_name)}
+        _text += (_perkdata.name + ":" + _perkdata.descript );
+        if (_perkdata.spell){_text += this.printtimes(perk_name)}
         //LV顯示
         let _ismax = false;
-        if (!this.Perks[perk_name].Effect_only){
+        if (!_perkdata.Effect_only){
             let _level = V.DM[perk_name] === undefined ? 0 : V.DM[perk_name];
             _text += ('<br>Lv:' + _level);
-            if (_level >= this.Perks[perk_name].max){
+            if (_level >= _perkdata.max){
                     _ismax = true;
                     _text += ('(MAX)')
                 }
         }
         //開關
-        if (V.DM[perk_name] && this.Perks[perk_name].reducible){
+        if (V.DM[perk_name] && _perkdata.reducible){
             _text += this.Linkbuttun('降級','<<set $DM.'+ perk_name +' -= 1>>') + '|'
         }
         _text += this.perk_switch(perk_name);
         //使用
         if(!_ismax){
+            _text += '<br>'
             let _typemap = {
-                'W': V.DM.WhiteMagic_pt,
-                'B': V.DM.BlackMagic_pt,
+                'Class_PT': V.DM.class_pt[_perkdata.class],
                 'M': V.DM.Mana
             }
-            if (_typemap[this.Perks[perk_name].BW] >= this.getcost(perk_name)){
-                let buttum_name = ['B', 'W'].includes(this.Perks[perk_name].BW) ? '學習' : '施法'
-                _text += this.Linkbuttun(buttum_name,'<<=setup.DM.levelup(\"'+ perk_name +'\")>>',this.Perks[perk_name].timepass)
+            if (_perkdata.require_f && _perkdata.require_f()){
+                _text += ('<span class="black">'+_perkdata.require_f()+'</span>')
+            }
+            else if (_typemap[_perkdata.cost_type] >= this.getcost(perk_name)){
+                let buttum_name = 'Class_PT' === _perkdata.cost_type ? '升級' : '施法'
+                _text += this.Linkbuttun(buttum_name,'<<=setup.DM.levelup(\"'+ perk_name +'\")>>',_perkdata.timepass)
             }
             else{
                 _text += ('<span class="black">點數不足</span>')
             }
-            if (V.DM[perk_name] !== this.Perks[perk_name].max){
+            if (V.DM[perk_name] !== _perkdata.max && !(_perkdata.require_f && _perkdata.require_f())){
                 _text += this.printcost(perk_name)
             }
         }
-        if(this.Perks[perk_name].endwith){
-            _text += this.Perks[perk_name].endwith
+        if(_perkdata.endwith){
+            _text += _perkdata.endwith
         }
-        _text += '<br><br>';
+        _text = '<div style="border: 1px solid var(--300); padding: 0.3rem; margin: 0.15rem">' + _text + '</div>';
         return _text
-    },
+    }
+    ,
     List_Generator(pairs){
         let _text = ''
         for (let perk_name in this.Perks){
@@ -734,12 +778,15 @@ setup.DM = {
         let _text = ''
         if (V.DM.desctibe_perk){
             _text += this.Perks[V.DM.desctibe_perk].effect_describe
+            _text += '<br>'
             V.DM.desctibe_perk = false
         }
         if (V.DM.desctibe_m){
             _text += V.DM.desctibe_m
+            _text += '<br>'
             V.DM.desctibe_m = false
         }
+        
         return _text
     },
     getcost(perk_name){
@@ -750,15 +797,15 @@ setup.DM = {
     },
     printcost(perk_name){
         let _text = ""
+        if (!this.Perks[perk_name].cost) return '';
         let _color_dict = {
-            'B':"<span class=\"purple\">",
-            'W':"<span class=\"gold\">",
-            'M':"<span class=\"blue\">",
+            'Class_PT':"<span class=\"gold\">",
+            'M':"<span class=\"purple\">",
             undefined:""
         }
-         _text += _color_dict[this.Perks[perk_name].BW]
+        _text += _color_dict[this.Perks[perk_name].cost_type]
         _text +=  (-1 * this.getcost(perk_name));
-        if (this.Perks[perk_name].BW) _text += '</span>';
+        if (this.Perks[perk_name].cost_type) _text += '</span>';
         _text ='(' + _text + ')'
         return _text
     },
@@ -767,13 +814,10 @@ setup.DM = {
         return "可用"+ _use_limit +"次。"
     },
     levelup(perk_name){
-        if (this.Perks[perk_name].BW === 'W'){
-            V.DM.WhiteMagic_pt -= this.getcost(perk_name)
+        if (this.Perks[perk_name].cost_type === 'Class_PT'){
+            V.DM.class_pt[this.Perks[perk_name].class] -= this.getcost(perk_name)
         }
-        else if(this.Perks[perk_name].BW === 'B'){
-            V.DM.BlackMagic_pt -= this.getcost(perk_name)
-        }
-        else if(this.Perks[perk_name].BW === 'M'){
+        else if(this.Perks[perk_name].cost_type === 'M'){
             V.DM.Mana -= this.getcost(perk_name)
         }
         if(!this.Perks[perk_name].Effect_only){
@@ -840,15 +884,7 @@ setup.DM = {
     mag_daily(){
         this.Goinit()
         V.DM.daily_M = 0
-        V.DM.daily_M += (V.DM.W_Master * 10)
-        V.DM.daily_M += (V.DM.B_Master * 10)
-
-        V.DM.daily_w = 0
-        V.DM.daily_b = 0
-        V.DM.daily_purity     = Math.floor((V.purity-500)/100) * 20
-        V.DM.daily_submissive = Math.floor((V.submissive-1000)/100) * 10
-        V.DM.daily_masochism  = Math.floor(V.masochism/100) * 10
-        V.DM.daily_sadism     = Math.floor(V.sadism/100) * -10
+        V.DM.daily_M += 10
         V.DM.daily_trans      = V.angel >= 6 ? 50 : (V.demon >= 6 ? -50 : 0)
         for (let _dp of [
             V.DM.daily_purity , 
@@ -881,8 +917,6 @@ setup.DM = {
     },
     mag_daily_get(n){
         this.mag_daily()
-        if (n === 'b' || n === 'a') V.DM.BlackMagic_pt -= V.DM.daily_b
-        if (n === 'w' || n === 'a') V.DM.WhiteMagic_pt += V.DM.daily_w
         V.DM.Mana += V.DM.daily_M
         if (V.DM.Mana > V.DM.Mana_max) V.DM.Mana = V.DM.Mana_max
     },
@@ -910,8 +944,55 @@ setup.DM = {
             _text += V.DM.magic_learn_message
             V.DM.magic_learn_message = false
         }
-
-        
         return _text
+    },
+    think_magic(_class_name){
+        if (V.DM.class_pt[_class_name] === undefined) V.DM.class_pt[_class_name] = 0
+        let _text = ''
+        for (let stat in this.stat_transform[_class_name]){
+            if (V.DM.stat_transform_history[stat] === undefined) V.DM.stat_transform_history[stat] = 0;
+            if (V[stat] === undefined) V[stat] = 0;
+            let _pt = Math.floor((V[stat] - V.DM.stat_transform_history[stat])/this.stat_transform[_class_name][stat].cost) 
+            V.DM.class_pt[_class_name] += _pt
+            V.DM.stat_transform_history[stat] += _pt * this.stat_transform[_class_name][stat].cost
+            if (_pt){
+                _text += '由於' + this.stat_transform[_class_name][stat].name + '你的' +this.classes_cn[_class_name] + '點數增加了' + _pt +'。<br>'
+            }
+        }
+        return _text
+    },
+    get_class_pt(_class_name){
+        if (V.DM.class_pt[_class_name] !== undefined){
+            return V.DM.class_pt[_class_name]
+        }
+        else{
+            V.DM.class_pt[_class_name] = 0
+        }
+    },
+    class_describe(_class_name){
+        let _text = ''
+        _text += this.think_magic(_class_name)
+        _text += (this.classes_cn[_class_name] + '點數: ' + "<span class=\"gold\">" + this.get_class_pt(_class_name) + "</span>");
+        _text += '<br>';
+        if (V.DM._class_menu_chosen == 'alchemy' && V.money >= 100000){
+            _text += this.Linkbuttun('把£1000轉換成鍊金點數','<<set $money -= 100000>><<set $DM.class_pt.alchemy += 1>>}')
+            _text += '<br>'
+        }
+        return _text
+    },
+    get_subclass(perk_name){
+        let _perkdata = this.Perks[perk_name]
+        if (_perkdata.Effect_only) return 'spell'
+        else if(_perkdata.spell) return 'battle' 
+        else return 'perk'
+
+    },
+    class_bar(){
+        let _text = ''
+        for (let _classname of this.classes){
+            _text += this.Linkbuttun(this.classes_cn[_classname],"<<set $DM._class_menu_chosen to '"+ _classname +"'>><<set $DM.menutree to 'class_menu'>>")
+            _text += '|'
+        }
+        return _text +'<br>'
     }
 }

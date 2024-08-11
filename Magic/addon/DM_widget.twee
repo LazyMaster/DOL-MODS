@@ -26,98 +26,31 @@
 		<<set $DM.menutree to 'front_page'>>
 		<<replace #customOverlayContent>><<DM_overlay>><</replace>>
 	<</link>>|
-	<<link "專精">>
-		<<set $DM.menutree to 'magic_learn'>>
-		<<set $DM.f_pairs to [['Effect_only',undefined]]>>
-		<<replace #customOverlayContent>><<DM_overlay>><</replace>>
-	<</link>>|
-	<<link "鍊金術">>
-		<<set $DM.menutree to 'alche'>>
-		<<set $DM.f_pairs to [['alche',true]]>>
-		<<replace #customOverlayContent>><<DM_overlay>><</replace>>
-	<</link>>|
 	<!------------->
-	<<link "基礎法術">>
-		<<set $DM.f_pairs to [['base','perk_body_control']]>>
-		<<set $DM.menutree to 'buy_list'>>
-		<<replace #customOverlayContent>><<DM_overlay>><</replace>>
-	<</link>>|
-	<!------------->
-	<<if $DM.perk_body_control>>
-		<<link "肉體操作">>
-			<<set $DM.f_pairs to [['perk_require','perk_body_control']]>>
-			<<set $DM.menutree to 'buy_list'>>
-			<<replace #customOverlayContent>><<DM_overlay>><</replace>>
-		<</link>>|
-	<</if>>
-	<br><br>
-	<<=setup.DM.describe()>><br>
-	<br>
+	<<=setup.DM.class_bar()>>
+	<<=setup.DM.describe()>>
 	<<if $DM.menutree is undefined or $DM.menutree is 'front_page'>>
 		<<DM_overlay_menu_front_page>>
-	<<elseif $DM.menutree is 'magic_learn'>>
-		<<DM_overlay_menu_magic_learn>>
-	<<elseif $DM.menutree is 'magic_spell'>>
-		<<DM_overlay_menu_spell>>
-	<<elseif $DM.menutree is 'tatoo_remove'>>
-		<<DM_overlay_menu_Tatoo_remove>>
 	<<elseif $DM.menutree is 'alche'>>
 		<<DM_overlay_menu_alche>>
 	<<elseif $DM.menutree is 'buy_list'>>
 		<<DM_overlay_menu_buy_list>>
+	<<elseif $DM.menutree is 'class_menu'>>
+		<<DM_class_menu>>
 	<<elseif $DM.menutree is 'text'>>
 		<<DM_text>>
 	<</if>>
 <</widget>>
 
 <<widget "DM_overlay_menu_front_page">>
-	<span class="gold">白魔法</span>: <<print $DM.WhiteMagic_pt>><br>
-	<span class="gold">聖潔，順從，被虐。</span><br>
-	<br>
-	<span class="purple">黑魔法</span>: <<print $DM.BlackMagic_pt>><br>
-	<span class="purple">墮落，反抗，暴力。</span><br>
-	<br>
 	<br>
 	法力池: <<print $DM.Mana>> / <<print $DM.Mana_max>>
 	<br>
 	<<=setup.DM.mag_daily()>>
-	每日吸能:<<print $DM.daily_M>><br>
-	因為你的<<if $DM.daily_purity gte 0>>純潔<<else>>墮落<</if>>: <<print_magic_get $DM.daily_purity>><br>
-	因為你的<<if $DM.daily_submissive gte 0>>順從<<else>>反抗<</if>>: <<print_magic_get $DM.daily_submissive>><br>
-	因為你的被虐: <<print_magic_get $DM.daily_masochism>><br>
-	因為你的虐待: <<print_magic_get $DM.daily_sadism>><br>
-	<<if $angel gte 6>>
-		因為你的天使化: <<print_magic_get 50>><br>
-	<</if>>
-	<<if $demon gte 6>>
-		因為你的惡魔化: <<print_magic_get -50>><br>
-	<</if>>
-	<br>
-	總和:(已算親和加成)<br>
-	<<print_magic_get $DM.daily_w>>
-	<<print_magic_get $DM.daily_b>>
-	<br><br>
+	每日恢復:<<print $DM.daily_M>><br>
+
 <</widget>>
 
-<<widget "DM_overlay_menu_magic_learn">>
-	<span class="gold">白魔法</span>: <<print $DM.WhiteMagic_pt>>|<span class="purple">黑魔法</span>: <<print $DM.BlackMagic_pt>>
-	<br><br>
-	<<link "全部">><<set $DM.f_pairs to [['Effect_only',undefined]]>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
-	<<link "白魔法">><<set $DM.f_pairs to [['Effect_only',undefined],['BW','W']]>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
-	<<link "黑魔法">><<set $DM.f_pairs to [['Effect_only',undefined],['BW','B']]>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
-	<<link "戰鬥魔法">><<set $DM.f_pairs to [['Effect_only',undefined],['spell',true]]>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
-	<br><br>
-	<<=setup.DM.List_Generator(V.DM.f_pairs)>>
-<</widget>>
-<<widget "DM_overlay_menu_spell">>
-	<span class="gold">白魔法</span>: <<print $DM.WhiteMagic_pt>>|<span class="purple">黑魔法</span>: <<print $DM.BlackMagic_pt>>
-	<br><br>
-	<<link "全部">><<set $DM.f_pairs to [['Effect_only',true]]>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
-	<<link "白魔法">><<set $DM.f_pairs to [['Effect_only',true],['BW','W']]>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
-	<<link "黑魔法">><<set $DM.f_pairs to [['Effect_only',true],['BW','B']]>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>>|
-	<br><br>
-	<<=setup.DM.List_Generator(V.DM.f_pairs)>>
-<</widget>>
 <<widget "DM_overlay_menu_alche">>
 	<span class="gold">白魔法</span>: <<print $DM.WhiteMagic_pt>>|<span class="purple">黑魔法</span>: <<print $DM.BlackMagic_pt>>
 	<br><br>
@@ -130,7 +63,18 @@
 	<br><br>
 	<<=setup.DM.List_Generator(V.DM.f_pairs)>>
 <</widget>>
-
+<<widget "DM_class_menu">>
+	法力池: <<print $DM.Mana>> / <<print $DM.Mana_max>><br>
+	<<=setup.DM.class_describe(V.DM._class_menu_chosen)>>
+	<<foldout false "_PerkFoldout_1">>
+		<span class="gold">專精</span>
+		<<=setup.DM.List_Generator( [ ['class',V.DM._class_menu_chosen],['Effect_only',undefined] ] )>>
+	<</foldout>>
+	<<foldout false "_PerkFoldout_2">>
+		<span class="gold">法術</span>
+		<<=setup.DM.List_Generator( [ ['class',V.DM._class_menu_chosen],['Effect_only',true] ] )>>
+	<</foldout>>
+<</widget>>
 
 <<widget "DM_overlay_menu_Tatoo_remove">>
 	<<for _active_bodypart range setup.bodyparts>>
@@ -149,16 +93,6 @@
 <</widget>>
 
 
-<<widget "print_magic_get">>
-	<<if _args[0] is 0>>
-		沒有
-	<<elseif _args[0] gt 0>>
-		<span class="gold"> 白魔法: <<print _args[0]>></span>
-	<<else>>
-		<span class="purple"> 黑魔法: <<print -1 * _args[0]>></span>
-	<</if>>
-
-<</widget>>
 <<widget "DM_daily">>
 	<<=setup.DM.Goinit()>>
 	<<=setup.DM.mag_daily_get('a')>>
@@ -182,13 +116,7 @@
 	<</if>>
 <</widget>>
 
-<<widget "DM_get_pt_d">>
-	<<if _args[0] gte 0>>
-		<<set $DM.WhiteMagic_pt += _args[0]>>
-	<<else>>
-		<<set $DM.BlackMagic_pt -= _args[0]>>
-	<</if>>
-<</widget>>
+
 
 <<widget "DM_trans_blackjack">>
 	<<if $DM.daily.Transpass_perk>>

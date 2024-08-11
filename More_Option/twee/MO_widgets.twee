@@ -57,7 +57,7 @@
 	<label><<radiobutton "$EazierDol_FishTank" 5 autocheck>> x5 </label>|
 	<label><<radiobutton "$EazierDol_FishTank" 10 autocheck>> x10 </label>|
 	<label><<radiobutton "$EazierDol_FishTank" 20 autocheck>> x20 </label>|
-	<label><<radiobutton "$EazierDol_FishTank" 1000 autocheck>> x1000 </label>
+	<label><<radiobutton "$EazierDol_FishTank" 100 autocheck>> x100 </label>
 	<br><br>
 	脫衣舞觀眾克制<br>
 	
@@ -157,8 +157,13 @@
 	<</if>>
 <</widget>>
 
-
-
+<<widget "MOActivity">>
+	<<if _args[0]>>
+		<<creatureActivity _args[0]>>
+	<<else>>
+		<<creatureActivity 1>>
+	<</if>>
+<</widget>>
 
 :: MO Config
 

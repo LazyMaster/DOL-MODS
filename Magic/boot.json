@@ -1,6 +1,6 @@
 {
   "name": "DOL_Magic",
-  "version": "1.4.7",
+  "version": "1.4.29",
   "styleFileList": [],
   "scriptFileList": [
     "addon/DM.js"
@@ -49,8 +49,8 @@
         },
         {
           "passage": "Widgets Sydney",
-          "findString": "<<if $promiscuity gte 55 and $sydneyromance is 1 and !$daily.sydney.crawl>>",
-          "replace": "<<DM_ExpelIdlers>><<if $promiscuity gte 55 and $sydneyromance is 1 and !$daily.sydney.crawl>>"
+          "findString": "<<if hasSexStat(\"promiscuity\", 4) and $sydneyromance is 1 and !$daily.sydney.crawl>>",
+          "replace": "<<DM_ExpelIdlers>><<if hasSexStat(\"promiscuity\", 4) and $sydneyromance is 1 and !$daily.sydney.crawl>>"
         },
         {
           "passage": "Sydney Crawl",

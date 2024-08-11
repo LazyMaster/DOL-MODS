@@ -1,6 +1,6 @@
 {
   "name": "Dol_MoreOption",
-  "version": "1.2.54",
+  "version": "1.3.1",
   "styleFileList": [],
   "scriptFileList_inject_early": [],
   "scriptFileList": [],
@@ -43,12 +43,6 @@
           "passage": "Widgets Promiscuity",
           "findString": "\t<<set $_scaledPromiscuityMax to 20 * $_n>>",
           "replace": "\t<<EazierDol_setting_init>><<set $_scaledPromiscuityMax to 20 * ($_n + $EazierDol_control)>>",
-          "all": true
-        },
-        {
-          "passage": "Coast Path",
-          "findString": "<<if $harpy gte 6 and $birdFly gte 1>>",
-          "replace": "<<if $harpy gte 6 or ($EazierDol_fly and ($angel gte 6 or $demon gte 6 or $fallenangel gte 2))>>",
           "all": true
         },
         {
@@ -123,6 +117,18 @@
           "passage": "Widgets containers",
           "findString": "|Containers]]>><<pass 5>>",
           "replace": "|Containers]]>><<pass 5>><<MO_Containers_mult>>",
+          "all": true
+        },
+        {
+          "passage": "Containers",
+          "findString": "creatureActivity",
+          "replace": "MOActivity",
+          "all": true
+        },
+        {
+          "passage": "GiveBirth",
+          "findString": "creatureActivity",
+          "replace": "MOActivity",
           "all": true
         },
         {
