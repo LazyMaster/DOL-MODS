@@ -60,6 +60,7 @@
 
 :: ME Farm_Guard_tower_sex_finish
 <<set $outside to 0>><<effects>>
+<<set $NPCList[0].skills.security += 20>>
 <<if $enemyarousal gte $enemyarousalmax>>
 	<<ejaculation>>
 	<br><br>

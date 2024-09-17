@@ -138,15 +138,15 @@
 	<<if $MO_niceanimal and $farm>>
 		<<if $farm.woodland>>
 			<<if $farm.woodland gte 3>>
-				<<farm_pigs -2>>
+				<<farm_pigs 6>>
 			<<elseif $farm.woodland gte 1>> 
-				<<farm_pigs -1>>
+				<<farm_pigs 4>>
 			<</if>>
 		<</if>>
 		<<if $farm.kennel>>
-			<<if $farm.kennel gte 3>>
-				<<farm_dogs -1>>
-				<<farm_cattle -1>>
+			<<if $farm.kennel gte 1>>
+				<<farm_dogs 2>>
+				<<farm_cattle 2>>
 			<</if>>	
 		<</if>>	
 	<</if>>
@@ -162,6 +162,11 @@
 		<<creatureActivity _args[0]>>
 	<<else>>
 		<<creatureActivity 1>>
+	<</if>>
+<</widget>>
+<<widget "MO_Castle_Fly">>
+	<<if $harpy gte 6 or ($EazierDol_fly and ($angel gte 6 or $demon gte 6 or $fallenangel gte 2))>>
+		<<glideicon>><<link [[飛往鷹塔 (2:00)|Castle Fly]]>><<pass 120>><</link>><<flight_text>><br>
 	<</if>>
 <</widget>>
 

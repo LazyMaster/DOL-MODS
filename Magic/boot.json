@@ -1,6 +1,6 @@
 {
   "name": "DOL_Magic",
-  "version": "1.4.29",
+  "version": "2.0.15",
   "styleFileList": [],
   "scriptFileList": [
     "addon/DM.js"
@@ -36,6 +36,11 @@
           "passage": "Transformation Widgets",
           "findString": "\t<<if $angel gt 0>>\n\t\t<<angelTransform 99>>\n\t<</if>>",
           "replace": "\t<<if $angel gt 0 and !$DM.perk_switch.Angel_NoFallen>>\n\t\t<<angelTransform 99>>\n\t<</if>>"
+        },
+        {
+          "passage": "Transformation Widgets",
+          "findString": "if $panicattacks gte 2",
+          "replace": "if $DM.perk_switch.tansform_hide>><<unset $hiddenTransformMessage>><<elseif $panicattacks gte 2"
         },
         {
           "passage": "Widgets End Combat",
@@ -143,6 +148,11 @@
           "passage": "Characteristics",
           "findString": "<<if numberOfEarSlime() gte 2 and $earSlime.growth gt 50>>",
           "replace": "<<DM_shackles_willpower>><<if numberOfEarSlime() gte 2 and $earSlime.growth gt 50>>"
+        },
+        {
+          "passage": "Bird Tower Build",
+          "findString": "<</switch>><br>",
+          "replace": "<</switch>><<DM_Tower_item_craft _material>><br>"
         },
         {
           "passage": "Widgets Canvas Model Main",

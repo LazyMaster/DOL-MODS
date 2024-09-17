@@ -1,0 +1,75 @@
+:: SE Widgets [widget]
+
+<<widget "Sideview_Extend_setting">>
+    <br><<link [[Sideview Extend 設定|SE setting]]>><</link>>
+<</widget>>
+<<widget "Sideview_Canvas_add">>
+	<<=setup.SE.update()>>
+    
+	<<if $vaginastate is "penetrated">>
+		<<set _modeloptions.pussy = 1>>
+	<<else>>
+		<<set _modeloptions.pussy = 0>>
+	<</if>>
+    
+
+	<<if $SE.nosmile and _modeloptions.mouth is "smile">>
+		<<set _modeloptions.mouth = 'neutral'>>
+	<</if>>
+	<!--Blush and Orgasm-->
+	
+	<<set $_blush_flow_target to Math.min(5, Math.floor($arousal / 2000) + 1 + $SE.easyerblush)>>
+	<<if $_blush_flow_target lt 2 and $exposed gte 2>>
+		<<set $_blush_flow_target to 2>>
+	<<elseif $arousal lt 100 and $exposed lt 1>>
+		<<set $_blush_flow_target to 0>>
+	<</if>>
+		<!---緩慢下降-->
+	<<if $_blush_flow_target lt $SE.org_last_blush >>
+		<<set _modeloptions.blush = $SE.org_last_blush -1>>
+	<<else>>
+		<<set _modeloptions.blush = $_blush_flow_target>>
+	<</if>>
+	
+	<<set _modeloptions.pussy_cum = 0>>
+
+	<<if $orgasmdown gte 1>>
+		<<set _modeloptions.blush = 5>>
+		<<set _modeloptions.pussy_cum = 1>>
+		<<if _modeloptions.pussy is 1>>
+			<<set _modeloptions.pussy_cum = 2>>
+		<</if>>
+	<</if>>
+	<<set _modeloptions.SE_eyeorg to false>>
+	<<if $orgasmdown gte 1>>
+		<<if $SE.Eye_condition is "OG">>
+			<<set _modeloptions.SE_eyeorg to true>>
+		<</if>>
+		<<if $SE.Mouse_condition is "OG">>
+			<<set _modeloptions.mouth = "org">>
+		<</if>>
+		<<if $SE.orgtear>>
+			<<set _modeloptions.tears to Math.max(_modeloptions.tears , 1)>>
+		<</if>>	
+	<</if>>
+	<<if _modeloptions.blush is 5>>
+		<<if $SE.Eye_condition is "B5">>
+			<<set _modeloptions.SE_eyeorg to true>>
+		<</if>>
+		<<if $SE.Mouse_condition is "B5">>
+			<<set _modeloptions.mouth = "org">>
+		<</if>>
+	<</if>>
+    <<set $SE.org_last_blush to _modeloptions.blush>>
+	<<if $SE.half_close>>
+		<<set _modeloptions.eyes_half to true>>
+	<</if>>
+
+    <!--Layer Load-->
+	<<set _modeloptions.SE_border_colour to $SE.border_colour>>
+	<<set _modeloptions.SE_left_lashes to $SE.left_lashes>>
+	<<set _modeloptions.SE_right_lashes to $SE.right_lashes>>
+
+    <<=setup.SE.layer_loader()>>
+
+<</widget>>

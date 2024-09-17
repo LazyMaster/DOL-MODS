@@ -27,7 +27,7 @@
 		<<replace #customOverlayContent>><<DM_overlay>><</replace>>
 	<</link>>|
 	<!------------->
-	<<=setup.DM.class_bar()>>
+	<<=setup.DM.twee_class_bar()>>
 	<<=setup.DM.describe()>>
 	<<if $DM.menutree is undefined or $DM.menutree is 'front_page'>>
 		<<DM_overlay_menu_front_page>>
@@ -66,14 +66,7 @@
 <<widget "DM_class_menu">>
 	法力池: <<print $DM.Mana>> / <<print $DM.Mana_max>><br>
 	<<=setup.DM.class_describe(V.DM._class_menu_chosen)>>
-	<<foldout false "_PerkFoldout_1">>
-		<span class="gold">專精</span>
-		<<=setup.DM.List_Generator( [ ['class',V.DM._class_menu_chosen],['Effect_only',undefined] ] )>>
-	<</foldout>>
-	<<foldout false "_PerkFoldout_2">>
-		<span class="gold">法術</span>
-		<<=setup.DM.List_Generator( [ ['class',V.DM._class_menu_chosen],['Effect_only',true] ] )>>
-	<</foldout>>
+	<<=setup.DM.twee_class_list()>>
 <</widget>>
 
 <<widget "DM_overlay_menu_Tatoo_remove">>
@@ -95,7 +88,7 @@
 
 <<widget "DM_daily">>
 	<<=setup.DM.Goinit()>>
-	<<=setup.DM.mag_daily_get('a')>>
+	<<=setup.DM.mag_daily_get()>>
 
 	<<set $DM.daily.Convince to false>>
 	<<set $DM.daily.expel_idlers to false>>
@@ -197,4 +190,28 @@
 	<<=setup.DM.describe()>>
 <</widget>>	
 
-
+<<widget "DM_transform">>
+	<<transformationAlteration>>
+	<<transformationAlteration>>
+	<<transformationAlteration>>
+	<<transformationAlteration>>
+	<<transformationAlteration>>
+	<<transformationAlteration>>
+	<<transformationAlteration>>
+	<<transformationAlteration>>
+	<<transformationAlteration>>
+	<<transformationAlteration>>
+<</widget>>	
+<<widget "DM_Tower_item_craft">>
+	<<if $DM.material_craft and _args[0] isnot 'lurkers'>>
+		<<if $DM.class_pt.alchemy and $DM.class_pt.alchemy gte 10>>
+			<<link [[物質轉化|Bird Tower Build]]>>
+				<<set $bird.materials[_args[0]] += 10>>
+				<<set $DM.class_pt.alchemy -= 100>>
+			<</link>>
+			(<span class="gold">-100</span>)
+		<<else>>
+			<span class="black">物質轉化(-100)</span>
+		<</if>>
+	<</if>>
+<</widget>>	

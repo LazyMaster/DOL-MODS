@@ -1,6 +1,6 @@
 {
   "name": "Dol_MoreOption",
-  "version": "1.3.1",
+  "version": "1.3.6",
   "styleFileList": [],
   "scriptFileList_inject_early": [],
   "scriptFileList": [],
@@ -67,6 +67,12 @@
           "passage": "Monster Tower",
           "findString": "<<if $harpy gte 6 and $birdFly gte 1>>",
           "replace": "<<if $harpy gte 6 or ($EazierDol_fly and ($angel gte 6 or $demon gte 6 or $fallenangel gte 2))>>",
+          "all": true
+        },
+        {
+          "passage": "Commercial rooftops",
+          "findString": "<<shopicon>>",
+          "replace": "<<MO_Castle_Fly>><<shopicon>>",
           "all": true
         },
         {
