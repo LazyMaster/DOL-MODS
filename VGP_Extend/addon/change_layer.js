@@ -1,52 +1,52 @@
 
 Renderer.CanvasModels["main"].layers.sclera.srcfn=function(options) {
-    return 'img/face/' + options.facestyle +'/' + (options.SE_eyes_type ? options.SE_eyes_type : "")  + (options.eyes_bloodshot ? "sclerabloodshot" : "sclera") + '.png'
+    return 'img/face/' + options.facestyle +'/' + (options.SE_eyes_type||"")  + (options.eyes_bloodshot ? "sclerabloodshot" : "sclera") + '.png'
 }
 Renderer.CanvasModels["main"].layers.left_iris.srcfn=function(options) {
     const iris = options.trauma ? "irisempty" : "iris";
 	const half = options.SE_eyeorg ? "_org" : (options.eyes_half ? "_halfclosed" : "");
-    return 'img/face/' + options.facestyle +'/' + (options.SE_eyes_type ? options.SE_eyes_type : "")  + iris  + half + '_left.png'
+    return 'img/face/' + options.facestyle +'/' + (options.SE_eyes_type||"")  + iris  + half + '_left.png'
 }
 Renderer.CanvasModels["main"].layers.right_iris.srcfn=function(options) {
     const iris = options.trauma ? "irisempty" : "iris";
 	const half = options.SE_eyeorg ? "_org" : (options.eyes_half ? "_halfclosed" : "");
-    return 'img/face/' + options.facestyle +'/' + (options.SE_eyes_type ? options.SE_eyes_type : "")  + iris  + half + '_right.png'
+    return 'img/face/' + options.facestyle +'/' + (options.SE_eyes_type||"")  + iris  + half + '_right.png'
 }
 Renderer.CanvasModels["main"].layers.eyelids.srcfn=function(options) {
-    return 'img/face/' + options.facestyle +'/' + (options.SE_eyes_type ? options.SE_eyes_type : "")  + 'eyelids' + (options.eyes_half ? "_halfclosed" : "") + '.png'
+    return 'img/face/' + options.facestyle +'/' + (options.SE_eyes_type||"")  + 'eyelids' + (options.eyes_half ? "_halfclosed" : "") + '.png'
 }
 Renderer.CanvasModels["main"].layers.lashes.srcfn=function(options) {
-    return 'img/face/' + options.facestyle +'/' + (options.SE_eyes_type ? options.SE_eyes_type : "")  + 'lashes' + (options.eyes_half ? "_halfclosed" : "") + '.png'
+    return 'img/face/' + options.facestyle +'/' + (options.SE_eyes_type||"")  + 'lashes' + (options.eyes_half ? "_halfclosed" : "") + '.png'
 }
 Renderer.CanvasModels["main"].layers.brows.srcfn=function(options) {
-    return 'img/face/' + options.facestyle +'/'+ (options.SE_brows_type? options.SE_brows_type: "")  + 'brow' + options.brows + '.png'
+    return 'img/face/' + options.facestyle +'/'+ (options.SE_brows_type||"")  + 'brow' + options.brows + '.png'
 }
 Renderer.CanvasModels["main"].layers.mouth.srcfn=function(options) {
-    return 'img/face/' + options.facestyle +'/' + (options.SE_mouth_type? options.SE_mouth_type: "") + 'mouth' + options.mouth + '.png'
+    return 'img/face/' + options.facestyle +'/' + (options.SE_mouth_type||"") + 'mouth' + options.mouth + '.png'
 }
 Renderer.CanvasModels["main"].layers.breasts.srcfn=function(options){
     if (options.mannequin) {
         return "img/body/mannequin/breasts/" +
-            (options.breast_size - 1) +
+            (options.breast_size - 1 > 0 ? options.breast_size - 1 : 0) +
             (options.breasts === "cleavage" && options.breast_size >= 4 ? "_clothed" : "") + ".png"
     } else {
         if (options.breast_size <= 0) return "";
         let fn = "breasts" + options.breast_size + (options.breasts === "cleavage" && options.breast_size >= 3 ? "_clothed" : "") + ".png";
-        return "img/body/breasts/" + options.SE_breasts_type  + fn;
+        return "img/body/breasts/" + (options.SE_breasts_type||'')  + fn;
     }
 }
 
 //basehead
 Renderer.CanvasModels["main"].layers.basehead.srcfn=function(options) {
     if (options.mannequin) return "img/body/mannequin/basehead.png"
-    if (options.SE_head_type === "") return "img/body/basehead.png"
-    return 'img/face/' + options.facestyle+ '/' +options.SE_head_type + 'basehead.png'
+    if (!options.SE_head_type) return `img/body/basehead.png`
+    return `img/face/${options.facestyle}${options.SE_head_type}/basehead.png`
 }
 
 //增加layer
 Renderer.CanvasModels["main"].layers.side_border={
     srcfn(options) {
-        return 'img/face/' + options.facestyle+ '/' +options.SE_side_type + 'side_border.png'
+        return 'img/face/' + options.facestyle+ '/' +(options.SE_side_type||'') + 'side_border.png'
     },
     showfn(options) {
         return options.show_face

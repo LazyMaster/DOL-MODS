@@ -2,14 +2,16 @@
 
 
 <br><br>
-SE Extend 設定
+Sideview Extend 設定
 <br><br>
 頭選擇
 <<=setup.SE.simple_type_choice('head',1)>>
 眼睛選擇
 <<=setup.SE.simple_type_choice('eyes',1)>>
+眉選擇
+<<=setup.SE.simple_type_choice('brows',1)>>
 嘴選擇
-<<=setup.SE.simple_type_choice('mouth',2)>>
+<<=setup.SE.simple_type_choice('mouth',3)>>
 胸部選擇
 <<=setup.SE.simple_type_choice('breasts',3,["Wax","Wax_with_cloth","Costom(在SE_breasts_2添加自己的胸部 沒有會報錯)"])>>
 

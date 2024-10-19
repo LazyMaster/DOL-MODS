@@ -1,6 +1,6 @@
 {
   "name": "BJ_Extend",
-  "version": "1.3.50",
+  "version": "1.3.59",
   "styleFileList": [],
   "scriptFileList_earlyload": [],
   "scriptFileList_inject_early": [],
@@ -318,13 +318,8 @@
         },
         {
           "passage": "Widgets Canvas Model Main",
-          "findString": "<!-- Tears -->",
-          "replace": "<<BJ_Canvas_add>><!-- Tears -->"
-        },
-        {
-          "passage": "Widgets Mirror",
-          "findString": "<<set _modeloptions.skin_type = $skinColor.natural",
-          "replace": "<<BJ_Canvas_add>><<set _modeloptions.skin_type = $skinColor.natural"
+          "findString": "<<modelprepare-player-clothes>>",
+          "replace": "<<BJ_Canvas_add>><<modelprepare-player-clothes>>"
         }
       ]
     },
@@ -341,14 +336,19 @@
       "params": {
         "js": [
           {
-            "from": "old_over_upper: 171,",
-            "to": "old_over_upper: 171,pussy:199,pussy_cum: 200,side_border: 120,side_border_pussy: 201,BE_left_lashes: 134,BE_left_lashes: 134 ",
-            "fileName": "canvasmodel-00-data.js"
+            "from": "old_over_upper: 164,",
+            "to": "old_over_upper: 164,pussy:199,pussy_cum: 200,side_border: 120,side_border_pussy: 201,BE_left_lashes: 134,BE_left_lashes: 134 ,",
+            "fileName": "00-canvasmodel-data.js"
           },
           {
             "from": "blush: 50,",
             "to": "blush: 50,blush_cover: 135,",
-            "fileName": "canvasmodel-00-data.js"
+            "fileName": "00-canvasmodel-data.js"
+          },
+          {
+            "from": "this.preprocess(options);",
+            "to": "this.preprocess(options);setup.BE.preprocess_add(options)",
+            "fileName": "00-canvasmodel.js"
           }
         ]
       }

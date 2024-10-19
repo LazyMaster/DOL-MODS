@@ -3,7 +3,7 @@
 function DM_MinArousal_decorator(_f) {
     return  function(){
         let result = _f()
-        setup.DM.Goinit()
+        setup.DM.DM_update()
         if (V.DM.shackles_arousal){
             result += V.DM.shackles_arousal * 1000
         }
@@ -12,10 +12,9 @@ function DM_MinArousal_decorator(_f) {
 }
 // NEXT : 
 // 更多主動獲得點數機制
-//      奪取童貞 淨化腐化
-//  枷鎖(分級式描述,可降級PERK(需要隔日))
-// 打工人偶 懷孕操控 煉金術 物質創造(木頭)
-// 煉金術:需要材料的技能 血檸?
+//     奪取童貞 淨化腐化
+//     扶他化
+//試煉 達成試煉獲得點數
 
 
 setup.DM = {
@@ -25,7 +24,7 @@ setup.DM = {
             'subclass_list':['perk','spell','battle']
         },
         'meat':{
-            'subclass_list':['perk','spell','battle','virginity','transform']
+            'subclass_list':['perk','spell','body','liquid','battle','virginity','transform']
         },
         'mind control':{
             'subclass_list':['perk','spell','battle']
@@ -49,32 +48,43 @@ setup.DM = {
         'battle':'戰鬥',
         'virginity':'貞潔',
         'transform':'轉化',
+        'body':'外觀',
+        'liquid':'體液'
 
     },
     'stat_transform':{
         'base':{
             'orgasmstat':{
                 'name':'高潮經驗',
-                'cost':100
+                'cost':10
             }
         },
         'meat':{
             'milk_produced_stat':{
                 'name':'產乳經驗',
-                'cost':1000
-            },
-            'semen_produced_stat':{
-                'name':'產精經驗',
                 'cost':500
             },
             'semen_produced_stat':{
                 'name':'產精經驗',
-                'cost':500
+                'cost':250
             },
             'pregnancyStats.playerChildren':{
                 'name':'生育經驗',
                 'cost':0.02
+            },
+            'pregnancyStats.playerChildren':{
+                'name':'生育經驗',
+                'cost':0.02
+            },
+            'sexStats.vagina.pregnancy.parasiteBirthEvents':{
+                'name':'陰道寄生蟲生育經驗',
+                'cost':0.1
+            },
+            'sexStats.anus.pregnancy.parasiteBirthEvents':{
+                'name':'肛門寄生蟲生育經驗',
+                'cost':0.1
             }
+            
         },
         'mind control':{
             'dancestat':{
@@ -94,9 +104,7 @@ setup.DM = {
         },
     },
     'init': {
-        'minarousal_updated':false,
-        "WhiteMagic_pt":0,
-        "BlackMagic_pt":0,
+        'Is_game_started':false,
         'Mana':0,
         'Mana_max':0,
         'Mana_pool':0,
@@ -114,36 +122,41 @@ setup.DM = {
         'Foldout':{},
         'shackles_willpower':0,
         'shackles_arousal':0,
+        'milk_gain':0,
     },
-    Goinit(){
-        if (!this.init.minarousal_updated){
+    DM_update(){
+        if (!this.init.Is_game_started){
+            this.init.Is_game_started = true
             playerHeatMinArousal = DM_MinArousal_decorator(playerHeatMinArousal);
             window.playerHeatMinArousal = playerHeatMinArousal;
-            this.init.minarousal_updated = true
-        }
-        window.playerHeatMinArousal = playerHeatMinArousal;
-        window.playerRutMinArousal = playerRutMinArousal;
-        if (V.DM === undefined){V.DM = {}}
-        //update
-        for (let key in this.init) {
-            if (V.DM[key] === undefined){
-                if (V['DM_'+ key]){V.DM[key] = V['DM_'+ key]}
-                else {V.DM[key] = this.init[key]}
+            if (V.DM === undefined){V.DM = {}}
+            for (let key in this.init) {
+                if (V.DM[key] === undefined){
+                    V.DM[key] = this.init[key]
+                }
             }
+            if (V.backgroundTraits.includes("greenthumb")){V.DM["Greenthumb"] = 1}
         }
-
-        if (V.backgroundTraits.includes("greenthumb")){V.DM["Greenthumb"] = 1}
-        V.DM.WhiteMagic_pt = Math.round(V.DM.WhiteMagic_pt);
-        V.DM.BlackMagic_pt = Math.round(V.DM.BlackMagic_pt);
-        if (isNaN(V.DM.WhiteMagic_pt)){V.DM.WhiteMagic_pt = 1000}
-        if (isNaN(V.DM.BlackMagic_pt)){V.DM.BlackMagic_pt = 1000}
-
-        if (V.cow >= 6){V.milk_max  = 6000 + 300 * V.DM.milk_gain}
-        else{V.milk_max  = 3000 + 300 * V.DM.milk_gain}
-        if (isNaN())
-
-        V.DM.Mana_max = 100 * (1 + V.DM.Mana_pool)
+        //update
+        V.milk_max = (V.cow >= 6 ? 6000 : 3000 )+ 300 * V.DM.milk_gain
+        V.milk_amount = V.DM.perk_switch.milk_infinite ? (Math.max(V.milk_amount,Math.round(V.milk_volume/3)) || Math.round(V.milk_volume/3)) :(V.milk_amount || 0);
+        V.semen_amount = V.DM.perk_switch.semen_infinite ? (Math.max(V.semen_amount,Math.round(V.semen_volume*0.8)) || Math.round(V.semen_volume*0.8)) :(V.semen_volume || 0);
+        V.milk_volume = V.milk_volume || 30;
+        V.orgasmcount = V.DM.perk_switch.org_infinite ? (Math.min(V.orgasmcount , 3) || 0) : (V.orgasmcount||0)
+        if (V.DM.perk_switch.milk_nofull && V.milk_amount >= V.milk_volume/2)  V.milk_amount = Math.round(V.milk_volume/2);
+        V.DM.Mana_max = 100 * (1 + V.DM.Mana_pool);
         if (V.DM.Mana > V.DM.Mana_max) V.DM.Mana = V.DM.Mana_max
+        if (V.player.penisExist) {
+            V.semen_volume = V.semen_volume || V.semen_max;
+            V.semen_amount = V.semen_amount || V.semen_volume;
+        } else {
+            V.semen_volume = 0;
+            V.semen_amount = 0;
+        }
+    },
+    getValueByPath(obj, path) {
+        let keys = path.split('.');
+        return keys.reduce((acc, key) => acc && acc[key], obj);
     },
     Linkbuttun(b_name , eff ,timepass = false){
         let _text = ""
@@ -159,7 +172,7 @@ setup.DM = {
             'class':'base',
             'max':100,
             'cost_type':'Class_PT',
-            'name': '渾沌充能',
+            'name': '渾沌專精',
             'descript':'每個等級最大法力值+100，法力恢復+10。',
             'cost': 100,
             'noswich':1,
@@ -169,7 +182,7 @@ setup.DM = {
             'class':'meat',
             'max':100,
             'cost_type':'Class_PT',
-            'name': '血肉充能',
+            'name': '血肉專精',
             'descript':'每個等級最大法力值+100，法力恢復+10。',
             'noswich':1,
             'cost': 100,
@@ -179,17 +192,7 @@ setup.DM = {
             'class':'mind control',
             'max':100,
             'cost_type':'Class_PT',
-            'name': '惑控充能',
-            'descript':'每個等級最大法力值+100，法力恢復+10。',
-            'noswich':1,
-            'cost': 100,
-            'Effect':"<<set $DM.Mana_pool += 1>>",
-        },
-        "master_mind control":{
-            'class':'mind control',
-            'max':100,
-            'cost_type':'Class_PT',
-            'name': '血肉充能',
+            'name': '惑控專精',
             'descript':'每個等級最大法力值+100，法力恢復+10。',
             'noswich':1,
             'cost': 100,
@@ -199,7 +202,7 @@ setup.DM = {
             'class':'alchemy',
             'max':100,
             'cost_type':'Class_PT',
-            'name': '鍊金充能',
+            'name': '鍊金專精',
             'descript':'每個等級最大法力值+100，法力恢復+10。',
             'noswich':1,
             'cost': 100,
@@ -209,7 +212,7 @@ setup.DM = {
             'class':'b_magic',
             'max':1000,
             'cost_type':'Class_PT',
-            'name': '深淵充能',
+            'name': '深淵專精',
             'descript':'每個等級最大法力值+100，法力恢復+10。',
             'noswich':1,
             'cost': 100,
@@ -379,7 +382,7 @@ setup.DM = {
                         <<bodywriting_clear _active_bodypart>>
                     <</if>>
                 <</for>>
-                <<updatesidebarimg>>`,
+                <<>>`,
             'base':1
         },
         "tiredness_remove":{
@@ -638,9 +641,29 @@ setup.DM = {
             'Effect':"<<transform 'bird' 70>><<DM_transform>><<clamp>><<updatesidebarimg>>",
 
         },
+        "gender_switch":{
+            'class':'meat',
+            'max':1,
+            'cost_type':'M',
+            'name': '性轉換',
+            'descript':'轉換成對立的性別。',
+            'cost': 1000,
+            'hardness' : 5,
+            require_f(){
+                if(V.sexStats.vagina.menstruation.currentState !== 'normal') return V.sexStats.vagina.menstruation.currentState === 'recovering' ? '你的身體正從懷孕中恢復。' : '你的胎兒阻止了你。'
+                if(V.earSlime.growth >= 50) return '耳朵史萊姆正在阻止你。'
+                if(V.DM.gender_switching) return '轉化正在發生，你似乎需要睡眠。'
+                if(!['m','f'].includes(V.player.gender)) return '這個似乎對你沒有效用'
+            
+            },
+            'Effect_only':true,
+            'noswich':1,
+            'Effect':"<<set $DM.gender_switching to true>>",
+        },
         //------------------------------------------
         //鍊金術 對物質的控制
         //------------------------------------------
+        
         "doll":{
             'class':'alchemy',
             'max':1,
@@ -692,7 +715,7 @@ setup.DM = {
             'descript':'能讓做愛對手更持久，效果隨技能增強。',
             'cost': 100,
             'spell':true,
-            'spell_effect':'<<set $enemyarousalmax += 500 * $DM.Encourage_perk>>',
+            'spell_effect':'對象好像更持久了。<<set $enemyarousalmax += 500 * $DM.Encourage_perk>>',
             'spell_end_effect':'',
             times_f(_){return 1}
         },
@@ -704,7 +727,7 @@ setup.DM = {
             'descript':'消除疼痛，降低快感，且戰鬥後不會暈倒。',
             'cost': 100,
             'spell':true,
-            'spell_effect':'<<set $pain -= 50>><<set $arousal -= 3000>>',
+            'spell_effect':'你感覺好多了。<<set $pain -= 50>><<set $arousal -= 3000>>',
             'spell_end_effect':'<<set $trauma -= 100>><<set $stress to Math.min($stressmax - 1000 , $stress)>>'
         },
         "pain":{
@@ -715,7 +738,7 @@ setup.DM = {
             'descript':'能給敵人痛苦，等級越高越強烈。',
             'cost': 200,
             'spell':true,
-            'spell_effect':'<<set _to_damag to 5 + 2 * $DM.pain>><<defiance _to_damag>>',
+            'spell_effect':'一股痛苦衝擊了對手。<<set _to_damag to 5 + 2 * $DM.pain>><<defiance _to_damag>>',
             'spell_end_effect':'',
             times_f(n){
                 if (n <= 3){return n}
@@ -730,7 +753,7 @@ setup.DM = {
             'descript':'能讓做愛對手更快高潮，效果隨技能增強。',
             'cost': 200,
             'spell':true,
-            'spell_effect':'<<set $enemyarousalmax to Math.ceil((0.8 - 0.05 * $DM.fastgun) * $enemyarousalmax)>>',
+            'spell_effect':'一股慾望衝擊了對手。<<set $enemyarousalmax to Math.ceil((0.8 - 0.05 * $DM.fastgun) * $enemyarousalmax)>>',
             'spell_end_effect':'',
             times_f(_){return 1}
         },
@@ -747,6 +770,35 @@ setup.DM = {
             times_f(_){return 1},
             spell_condition_f(){
                 return V.NPCList[V.mouthtarget] && V.NPCList[V.mouthtarget].gender === 'f'
+            }
+        },
+        "fatahenshin":{
+            'class':'meat',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '扶他化(暫)',
+            'descript':'暫時長出陰莖，只有沒有陰莖的人能用。',
+            'cost': 200,
+            'spell':true,
+            'spell_effect':`
+                你長出了陰莖。
+                <<set $penisuse to 0>>
+                <<set $penisstate to 0>>
+                <<set $player.gender to 'h'>>
+                <<set $player.sex to 'h'>>
+                <<set $player.penisExist to true>>
+                <<set $player.ballsExist to true>>`,
+            'spell_end_effect':`
+                你的陰莖消失了。
+                <<set $penisuse to 'none'>>
+                <<set $penisstate to 'none'>>
+                <<set $player.gender to 'f'>>
+                <<set $player.sex to 'f'>>
+                <<set $player.penisExist to false>>
+                <<set $player.ballsExist to false>>`,
+            times_f(_){return 1},
+            spell_condition_f(){
+                return V.player.gender === 'f'
             }
         },
         //---------------------------------------------------
@@ -769,8 +821,62 @@ setup.DM = {
                 else{V.milk_max  = 3000 + 300 * V.DM.milk_gain}
             },
         },
+        "milk_gain":{
+            'class':'meat',
+            'subclass':'liquid',
+            'max':40,
+            'cost_type':'Class_PT',
+            'name': '豐壤',
+            'descript':'增加母乳量。<br>現在母乳容量:<<print $milk_volume>><br>現在母乳容量最大值:<<print $milk_max>>',
+            'cost': 50,
+            'noswich':1,
+            Effect_f(){
+                
+                V.milk_volume += 300
+                V.milk_amount = V.milk_volume
+                
+                if (V.cow >= 6){V.milk_max  = 6000 + 300 * V.DM.milk_gain}
+                else{V.milk_max  = 3000 + 300 * V.DM.milk_gain}
+            },
+        },
+        "milk_nofull":{
+            'class':'meat',
+            'subclass':'liquid',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '母乳抑制',
+            'descript':'母乳會在到達容量一半的時候停止增加',
+            'cost': 10,
+        },
+        "org_infinite":{
+            'class':'meat',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '無限高潮',
+            'descript':'多次高潮不會讓你痛苦',
+            'cost': 10,
+        },
+        "milk_infinite":{
+            'class':'meat',
+            'subclass':'liquid',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '無限母乳',
+            'descript':'母乳不會耗竭',
+            'cost': 100,
+        },
+        "semen_infinite":{
+            'class':'meat',
+            'subclass':'liquid',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '無限精液',
+            'descript':'精液不會耗竭',
+            'cost': 100,
+        },
         "breast_size_g":{
             'class':'meat',
+            'subclass':'body',
             'max':1,
             'cost_type':'M',
             'name': '乳房增大',
@@ -793,6 +899,7 @@ setup.DM = {
         },
         "breast_size_l":{
             'class':'meat',
+            'subclass':'body',
             'max':1,
             'cost_type':'M',
             'name': '乳房縮小',
@@ -813,8 +920,55 @@ setup.DM = {
                 }
             }
         },
+        "penis_size_g":{
+            'class':'meat',
+            'subclass':'body',
+            'max':1,
+            'cost_type':'M',
+            'name': '陰莖增大',
+            'descript':'增加陰莖大小',
+            'cost': 100,
+            'noswich':1,
+            'Effect_only':true,
+            'body_control':1,
+            Effect_f(){
+                if (V.player.penissize < V.penissizemax){
+                    V.player.penissize += 1;
+                    wikifier('<<updatesidebarimg>>');
+                }
+            },
+            require_f(){
+                if (V.player.penissize >= V.penissizemax){
+                    return '你的陰莖似乎不能變大了'
+                }
+            }
+        },
+        "penis_size_l":{
+            'class':'meat',
+            'subclass':'body',
+            'max':1,
+            'cost_type':'M',
+            'name': '陰莖縮小',
+            'descript':'降低陰莖大小',
+            'cost': 100,
+            'noswich':1,
+            'Effect_only':true,
+            'body_control':1,
+            Effect_f(){
+                if (V.player.penissize > V.penissizemin){
+                    V.player.penissize -= 1;
+                    wikifier('<<updatesidebarimg>>');
+                }
+            },
+            require_f(){
+                if (V.player.penissize <= V.penissizemin){
+                    return '你的陰莖似乎不能變小了'
+                }
+            }
+        },
         "bhair_size_g":{
             'class':'meat',
+            'subclass':'body',
             'max':1,
             'cost_type':'M',
             'name': '後髮增長',
@@ -837,6 +991,7 @@ setup.DM = {
         },
         "bhair_size_l":{
             'class':'meat',
+            'subclass':'body',
             'max':1,
             'cost_type':'M',
             'name': '後髮縮短',
@@ -859,6 +1014,7 @@ setup.DM = {
         },
         "fhair_size_g":{
             'class':'meat',
+            'subclass':'body',
             'max':1,
             'cost_type':'M',
             'name': '前髮增長',
@@ -881,6 +1037,7 @@ setup.DM = {
         },
         "fhair_size_l":{
             'class':'meat',
+            'subclass':'body',
             'max':1,
             'cost_type':'M',
             'name': '前髮縮短',
@@ -900,10 +1057,30 @@ setup.DM = {
                     return '你的前髮似乎不能變短了'
                 }
             }
+        },"notan":{
+            'class':'meat',
+            'subclass':'body',
+            'max':1,
+            'cost_type':'M',
+            'name': '日曬消除',
+            'descript':'消除日曬',
+            'cost': 20,
+            'noswich':1,
+            'Effect_only':true,
+            'body_control':1,
+            Effect_f(){
+                V.player.skin.layers = []
+            },
+            require_f(){
+                if (V.player.skin.layers === []){
+                    return '似乎對你沒用'
+                }
+            }
         },
 
         "milk_charge":{
             'class':'meat',
+            'subclass':'liquid',
             'max':1,
             'cost_type':'M',
             'name': '母乳補充',
@@ -921,6 +1098,7 @@ setup.DM = {
         },
         "milk_volume_charge":{
             'class':'meat',
+            'subclass':'liquid',
             'max':1,
             'cost_type':'M',
             'name': '乳腺擴張',
@@ -932,6 +1110,43 @@ setup.DM = {
             cost_function(_){
                 if(V.milk_max > V.milk_volume){
                     return Math.ceil((V.milk_max - V.milk_volume)/20)
+                }
+                return 0
+            },
+        },
+
+        "semen_charge":{
+            'class':'meat',
+            'subclass':'liquid',
+            'max':1,
+            'cost_type':'M',
+            'name': '精液補充',
+            'descript':'補充精液到當前最大值。',
+            'cost': 50,
+            'noswich':1,
+            'Effect_only':true,
+            'Effect':"<<set $semen_amount to $semen_volume>>",
+            cost_function(_){
+                if(V.semen_volume > V.semen_amount){
+                    return Math.ceil((V.semen_volume - V.semen_amount)/100)
+                }
+                return 0
+            }
+        },
+        "semen_volume_charge":{
+            'class':'meat',
+            'subclass':'liquid',
+            'max':1,
+            'cost_type':'M',
+            'name': '精囊擴張',
+            'descript':'補充精囊容量到當前最大值。',
+            'cost': 50,
+            'noswich':1,
+            'Effect_only':true,
+            'Effect':"<<set $semen_volume to $semen_max>>",
+            cost_function(_){
+                if(V.semen_max > V.semen_volume){
+                    return Math.ceil((V.semen_max - V.semen_volume)/20)
                 }
                 return 0
             },
@@ -969,18 +1184,6 @@ setup.DM = {
         //----------------------------
         
         
-    },
-    "WIP":{
-        "remove_tatoo":{
-            'max':1,
-            'cost_type':'Class_PT',
-            'name': '消除紋身',
-            'descript':'用魔法消除紋身。',
-            'cost': 200,
-            'Effect_only':true,
-            'noswich':1,
-            'Effect':"<<set $DM.menutree to 'tatoo_remove'>>",
-        }
     },
     Perk_Buy(perk_name){
         let _perkdata = this.Perks[perk_name]
@@ -1116,7 +1319,7 @@ setup.DM = {
     spellend_add(){
         let _text=""
         for(let key in this.Perks){
-            if (this.Perks[key].spell && V.DM.perk_switch[key]){
+            if (this.Perks[key].spell && V.DM.perk_switch[key] && V.DM.spell_used[key]){
                 _text += this.Perks[key].spell_end_effect;
                 V.DM.spell_used[key] = 0
             }
@@ -1158,7 +1361,7 @@ setup.DM = {
         return _text
     },
     mag_daily(){
-        this.Goinit()
+        this.DM_update()
         V.DM.daily_M = 10 *((1 + V.DM.Mana_pool))
         let _modifier = 1
         _modifier *= (V.DM.shackles_willpower*0.1 + 1)
@@ -1196,9 +1399,9 @@ setup.DM = {
             }
             V.DM.effect_message_weekly = false
         }
-        if (V.DM && V.DM.magic_learn_message){
-            _text += V.DM.magic_learn_message
-            V.DM.magic_learn_message = false
+        if (V.DM && V.DM.effect_message){
+            _text += V.DM.effect_message
+            V.DM.effect_message = false
         }
         return _text
     },
@@ -1207,19 +1410,35 @@ setup.DM = {
         if (V.DM.class_pt[_class_name] === undefined) V.DM.class_pt[_class_name] = 0
         let _text = ''
         if (V.DM.thinking_magic){
-            for (let stat in this.stat_transform[_class_name]){
-                if (V.DM.stat_transform_history[stat] === undefined) V.DM.stat_transform_history[stat] = 0;
-                if (V[stat] === undefined) V[stat] = 0;
-                let _pt = Math.floor((V[stat] - V.DM.stat_transform_history[stat])/this.stat_transform[_class_name][stat].cost) 
-                V.DM.class_pt[_class_name] += _pt
-                V.DM.stat_transform_history[stat] += _pt * this.stat_transform[_class_name][stat].cost
-                if (_pt){
-                    _text += '你回想了你的' + this.stat_transform[_class_name][stat].name + '，你對於' +this.classes_cn[_class_name]+'的理解更深了，'+this.classes_cn[_class_name] + '點數增加了<span class=\"gold\">' + _pt +'</span>。<br>'
+            for (let stat_path in this.stat_transform[_class_name]){
+                if (V.DM.stat_transform_history[stat_path] === undefined) V.DM.stat_transform_history[stat_path] = 0;
+                if (this.getValueByPath(V,stat_path) !== undefined) {
+                    let _pt = Math.floor((this.getValueByPath(V,stat_path) - V.DM.stat_transform_history[stat_path])/this.stat_transform[_class_name][stat_path].cost) 
+                    V.DM.class_pt[_class_name] += _pt
+                    V.DM.stat_transform_history[stat_path] += _pt * this.stat_transform[_class_name][stat_path].cost
+                    if (_pt){
+                        _text += '你回想了你的' + this.stat_transform[_class_name][stat_path].name + '，你對於' +this.classes_cn[_class_name]+'的理解更深了，'+this.classes_cn[_class_name] + '點數增加了<span class=\"gold\">' + _pt +'</span>。<br>'
+                    }
                 }
             }
             delete V.DM.thinking_magic
         }
         _text += this.Linkbuttun('回想你的經驗','<<set $DM.thinking_magic to true>>') + '<br>'
+        return _text
+    },
+    think_magic_history(_class_name){
+        
+        if (V.DM.class_pt[_class_name] === undefined) V.DM.class_pt[_class_name] = 0
+        let _text = ''
+        if (V.DM.thinking_magic_h){
+            for (let stat_path in this.stat_transform[_class_name]){
+                if (V.DM.stat_transform_history[stat_path]){
+                    _text += this.stat_transform[_class_name][stat_path].name + " : " +V.DM.stat_transform_history[stat_path] + '<br>'
+                }
+            }
+            delete V.DM.thinking_magic_h
+        }
+        _text += this.Linkbuttun('已吸收的經驗','<<set $DM.thinking_magic_h to true>>') + '<br>'
         return _text
     },
     get_class_pt(_class_name){
@@ -1233,6 +1452,7 @@ setup.DM = {
     class_describe(_class_name){
         let _text = ''
         _text += this.think_magic(_class_name)
+        _text += this.think_magic_history(_class_name)
         _text += (this.classes_cn[_class_name] + '點數: ' + "<span class=\"gold\">" + this.get_class_pt(_class_name) + "</span>");
         _text += '<br>';
         if (V.DM._class_menu_chosen == 'alchemy' && V.money >= 100000){
@@ -1241,7 +1461,6 @@ setup.DM = {
             _text += '<br>'
         }
         if (V.DM._class_menu_chosen == 'alchemy' && V.money >= 1000000){
-            _text += '現有金錢: <<print Math.trunc($money/100)>><br>'
             _text += this.Linkbuttun('把£10000轉換成100點鍊金點數','<<set $money -= 1000000>><<set $DM.class_pt.alchemy += 100>><<clamp>>')
             _text += '<br>'
         }
@@ -1271,5 +1490,41 @@ setup.DM = {
             _text += '<</foldout>>'
         }
         return _text 
+    },
+    sleep_effect_add(){
+        if (V.DM && V.DM.gender_switching){
+            V.DM.effect_message = (V.DM.effect_message || '') + '你的身體發生了某種變化，你的'  
+            if (V.player.gender === 'm'){
+                V.vaginause = 0
+                V.vaginastate = 0
+                V.penisuse = 'none'
+                V.penisstate ='none'
+                V.player.gender = 'f'
+                V.player.sex = 'f'
+                V.player.ballsExist = false
+                V.player.penisExist = false
+                V.player.vaginaExist = true
+                V.sexStats.vagina.menstruation.running = true
+                wikifier('<<updatesidebarimg>>');
+                V.DM.effect_message += '陰莖消失了，並且變成了小穴。'
+            }
+            else if (V.player.gender === 'f'){
+                V.vaginause = 'none'
+                V.vaginastate = 'none'
+                V.penisuse = 0
+                V.penisstate = 0
+                V.player.gender = 'm'
+                V.player.sex = 'm'
+                V.player.ballsExist = true
+                V.player.penisExist = true
+                V.player.vaginaExist = false
+                V.sexStats.vagina.menstruation.running = false
+                wikifier('<<updatesidebarimg>>');
+                V.DM.effect_message += '小穴消失了，並且長出了陰莖。'
+            }
+            V.DM.gender_switching = false
+        }
+
+
     }
 }

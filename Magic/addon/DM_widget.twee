@@ -6,7 +6,7 @@
 <</widget>>
 
 <<widget "DM_overlay">>
-	<<=setup.DM.Goinit()>>
+	<<=setup.DM.DM_update()>>
 	<<if $combat>>
 		<br>
 		你現在沒空。
@@ -16,7 +16,7 @@
 		<<set $DM.bookread to true>>
 		<br>
 		你在身上發現了一本奇怪的書，你有一種直覺：這是一本魔法書，你可以用它使用魔法。
-		<br><<link '探索'>><<=setup.DM.Goinit()>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>><br>
+		<br><<link '探索'>><<=setup.DM.DM_update()>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>><br>
 	<</if>>
 <</widget>>
 <<widget "DM_overlay_magic_menu">>
@@ -87,7 +87,7 @@
 
 
 <<widget "DM_daily">>
-	<<=setup.DM.Goinit()>>
+	<<=setup.DM.DM_update()>>
 	<<=setup.DM.mag_daily_get()>>
 
 	<<set $DM.daily.Convince to false>>
@@ -118,7 +118,7 @@
 <</widget>>
 
 <<widget "DM_ExpelIdlers">>
-	<<=setup.DM.Goinit()>>
+	<<=setup.DM.DM_update()>>
 	<<if !$DM.daily.expel_idlers and $DM.perk_switch.expel_idlers and _sydneyStatus.includes("corrupt")>>
 		<<socialiseicon>>
 		<<link [[驅逐閒人|Library Rental Counter]]>> 
@@ -128,7 +128,7 @@
 	<</if>>
 <</widget>>
 <<widget "EA_CallCorrupt">>
-	<<=setup.DM.Goinit()>>
+	<<=setup.DM.DM_update()>>
 	<<set $DM.CallCorrupt_On to 0.7>>
 	<<if $confessionsTaken gte 5 and $DM.perk_switch.Call>>
 		<br>
@@ -138,7 +138,7 @@
 	<</if>>
 <</widget>>
 <<widget "EA_CallSidney">>
-	<<=setup.DM.Goinit()>>
+	<<=setup.DM.DM_update()>>
 	<<set $DM.CallSidney_On to 1>>
 	<<sydneySchedule>>
 	<<if _sydney_location is "temple" and $sydney_templeWork is "pray" and !$daily.sydneyConfession and C.npc.Sydney.init is 1 and $confessionsTaken gte 5 and $DM.perk_switch.Call>>
@@ -149,7 +149,7 @@
 	<</if>>
 <</widget>>
 <<widget "DM_Brothel_Convince">>
-	<<=setup.DM.Goinit()>>
+	<<=setup.DM.DM_update()>>
 	<<if $DM.perk_switch.Convince and !$DM.daily.Convince and $brothelshowdata.type isnot "none">>
 		<br>
 		<<socialiseicon>>
@@ -162,7 +162,7 @@
 <</widget>>
 
 <<widget "DM_Brothel_Show_start">>
-	<<=setup.DM.Goinit()>>
+	<<=setup.DM.DM_update()>>
 	<<if $DM.daily.Brothel>>
 		<<set $DM.daily.Brothel to false>>
 		<<set $brothelshowdata.done to false>>
@@ -170,7 +170,7 @@
 <</widget>>
 
 <<widget "DM_mouthaction_add">>
-	<<=setup.DM.Goinit()>>
+	<<=setup.DM.DM_update()>>
 	<<=setup.DM.spellaction_add()>>
 <</widget>>
 <<widget "DM_mouth_effect_add">>

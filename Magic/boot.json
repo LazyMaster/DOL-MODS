@@ -1,6 +1,6 @@
 {
   "name": "DOL_Magic",
-  "version": "2.0.15",
+  "version": "2.0.53",
   "styleFileList": [],
   "scriptFileList": [
     "addon/DM.js"
@@ -46,11 +46,6 @@
           "passage": "Widgets End Combat",
           "findString": "\t<<if $demonabsorb gte 1",
           "replace": "\t<<DM_Combat_End>><<if $demonabsorb gte 1"
-        },
-        {
-          "passage": "Widgets Orgasm",
-          "findString": "<<widget \"breastfeed\">>\n\t<<set $_milk_released to random(10, 50)>>",
-          "replace": "<<widget \"breastfeed\">>\n\t<<set $_milk_released to random(10, 50 + $milk_volume/20)>>"
         },
         {
           "passage": "Widgets Sydney",
@@ -121,7 +116,7 @@
         {
           "passage": "Widgets Blackjack",
           "findString": "<<if $estatePersistent.markedCards and $estatePersistent.markedCards.has(`${_c.name}${_c.suits[0]}`)>>",
-          "replace": "<<=setup.DM.Goinit()>><<if $estatePersistent.markedCards and $estatePersistent.markedCards.has(`${_c.name}${_c.suits[0]}`) or $DM.perk_switch.Transpass_perk >>",
+          "replace": "<<=setup.DM.DM_update()>><<if $estatePersistent.markedCards and $estatePersistent.markedCards.has(`${_c.name}${_c.suits[0]}`) or $DM.perk_switch.Transpass_perk >>",
           "all": true
         },
         {
@@ -155,9 +150,14 @@
           "replace": "<</switch>><<DM_Tower_item_craft _material>><br>"
         },
         {
-          "passage": "Widgets Canvas Model Main",
-          "findString": "<!-- Tears -->",
-          "replace": "<<=setup.DM.Goinit()>><!-- Tears -->"
+          "passage": "StoryCaption",
+          "findString": "<<caption_clamp>>",
+          "replace": "<<=setup.DM.DM_update()>><<caption_clamp>>"
+        },
+        {
+          "passage": "Widgets Sleep",
+          "findString": "<<unset $bedGuest>>",
+          "replace": "<<=setup.DM.sleep_effect_add()>><<unset $bedGuest>>"
         }
       ]
     },
@@ -204,8 +204,8 @@
             "fileName": "ingame.js"
           },
           {
-            "from": "if (numberOfEarSlime() && V.earSlime.event)",
-            "to": "sWikifier(setup.DM.effect_message());\tif (numberOfEarSlime() && V.earSlime.event)",
+            "from": "if (V.effectsmessage && !V.statFreeze) {",
+            "to": "sWikifier(setup.DM.effect_message());\tif (V.effectsmessage && !V.statFreeze) {",
             "fileName": "effect.js"
           }
         ]

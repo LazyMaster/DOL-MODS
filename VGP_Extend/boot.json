@@ -1,6 +1,6 @@
 {
   "name": "Sideview_Extend",
-  "version": "1.0.16",
+  "version": "1.0.27",
   "styleFileList": [],
   "scriptFileList_earlyload": [],
   "scriptFileList_inject_early": [],
@@ -91,6 +91,14 @@
     "img/face/default/makeup/mascara3.png",
     "img/face/default/makeup/mascara4.png",
     "img/face/default/makeup/mascara_halfclosed.png",
+    "img/face/default/SE_brows_0/browlow.png",
+    "img/face/default/SE_brows_0/browmid.png",
+    "img/face/default/SE_brows_0/broworgasm.png",
+    "img/face/default/SE_brows_0/browtop.png",
+    "img/face/default/SE_brows_1/browlow.png",
+    "img/face/default/SE_brows_1/browmid.png",
+    "img/face/default/SE_brows_1/broworgasm.png",
+    "img/face/default/SE_brows_1/browtop.png",
     "img/face/default/SE_eyes_0/eyelids.png",
     "img/face/default/SE_eyes_0/eyelids_halfclosed.png",
     "img/face/default/SE_eyes_0/iris.png",
@@ -113,6 +121,50 @@
     "img/face/default/SE_eyes_0/lashes_halfclosed.png",
     "img/face/default/SE_eyes_0/sclera.png",
     "img/face/default/SE_eyes_0/sclerabloodshot.png",
+    "img/face/default/SE_eyes_1/eyelids.png",
+    "img/face/default/SE_eyes_1/eyelids_halfclosed.png",
+    "img/face/default/SE_eyes_1/iris.png",
+    "img/face/default/SE_eyes_1/irisempty.png",
+    "img/face/default/SE_eyes_1/irisempty_halfclosed.png",
+    "img/face/default/SE_eyes_1/irisempty_halfclosed_left.png",
+    "img/face/default/SE_eyes_1/irisempty_halfclosed_right.png",
+    "img/face/default/SE_eyes_1/irisempty_left.png",
+    "img/face/default/SE_eyes_1/irisempty_org_left.png",
+    "img/face/default/SE_eyes_1/irisempty_org_right.png",
+    "img/face/default/SE_eyes_1/irisempty_right.png",
+    "img/face/default/SE_eyes_1/iris_halfclosed.png",
+    "img/face/default/SE_eyes_1/iris_halfclosed_left.png",
+    "img/face/default/SE_eyes_1/iris_halfclosed_right.png",
+    "img/face/default/SE_eyes_1/iris_left.png",
+    "img/face/default/SE_eyes_1/iris_org_left.png",
+    "img/face/default/SE_eyes_1/iris_org_right.png",
+    "img/face/default/SE_eyes_1/iris_right.png",
+    "img/face/default/SE_eyes_1/lashes.png",
+    "img/face/default/SE_eyes_1/lashes_halfclosed.png",
+    "img/face/default/SE_eyes_1/sclera.png",
+    "img/face/default/SE_eyes_1/sclerabloodshot.png",
+    "img/face/default/SE_eyes_2/eyelids.png",
+    "img/face/default/SE_eyes_2/eyelids_halfclosed.png",
+    "img/face/default/SE_eyes_2/iris.png",
+    "img/face/default/SE_eyes_2/irisempty.png",
+    "img/face/default/SE_eyes_2/irisempty_halfclosed.png",
+    "img/face/default/SE_eyes_2/irisempty_halfclosed_left.png",
+    "img/face/default/SE_eyes_2/irisempty_halfclosed_right.png",
+    "img/face/default/SE_eyes_2/irisempty_left.png",
+    "img/face/default/SE_eyes_2/irisempty_org_left.png",
+    "img/face/default/SE_eyes_2/irisempty_org_right.png",
+    "img/face/default/SE_eyes_2/irisempty_right.png",
+    "img/face/default/SE_eyes_2/iris_halfclosed.png",
+    "img/face/default/SE_eyes_2/iris_halfclosed_left.png",
+    "img/face/default/SE_eyes_2/iris_halfclosed_right.png",
+    "img/face/default/SE_eyes_2/iris_left.png",
+    "img/face/default/SE_eyes_2/iris_org_left.png",
+    "img/face/default/SE_eyes_2/iris_org_right.png",
+    "img/face/default/SE_eyes_2/iris_right.png",
+    "img/face/default/SE_eyes_2/lashes.png",
+    "img/face/default/SE_eyes_2/lashes_halfclosed.png",
+    "img/face/default/SE_eyes_2/sclera.png",
+    "img/face/default/SE_eyes_2/sclerabloodshot.png",
     "img/face/default/SE_head_0/basehead.png",
     "img/face/default/SE_mouth_0/mouthcry.png",
     "img/face/default/SE_mouth_0/mouthfrown.png",
@@ -124,6 +176,11 @@
     "img/face/default/SE_mouth_1/mouthneutral.png",
     "img/face/default/SE_mouth_1/mouthorg.png",
     "img/face/default/SE_mouth_1/mouthsmile.png",
+    "img/face/default/SE_mouth_2/mouthcry.png",
+    "img/face/default/SE_mouth_2/mouthfrown.png",
+    "img/face/default/SE_mouth_2/mouthneutral.png",
+    "img/face/default/SE_mouth_2/mouthorg.png",
+    "img/face/default/SE_mouth_2/mouthsmile.png",
     "img/face/default/SE_side_0/side_border.png",
     "img/face/default/SE_side_1/side_border.png",
     "img/hair/fringe/back/chest.png",
@@ -648,6 +705,9 @@
     "img/hair/sides/twintails/thighs.png"
   ],
   "additionFile": [
+    "img/face/default/SE_brows_0/browmid.png~",
+    "img/face/default/SE_brows_0/broworgasm.png~",
+    "img/face/default/SE_brows_0/browtop.png~",
     "img/hair/fringe/old_hime/feet.pdn"
   ],
   "addonPlugin": [
@@ -663,13 +723,8 @@
         },
         {
           "passage": "Widgets Canvas Model Main",
-          "findString": "<!-- Transformation filters here -->",
-          "replace": "<<Sideview_Canvas_add>><!-- Transformation filters here -->"
-        },
-        {
-          "passage": "Widgets Mirror",
-          "findString": "<<set _modeloptions.skin_type = $skinColor.natural",
-          "replace": "<<Sideview_Canvas_add>><<set _modeloptions.skin_type = $skinColor.natural"
+          "findString": "<<modelprepare-player-clothes>>",
+          "replace": "<<Sideview_Canvas_add>><<modelprepare-player-clothes>>"
         }
       ]
     },
@@ -686,14 +741,14 @@
       "params": {
         "js": [
           {
-            "from": "old_over_upper: 171,",
-            "to": "old_over_upper: 171,pussy:199,pussy_cum: 200,side_border: 120,side_border_pussy: 201,SE_left_lashes: 134,SE_left_lashes: 134 ",
-            "fileName": "canvasmodel-00-data.js"
+            "from": "old_over_upper: 164,",
+            "to": "old_over_upper: 164,pussy:199,pussy_cum: 200,side_border: 120,side_border_pussy: 201,SE_left_lashes: 134,SE_left_lashes: 134, ",
+            "fileName": "00-canvasmodel-data.js"
           },
           {
             "from": "blush: 50,",
             "to": "blush: 50,blush_cover: 135,",
-            "fileName": "canvasmodel-00-data.js"
+            "fileName": "00-canvasmodel-data.js"
           }
         ]
       }
