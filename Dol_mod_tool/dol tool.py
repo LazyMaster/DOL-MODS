@@ -6,7 +6,6 @@ from opencc import OpenCC
 import json
 from zipfile import ZipFile
 import PySimpleGUI as sg
-from PIL import Image
 
 
 def transform(content , inverse = False):
@@ -38,20 +37,39 @@ def filepath_reader(directory, output_dict):
     output_dict["imgFileList"] = []
     output_dict["tweeFileList"] = []
     output_dict["scriptFileList"] = []
+    output_dict["additionBinaryFile"] = []
     for root, _, files in os.walk(os.path.join(directory)):
         for file in files:
             file_path = os.path.relpath(os.path.join(root, file), directory)
             if root == directory:
                 pass
             elif file_path.endswith('.png') or file_path.endswith('gif'):
-                output_dict["imgFileList"].append(file_path.replace("\\", "/"))
+                output_dict["additionBinaryFile"].append(file_path.replace("\\", "/"))
             elif file_path.endswith('.twee'):
                 output_dict["tweeFileList"].append(file_path.replace("\\", "/"))
             elif file_path.endswith('.js'):
                 output_dict["scriptFileList"].append(file_path.replace("\\", "/"))
             else:
                 output_dict["additionFile"].append(file_path.replace("\\", "/"))
-
+    if output_dict["additionBinaryFile"]:
+        output_dict['addonPlugin'].append(
+            {
+                "modName": "BeautySelectorAddon",
+                "addonName": "BeautySelectorAddon",
+                "modVersion": "^2.0.0",
+                "params": {
+                    "type": output_dict['name'],
+                    "imgFileList": output_dict["additionBinaryFile"],
+                }
+            }
+        )
+        if "BeautySelectorAddon" not in [dic["modName"] for dic in output_dict['dependenceInfo']]:
+            output_dict['dependenceInfo'].append(
+                {
+                "modName": "BeautySelectorAddon",
+                "version": "^2.0.0"
+                }
+            )
 def make_mod(folder_path):
     os.makedirs(os.path.join(folder_path,'img'), exist_ok=True)
     output_dict = {}
@@ -60,46 +78,19 @@ def make_mod(folder_path):
             output_dict = json.load(boot_json)
             
         output_dict['version'] = '.'.join(output_dict['version'].split('.')[:-1] + [str(int(output_dict['version'].split('.')[-1]) + 1)])
+        output_dict['addonPlugin'] = [d for d in output_dict['addonPlugin'] if d["modName"] != "BeautySelectorAddon"]
 
-        if "ModLoader DoL ImageLoaderHook" not in [dic["modName"] for dic in output_dict['addonPlugin']]:
-            output_dict['addonPlugin'].append(
-                {
-                "modName": "ModLoader DoL ImageLoaderHook",
-                "addonName": "ImageLoaderAddon",
-                "modVersion": "^2.3.0",
-                "params": []
-                }
-            )
-        if "ModLoader DoL ImageLoaderHook" not in [dic["modName"] for dic in output_dict['dependenceInfo']]:
-            output_dict['dependenceInfo'].append(
-                {
-                "modName": "ModLoader DoL ImageLoaderHook",
-                "version": "^2.3.0"
-                }
-            )
+
+        
     else:   
         output_dict['name'] = os.path.basename(folder_path)
         output_dict['version'] = '1.0.0'
         output_dict['styleFileList'] = []
         output_dict['scriptFileList'] = []
         output_dict['tweeFileList'] = []
-        output_dict['addonPlugin'] = [
-            {
-            "modName": "ModLoader DoL ImageLoaderHook",
-            "addonName": "ImageLoaderAddon",
-            "modVersion": "^2.3.0",
-            "params": [
-            ]
-            }
-            ]
-        output_dict['dependenceInfo'] = [
-            {
-            "modName": "ModLoader DoL ImageLoaderHook",
-            "version": "^2.3.0"
-            }
-            ]
+        output_dict['addonPlugin'] = []
+        output_dict['dependenceInfo'] = []
     filepath_reader(folder_path, output_dict)
-    # 将内容输出到文本文件
     
     with open(os.path.join(folder_path,'boot.json'), 'w', encoding='utf-8') as file:
         json.dump(output_dict, file, indent=2, ensure_ascii=False)
@@ -107,12 +98,11 @@ def make_mod(folder_path):
     if not os.path.exists(folder_path) or not os.path.isdir(folder_path):
         print(f"錯誤：'{folder_path}' 不是有效的資料夾路徑。")
         return
-    # 建立 ZipFile 物件
+    #build zip
     with ZipFile(folder_path + "_" + output_dict["version"].replace(".","_") +'.zip', 'w') as zip_file:
-        # 將資料夾中的所有文件添加到 zip 檔案
-        for foldername, subfolders, filenames in os.walk(folder_path):
-            for filename in filenames:
-                file_path = os.path.join(foldername, filename)
+        for _foldername, _, filenames in os.walk(folder_path):
+            for _filename in filenames:
+                file_path = os.path.join(_foldername, _filename)
                 arcname = os.path.relpath(file_path, folder_path)
                 zip_file.write(file_path, arcname)
 
