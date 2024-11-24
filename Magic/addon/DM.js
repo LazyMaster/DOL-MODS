@@ -37,7 +37,7 @@ setup.DM = {
         }
     },
     'classes_cn':{
-        'base':'渾沌',
+        'base':'塑能',
         'meat':'血肉',
         'mind control':'惑控',
         'alchemy':'鍊金',
@@ -124,17 +124,18 @@ setup.DM = {
         'shackles_arousal':0,
         'milk_gain':0,
     },
+    DM_update_spell_list:[]
+    ,
     DM_update(){
         if (!this.init.Is_game_started){
             this.init.Is_game_started = true
-            playerHeatMinArousal = DM_MinArousal_decorator(playerHeatMinArousal);
-            window.playerHeatMinArousal = playerHeatMinArousal;
             if (V.DM === undefined){V.DM = {}}
             for (let key in this.init) {
                 if (V.DM[key] === undefined){
                     V.DM[key] = this.init[key]
                 }
             }
+            this.DM_update_spell_list = Object.keys(this.Perks).filter(key => this.Perks[key].update && typeof this.Perks[key].update === "function");
             if (V.backgroundTraits.includes("greenthumb")){V.DM["Greenthumb"] = 1}
         }
         //update
@@ -152,6 +153,9 @@ setup.DM = {
         } else {
             V.semen_volume = 0;
             V.semen_amount = 0;
+        }
+        for (let key of this.DM_update_spell_list){
+            this.Perks[key].update()
         }
     },
     getValueByPath(obj, path) {
@@ -172,7 +176,7 @@ setup.DM = {
             'class':'base',
             'max':100,
             'cost_type':'Class_PT',
-            'name': '渾沌專精',
+            'name': '塑能專精',
             'descript':'每個等級最大法力值+100，法力恢復+10。',
             'cost': 100,
             'noswich':1,
@@ -218,6 +222,8 @@ setup.DM = {
             'cost': 100,
             'Effect':"<<set $DM.Mana_pool += 1>>",
         },
+        
+
         //shackles---------------------
         "shackles_willpower":{
             'class':'b_magic',
@@ -231,13 +237,72 @@ setup.DM = {
         },
         "shackles_arousal":{
             'class':'b_magic',
-            'max':5,
+            'max':9,
             'cost_type':'Class_PT',
             'name': '慾望枷鎖',
             'descript':'慾望下限會上升<<print $DM.shackles_arousal*1000>>，法力恢復增加0.<<print $DM.shackles_arousal>>倍。',
             'cost': 0,
             'reducible' : true,
-            'shackles':true
+            'shackles':true,
+            update(){V.arousal = Math.max(V.arousal , V.DM.shackles_arousal*1000) || V.arousal}
+        },
+        //點數補充方案
+        "sa_mana":{
+            'class':'base',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '法力精鍊',
+            'descript':'獻祭法力，增強你對能量的控制。',
+            cost_function(_){
+                return -1 * Math.floor(V.DM.Mana / 100)
+            },
+            'Effect_only':true,
+            'noswich':1,
+            Effect_f(){
+                V.DM.Mana = V.DM.Mana %= 100
+            },
+            require_f(){
+                if (V.DM.Mana < 100) return '你沒有足夠的法力。'
+            },
+            'effect_describe':'你變強了。'
+        },
+        "sa_physique":{
+            'class':'meat',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '體能獻祭',
+            'descript':'獻祭體能，讓你再次變成一個弱者。',
+            cost_function(_){
+                return -10 * Math.floor(V.physique / 1000)
+            },
+            'Effect_only':true,
+            'noswich':1,
+            Effect_f(){
+                V.physique = V.physique %= 1000
+            },
+            require_f(){
+                if (V.physique < 1000) return '你沒有足夠的體能。'
+            },
+            'effect_describe':'你感到某種存在從你的身體中流失，你變軟弱了。'
+        },
+        "sa_willpower":{
+            'class':'mind control',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '意志獻祭',
+            'descript':'獻祭意志，讓你再次變成一個弱者。',
+            cost_function(_){
+                return -10 * Math.floor(V.willpower / 100)
+            },
+            'Effect_only':true,
+            'noswich':1,
+            Effect_f(){
+                V.willpower = V.willpower %= 100
+            },
+            require_f(){
+                if (V.willpower < 100) return '你沒有足夠的意志。'
+            },
+            'effect_describe':'你感到某種存在從你的心靈中流失，你變軟弱了。'
         },
         "abortion":{
             'class':'b_magic',
@@ -370,8 +435,8 @@ setup.DM = {
             'class':'base',
             'max':1,
             'cost_type':'M',
-            'name': '清潔溜溜',
-            'descript':'用魔法清理自己。',
+            'name': '清潔',
+            'descript':'用魔法清理自己身上的髒污和筆跡。',
             'cost': 10,
             'Effect_only':true,
             'noswich':1,
@@ -383,6 +448,24 @@ setup.DM = {
                     <</if>>
                 <</for>>
                 <<>>`,
+            'base':1
+        },
+        "repair_cloth":{
+            'class':'base',
+            'max':1,
+            'cost_type':'M',
+            'name': '修復',
+            'descript':'用魔法修復自己身上的服裝（順便烘乾）。',
+            'cost': 10,
+            'Effect_only':true,
+            'noswich':1,
+            'Effect':`
+                <<set _equip to setup.clothingLayer.all>>
+                <<for _i to 0; _i lt _equip.length; _i++>>
+                    <<set $worn[_equip[_i]].integrity = clothingData(_equip[_i],$worn[_equip[_i]],'integrity_max')>>
+                <</for>>
+                <<dry>>`
+                ,
             'base':1
         },
         "tiredness_remove":{
@@ -401,7 +484,6 @@ setup.DM = {
                 V.tiredness = 0;
                 wikifier('<<updatesidebarimg>>');
             },
-            'base':1
         },
         "stress_remove":{
             'class':'mind control',
@@ -419,7 +501,6 @@ setup.DM = {
                 V.stress = 0;
                 wikifier('<<updatesidebarimg>>');
             },
-            'base':1
         },
         "arousal_remove":{
             'class':'base',
@@ -656,6 +737,7 @@ setup.DM = {
                 if(!['m','f'].includes(V.player.gender)) return '這個似乎對你沒有效用'
             
             },
+            'require_m':7,
             'Effect_only':true,
             'noswich':1,
             'Effect':"<<set $DM.gender_switching to true>>",
@@ -688,7 +770,7 @@ setup.DM = {
             'Effect_only':true,
             'descript':'創造一個假人替你賺錢。(現有<<print $DM.slave_w>>具)',
             'Effect':'<<set $DM.slave_w += 1>>',
-            cost_function(n){return 100 },
+            cost_function(n){return 100 + 10*V.DM.slave_w },
             'alche':true,
             'effect_describe':'人偶變成社畜的樣子，步伐沉重的離開了。'
         },        
@@ -701,6 +783,7 @@ setup.DM = {
             'descript':'創造一個假人替你賺錢。(現有<<print $DM.slave_b>>具)',
             'Effect':'<<set $DM.slave_b += 1>>',
             'cost': 1000,
+            cost_function(n){return 1000 + 100*V.DM.slave_b },
             'alche':true,
             'effect_describe':'人偶變成脫衣舞女的樣子，步伐沉重的離開了。'
         },
@@ -864,6 +947,20 @@ setup.DM = {
             'name': '無限母乳',
             'descript':'母乳不會耗竭',
             'cost': 100,
+        },
+        "milk_infinite":{
+            'class':'mind control',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '壓力轉換',
+            'descript':'所有壓力會轉換成快感',
+            'cost': 100,
+            'require_m':5,
+            update(){
+                if (V.stress){
+                    V.arousal += V.stress
+                    V.stress = 0}
+            }
         },
         "semen_infinite":{
             'class':'meat',
@@ -1113,6 +1210,26 @@ setup.DM = {
                 }
                 return 0
             },
+            'require_m':2
+        },
+        "milk_volume_die":{
+            'class':'meat',
+            'subclass':'liquid',
+            'max':1,
+            'cost_type':'M',
+            'name': '乳腺枯竭',
+            'descript':'枯竭你的乳腺。',
+            'cost': 50,
+            'noswich':1,
+            'Effect_only':true,
+            'Effect':"<<set $milk_volume to 30>>",
+            cost_function(_){
+                if(V.milk_volume > 30){
+                    return Math.ceil((V.milk_volume - 30)/20)
+                }
+                return 0
+            },
+            'require_m':2
         },
 
         "semen_charge":{
@@ -1150,6 +1267,26 @@ setup.DM = {
                 }
                 return 0
             },
+            'require_m':2
+        },
+        "semen_volume_charge":{
+            'class':'meat',
+            'subclass':'liquid',
+            'max':1,
+            'cost_type':'M',
+            'name': '精囊枯竭',
+            'descript':'枯竭你的精囊。',
+            'cost': 50,
+            'noswich':1,
+            'Effect_only':true,
+            'Effect':"<<set $semen_volume to 0>>",
+            cost_function(_){
+                if(V.semen_volume > 0){
+                    return Math.ceil(V.semen_volume/20)
+                }
+                return 0
+            },
+            'require_m':2
         },
         "parasite_grow":{
             'class':'meat',
@@ -1180,6 +1317,7 @@ setup.DM = {
                 parasiteProgressTime(900);
 	            parasiteProgressTime(900, "vagina")
             },
+            'require_m':3
         },
         //----------------------------
         
@@ -1202,9 +1340,7 @@ setup.DM = {
                 }
         }
         //開關
-        if (V.DM[perk_name] && _perkdata.reducible){
-            _text += this.Linkbuttun('降級','<<set $DM.'+ perk_name +' -= 1>>') + '|'
-        }
+        
         _text += this.t_perk_switch(perk_name);
         //使用
         if(!_ismax){
@@ -1213,7 +1349,10 @@ setup.DM = {
                 'Class_PT': V.DM.class_pt[_perkdata.class],
                 'M': V.DM.Mana
             }
-            if (_perkdata.require_f && _perkdata.require_f()){
+            if (_perkdata.require_m && _perkdata.require_m > V.DM['master_' + _perkdata.class]){
+                _text += ('<span class="black">需要專精等級'+_perkdata.require_m+'。</span>')
+            }
+            else if (_perkdata.require_f && _perkdata.require_f()){
                 _text += ('<span class="black">'+_perkdata.require_f()+'</span>')
             }
             else if (_typemap[_perkdata.cost_type] >= this.getcost(perk_name)){
@@ -1225,6 +1364,9 @@ setup.DM = {
             }
             if (V.DM[perk_name] !== _perkdata.max && !(_perkdata.require_f && _perkdata.require_f())){
                 _text += this.printcost(perk_name)
+            }
+            if (V.DM[perk_name] && _perkdata.reducible){
+                _text += '|' + this.Linkbuttun('降級','<<set $DM.'+ perk_name +' -= 1>>') 
             }
         }
         if(_perkdata.endwith){
@@ -1493,6 +1635,12 @@ setup.DM = {
     },
     sleep_effect_add(){
         if (V.DM && V.DM.gender_switching){
+            V.DM.gender_switching = false
+            if (this.Perks.gender_switch.require_f()){
+                V.DM.effect_message += '因為不明原因，你的性轉換失效了。'
+                return
+            }
+            
             V.DM.effect_message = (V.DM.effect_message || '') + '你的身體發生了某種變化，你的'  
             if (V.player.gender === 'm'){
                 V.vaginause = 0

@@ -1,6 +1,6 @@
 {
   "name": "DOL_Magic",
-  "version": "2.0.53",
+  "version": "2.0.58",
   "styleFileList": [],
   "scriptFileList": [
     "addon/DM.js"
@@ -158,6 +158,11 @@
           "passage": "Widgets Sleep",
           "findString": "<<unset $bedGuest>>",
           "replace": "<<=setup.DM.sleep_effect_add()>><<unset $bedGuest>>"
+        },
+        {
+          "passage": "Widgets Orgasm",
+          "findString": "<<set _milk_released to random(10, 50)>>",
+          "replace": "<<set _milk_released to random(10, 50 + Math.floor($milk_volume/20))>>"
         }
       ]
     },
@@ -224,10 +229,6 @@
       "version": ">=1.1.0"
     },
     {
-      "modName": "ModLoader DoL ImageLoaderHook",
-      "version": ">=1.0.0"
-    },
-    {
       "modName": "TweeReplacer",
       "version": ">=1.0.0"
     },
@@ -235,5 +236,6 @@
       "modName": "ReplacePatcher",
       "version": ">=1.0.0"
     }
-  ]
+  ],
+  "additionBinaryFile": []
 }
