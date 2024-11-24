@@ -40,7 +40,7 @@ Renderer.CanvasModels["main"].layers.breasts.srcfn=function(options){
 Renderer.CanvasModels["main"].layers.basehead.srcfn=function(options) {
     if (options.mannequin) return "img/body/mannequin/basehead.png"
     if (!options.SE_head_type) return `img/body/basehead.png`
-    return `img/face/${options.facestyle}${options.SE_head_type}basehead.png`
+    return `img/face/${options.facestyle}/${options.SE_head_type}basehead.png`
 }
 
 //增加layer
