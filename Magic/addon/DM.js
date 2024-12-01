@@ -56,7 +56,7 @@ setup.DM = {
         'base':{
             'orgasmstat':{
                 'name':'高潮經驗',
-                'cost':10
+                'cost':1
             }
         },
         'meat':{
@@ -89,15 +89,15 @@ setup.DM = {
         'mind control':{
             'dancestat':{
                 'name':'跳舞經驗',
-                'cost':50
+                'cost':10
             },
             'prostitutionstat':{
                 'name':'賣淫經驗',
-                'cost':5
+                'cost':1
             },
             'masseur_stat':{
                 'name':'按摩經驗',
-                'cost':5
+                'cost':1
             }
         },
         'alchemy':{
@@ -303,6 +303,7 @@ setup.DM = {
                 V.deviancy = 0
             },
             require_f(){
+                if ((V.promiscuity + V.exhibitionism + V.deviancy)>=20) return '你沒有足夠的癖好。'
             },
             'effect_describe':'你感到某種存在從你的心靈中流失，你變軟弱了。'
         },
@@ -964,7 +965,7 @@ setup.DM = {
             'cost': 100,
             'require_m':5,
             update(){
-                if (V.stress){
+                if (V.stress >= 0){
                     V.arousal += V.stress
                     V.stress = 0}
             }
