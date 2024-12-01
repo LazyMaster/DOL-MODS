@@ -123,6 +123,7 @@ setup.DM = {
         'shackles_willpower':0,
         'shackles_arousal':0,
         'milk_gain':0,
+        'effect_message':''
     },
     DM_update_spell_list:[]
     ,
@@ -155,7 +156,7 @@ setup.DM = {
             V.semen_amount = 0;
         }
         for (let key of this.DM_update_spell_list){
-            this.Perks[key].update()
+            if (V.DM.perk_switch[key]) this.Perks[key].update();
         }
     },
     getValueByPath(obj, path) {
@@ -549,29 +550,13 @@ setup.DM = {
         //--------------------------------------------------------------------------
         //心靈 精神控制
         //--------------------------------------------------------------------------
-        "expel_idlers":{
+        "MC":{
             'class':'mind control',
             'max':1,
             'cost_type':'Class_PT',
-            'name': '驅逐閒人',
+            'name': '精神操控',
             'descript':'似乎在某些場景有用。',
-            'cost': 10
-        },
-        "Call":{
-            'class':'mind control',
-            'max':1,
-            'cost_type':'Class_PT',
-            'name': '感召',
-            'descript':'似乎在某些場景有用。',
-            'cost': 10
-        },
-        "Convince":{
-            'class':'mind control',
-            'max':1,
-            'cost_type':'Class_PT',
-            'name': '說服',
-            'descript':'似乎在某些場景有用。',
-            'cost': 10
+            'cost': 50
         },
         "Noawareness":{
             'class':'mind control',
@@ -611,6 +596,15 @@ setup.DM = {
             'descript':'讓天使不因為失貞而墮落。',
             'cost': 20
         },
+        "Demon_purity":{
+            'class':'meat',
+            'subclass':'transform',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '純潔免疫',
+            'descript':'讓惡魔不因為純潔受創。',
+            'cost': 20
+        },
         "tansform_hide":{
             'class':'meat',
             'subclass':'transform',
@@ -634,8 +628,12 @@ setup.DM = {
             },
             'Effect_only':true,
             'noswich':1,
-            'Effect':"<<transform 'angel' 70>><<DM_transform>><<clamp>><<updatesidebarimg>>",
-
+            'Effect':`
+                <<transform 'demon' -100>>
+                <<transform 'angel' 100>>
+                <<DM_transform>>
+                <<clamp>>
+                <<updatesidebarimg>>`,
         },
         "transform_demon":{
             'class':'meat',
@@ -651,7 +649,12 @@ setup.DM = {
             },
             'Effect_only':true,
             'noswich':1,
-            'Effect':"<<transform 'demon' 70>><<DM_transform>><<clamp>><<updatesidebarimg>>",
+            'Effect':`
+                <<transform 'demon' 100>>
+                <<transform 'angel' -100>>
+                <<DM_transform>>
+                <<clamp>>
+                <<updatesidebarimg>>`,
 
         },
         "transform_cat":{
@@ -887,23 +890,7 @@ setup.DM = {
         //---------------------------------------------------
         //血肉
         //---------------------------------------------------
-        "milk_gain":{
-            'class':'meat',
-            'max':20,
-            'cost_type':'Class_PT',
-            'name': '豐壤',
-            'descript':'增加母乳量。<br>現在母乳容量:<<print $milk_volume>><br>現在母乳容量最大值:<<print $milk_max>>',
-            'cost': 50,
-            'noswich':1,
-            Effect_f(){
-                
-                V.milk_volume += 300
-                V.milk_amount = V.milk_volume
-                
-                if (V.cow >= 6){V.milk_max  = 6000 + 300 * V.DM.milk_gain}
-                else{V.milk_max  = 3000 + 300 * V.DM.milk_gain}
-            },
-        },
+
         "milk_gain":{
             'class':'meat',
             'subclass':'liquid',
@@ -1365,9 +1352,10 @@ setup.DM = {
             if (V.DM[perk_name] !== _perkdata.max && !(_perkdata.require_f && _perkdata.require_f())){
                 _text += this.printcost(perk_name)
             }
-            if (V.DM[perk_name] && _perkdata.reducible){
-                _text += '|' + this.Linkbuttun('降級','<<set $DM.'+ perk_name +' -= 1>>') 
-            }
+            
+        }
+        if (V.DM[perk_name] && _perkdata.reducible){
+            _text += '|' + this.Linkbuttun('降級','<<set $DM.'+ perk_name +' -= 1>>') 
         }
         if(_perkdata.endwith){
             _text += _perkdata.endwith
@@ -1504,16 +1492,16 @@ setup.DM = {
     },
     mag_daily(){
         this.DM_update()
-        V.DM.daily_M = 10 *((1 + V.DM.Mana_pool))
-        let _modifier = 1
-        _modifier *= (V.DM.shackles_willpower*0.1 + 1)
-        _modifier *= (V.DM.shackles_arousal*0.1 + 1)
-        V.DM.daily_M *= _modifier
+        V.DM.daily_M = 10 *((1 + V.DM.Mana_pool));
+        let _modifier = 1;
+        _modifier *= (V.DM.shackles_willpower*0.1 + 1);
+        _modifier *= (V.DM.shackles_arousal*0.1 + 1);
+        V.DM.daily_M *= _modifier;
         V.DM.daily_M = Math.floor(V.DM.daily_M)
     },
     willpower_modifier(){
-        let _modifier = 1
-        _modifier -= V.DM.shackles_willpower * 0.1
+        let _modifier = 1;
+        if (V.DM.perk_switch.shackles_willpower)_modifier -= V.DM.shackles_willpower * 0.1;
         return _modifier
     },
     mag_daily_get(){
@@ -1543,7 +1531,7 @@ setup.DM = {
         }
         if (V.DM && V.DM.effect_message){
             _text += V.DM.effect_message
-            V.DM.effect_message = false
+            V.DM.effect_message = ''
         }
         return _text
     },

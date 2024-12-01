@@ -16,7 +16,7 @@
 		<<set $DM.bookread to true>>
 		<br>
 		你在身上發現了一本奇怪的書，你有一種直覺：這是一本魔法書，你可以用它使用魔法。
-		<br><<link '探索'>><<=setup.DM.DM_update()>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>><br>
+		<br><<link '探索'>><<replace #customOverlayContent>><<DM_overlay>><</replace>><</link>><br>
 	<</if>>
 <</widget>>
 <<widget "DM_overlay_magic_menu">>
@@ -87,7 +87,6 @@
 
 
 <<widget "DM_daily">>
-	<<=setup.DM.DM_update()>>
 	<<=setup.DM.mag_daily_get()>>
 
 	<<set $DM.daily.Convince to false>>
@@ -119,10 +118,11 @@
 
 <<widget "DM_ExpelIdlers">>
 	<<=setup.DM.DM_update()>>
-	<<if !$DM.daily.expel_idlers and $DM.perk_switch.expel_idlers and _sydneyStatus.includes("corrupt")>>
+	<<if !$DM.daily.expel_idlers and $DM.perk_switch.MC and _sydneyStatus.includes("corrupt")>>
 		<<socialiseicon>>
-		<<link [[驅逐閒人|Library Rental Counter]]>> 
+		<<link [[(精神操縱)驅逐閒人|Library Rental Counter]]>> 
 			<<set $DM.daily.expel_idlers to true>>
+			<<set $DM.effect_message += '圖書館的人被某種力量影響，離開了。'>>
 		<</link>>
 		<br>
 	<</if>>
@@ -130,9 +130,10 @@
 <<widget "EA_CallCorrupt">>
 	<<=setup.DM.DM_update()>>
 	<<set $DM.CallCorrupt_On to 0.7>>
-	<<if $confessionsTaken gte 5 and $DM.perk_switch.Call>>
+	<<if $confessionsTaken gte 5 and $DM.perk_switch.MC>>
 		<br>
-		<<link [[吸引腐敗|Temple Confess]]>> <<pass 30>>
+		<<socialiseicon>>
+		<<link [[(精神操縱)吸引腐敗|Temple Confess]]>> <<pass 30>>
 			<<set $DM.CallCorrupt_On to 700>>
 		<</link>> (可能會失敗)
 	<</if>>
@@ -141,28 +142,28 @@
 	<<=setup.DM.DM_update()>>
 	<<set $DM.CallSidney_On to 1>>
 	<<sydneySchedule>>
-	<<if _sydney_location is "temple" and $sydney_templeWork is "pray" and !$daily.sydneyConfession and C.npc.Sydney.init is 1 and $confessionsTaken gte 5 and $DM.perk_switch.Call>>
+	<<if _sydney_location is "temple" and $sydney_templeWork is "pray" and !$daily.sydneyConfession and C.npc.Sydney.init is 1 and $confessionsTaken gte 5 and $DM.perk_switch.MC>>
 		<br>
-		<<link [[感召悉尼|Temple Confess]]>> <<pass 30>>
+		<<socialiseicon>>
+		<<link [[(精神操縱)吸引悉尼|Temple Confess]]>> <<pass 30>>
 			<<set $DM.CallSidney_On to 1000>>
 		<</link>> (可能會失敗)
 	<</if>>
 <</widget>>
 <<widget "DM_Brothel_Convince">>
-	<<=setup.DM.DM_update()>>
-	<<if $DM.perk_switch.Convince and !$DM.daily.Convince and $brothelshowdata.type isnot "none">>
+	<<if $DM.perk_switch.MC and !$DM.daily.Convince and $brothelshowdata.type isnot "none">>
 		<br>
 		<<socialiseicon>>
-		<<link [[說服演出現在開始|Brothel Stage]]>> 
+		<<link [[(精神操縱)說服演出現在開始|Brothel Stage]]>> 
 			<<set $DM.daily.Convince to true>>
 			<<set $DM.daily.Brothel to true>>
 			<<set $brothelshowdata.done to false>>
+			<<set $DM.effect_message += '妓院的人加速做好準備，你現在可以演出了。'>>
 		<</link>><br><br>
 	<</if>>
 <</widget>>
 
 <<widget "DM_Brothel_Show_start">>
-	<<=setup.DM.DM_update()>>
 	<<if $DM.daily.Brothel>>
 		<<set $DM.daily.Brothel to false>>
 		<<set $brothelshowdata.done to false>>
@@ -170,7 +171,6 @@
 <</widget>>
 
 <<widget "DM_mouthaction_add">>
-	<<=setup.DM.DM_update()>>
 	<<=setup.DM.spellaction_add()>>
 <</widget>>
 <<widget "DM_mouth_effect_add">>
@@ -180,7 +180,7 @@
 	<<=setup.DM.spellend_add()>>
 <</widget>>
 <<widget "DM_shackles_willpower">>
-	<<if $DM.shackles_willpower>>
+	<<if $DM.perk_switch.shackles_willpower>>
 		<<set _willpowerConfig.modifier to Math.floor(_willpowerConfig.modifier * (1 - $DM.shackles_willpower * 0.1 ))>>
 		<<set _willpowerConfig.modTypes.bad.pushUnique("枷鎖")>>
 	<</if>>

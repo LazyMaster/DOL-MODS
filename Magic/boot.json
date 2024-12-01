@@ -1,6 +1,6 @@
 {
   "name": "DOL_Magic",
-  "version": "2.0.58",
+  "version": "2.1.5",
   "styleFileList": [],
   "scriptFileList": [
     "addon/DM.js"
@@ -116,7 +116,7 @@
         {
           "passage": "Widgets Blackjack",
           "findString": "<<if $estatePersistent.markedCards and $estatePersistent.markedCards.has(`${_c.name}${_c.suits[0]}`)>>",
-          "replace": "<<=setup.DM.DM_update()>><<if $estatePersistent.markedCards and $estatePersistent.markedCards.has(`${_c.name}${_c.suits[0]}`) or $DM.perk_switch.Transpass_perk >>",
+          "replace": "<<if $estatePersistent.markedCards and $estatePersistent.markedCards.has(`${_c.name}${_c.suits[0]}`) or $DM.perk_switch.Transpass_perk >>",
           "all": true
         },
         {
@@ -128,16 +128,6 @@
           "passage": "Widgets Brothel",
           "findString": "<<widget \"startbrothelshow\">>",
           "replace": "<<widget \"startbrothelshow\">><<DM_Brothel_Show_start>>"
-        },
-        {
-          "passage": "Widgets Lake",
-          "findString": "Lake Meditate]]>><<pass 60>><<set $phase to 2>><<willpower 1>>",
-          "replace": "Lake Meditate]]>><<pass 60>><<set $phase to 2>><<willpower 1>><<=setup.DM.mag_daily_get('w')>>"
-        },
-        {
-          "passage": "Widgets Lake",
-          "findString": "Lake Meditate]]>><<pass 60>><<set $phase to 3>><<willpower 1>>",
-          "replace": "Lake Meditate]]>><<pass 60>><<set $phase to 3>><<willpower 1>><<=setup.DM.mag_daily_get('b')>>"
         },
         {
           "passage": "Characteristics",
@@ -180,6 +170,11 @@
           {
             "from": "statChange.worldCorruption(\"soft\", V.world_corruption_hard);",
             "to": "setup.DM.weeklypass()\n\t;statChange.worldCorruption(\"soft\", V.world_corruption_hard);",
+            "fileName": "time.js"
+          },
+          {
+            "from": "if (V.purity >= 1 && (V.demon >= 6 || (V.demon >= 1 && V.demonFeat))) {",
+            "to": "if (V.purity >= 1 && !V.DM.perk_switch.Demon_purity && (V.demon >= 6 || (V.demon >= 1 && V.demonFeat))) {",
             "fileName": "time.js"
           },
           {
