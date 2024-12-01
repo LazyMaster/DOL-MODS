@@ -286,6 +286,26 @@ setup.DM = {
             },
             'effect_describe':'你感到某種存在從你的身體中流失，你變軟弱了。'
         },
+        "sa_ped":{
+            'class':'mind control',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '怪癖獻祭',
+            'descript':'遺忘你所有的奇怪癖好，轉變成操控精神的能力。',
+            cost_function(_){
+                return -10 * Math.floor((V.promiscuity + V.exhibitionism + V.deviancy)/ 20)
+            },
+            'Effect_only':true,
+            'noswich':1,
+            Effect_f(){
+                V.promiscuity = 0
+                V.exhibitionism = 0
+                V.deviancy = 0
+            },
+            require_f(){
+            },
+            'effect_describe':'你感到某種存在從你的心靈中流失，你變軟弱了。'
+        },
         "sa_willpower":{
             'class':'mind control',
             'max':1,
@@ -293,15 +313,15 @@ setup.DM = {
             'name': '意志獻祭',
             'descript':'獻祭意志，讓你再次變成一個弱者。',
             cost_function(_){
-                return -10 * Math.floor(V.willpower / 100)
+                return -10 * Math.floor(V.willpower / 10)
             },
             'Effect_only':true,
             'noswich':1,
             Effect_f(){
-                V.willpower = V.willpower %= 100
+                V.willpower = V.willpower %= 10
             },
             require_f(){
-                if (V.willpower < 100) return '你沒有足夠的意志。'
+                if (V.willpower < 10) return '你沒有足夠的意志。'
             },
             'effect_describe':'你感到某種存在從你的心靈中流失，你變軟弱了。'
         },
