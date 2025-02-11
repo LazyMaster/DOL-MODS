@@ -956,7 +956,7 @@ setup.DM = {
             'descript':'母乳不會耗竭',
             'cost': 100,
         },
-        "milk_infinite":{
+        "presure_transform":{
             'class':'mind control',
             'max':1,
             'cost_type':'Class_PT',

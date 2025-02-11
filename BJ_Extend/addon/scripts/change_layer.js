@@ -17,6 +17,25 @@ Renderer.CanvasModels["main"].layers.lashes.srcfn=function(options) {
 Renderer.CanvasModels["main"].layers.brows.srcfn=function(options) {
     return 'img/face/' + options.facestyle + '/'+ (options.BE_brows_type||"")  + 'brow' + options.brows + '.png'
 }
+//HOT-FIX for 5.3.7
+Renderer.CanvasModels["main"].layers.base.srcfn=function(options) {
+    return options.mannequin ? "img/body/mannequin/basenoarms.png" : `img/body/basenoarms-f.png`;
+}
+Renderer.CanvasModels["main"].layers.leftarm.srcfn=function(options) {
+    if (options.mannequin) return "img/body/mannequin/leftarmidle.png";
+    if (options.arm_left === "cover") return "img/body/leftarmcover.png";
+    return `img/body/leftarmidle-f.png`
+}
+Renderer.CanvasModels["main"].layers.rightarm.srcfn=function(options) {
+    if (options.mannequin && options.handheld_position) return `img/body/mannequin/rightarm${options.handheld_position === "right_cover" ? "cover" : options.handheld_position}.png`;
+    if (options.mannequin) return "img/body/mannequin/rightarmidle.png";
+    if (options.arm_right === "cover" || options.handheld_position === "right_cover") return "img/body/rightarmcover.png";
+    if (options.handheld_position) return `img/body/rightarm${options.handheld_position}.png`;
+    return `img/body/rightarmidle-f.png`
+}
+delete Renderer.CanvasModels["main"].layers.left_iris.masksrcfn
+delete Renderer.CanvasModels["main"].layers.right_iris.masksrcfn
+//-----------------
 
 Renderer.CanvasModels["main"].layers.breasts.srcfn=function(options){
     if (options.mannequin) {
