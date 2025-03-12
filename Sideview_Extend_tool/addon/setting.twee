@@ -1,0 +1,19 @@
+:: SE setting
+
+
+<br><br>
+Sideview Extend 設定
+<br><br>
+
+<<=setup.SE.update()>>
+<<=setup.SE.text_addbuttum()>>
+
+<br><br>
+<br><<link [[確認|SE setting]]>><</link>>
+<br><<link [[離開|Attitudes]]>><</link>>
+
+:: SE Widgets [widget]
+
+<<widget "Sideview_Extend_setting">>
+    <br><<link [[Sideview Extend 設定|SE setting]]>><</link>>
+<</widget>>

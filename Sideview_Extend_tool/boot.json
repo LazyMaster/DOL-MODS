@@ -1,0 +1,62 @@
+{
+  "name": "Sideview_Extend_Tool",
+  "version": "0.0.3",
+  "styleFileList": [],
+  "scriptFileList_earlyload": [],
+  "scriptFileList_inject_early": [],
+  "scriptFileList_preload": [],
+  "scriptFileList": [
+    "addon/svr.js"
+  ],
+  "tweeFileList": [
+    "addon/setting.twee"
+  ],
+  "imgFileList": [],
+  "additionFile": [],
+  "addonPlugin": [
+    {
+      "modName": "TweeReplacer",
+      "addonName": "TweeReplacerAddon",
+      "modVersion": "1.0.0",
+      "params": [
+        {
+          "passage": "Widgets Attitudes",
+          "findString": "<<loveInterestFunction>>",
+          "replace": "<<loveInterestFunction>><<Sideview_Extend_setting>>"
+        },
+        {
+          "passage": "Widgets Canvas Model Main",
+          "findString": "<<modelprepare-player-clothes>>",
+          "replace": "<<SE_Canvas_add>><<modelprepare-player-clothes>>"
+        }
+      ]
+    },
+    {
+      "modName": "ReplacePatcher",
+      "addonName": "ReplacePatcherAddon",
+      "modVersion": "1.0.0",
+      "params": {
+        "js": []
+      }
+    }
+  ],
+  "dependenceInfo": [
+    {
+      "modName": "ModLoader",
+      "version": ">=1.1.0"
+    },
+    {
+      "modName": "TweeReplacer",
+      "version": ">=1.0.0"
+    },
+    {
+      "modName": "ReplacePatcher",
+      "version": ">=1.0.0"
+    },
+    {
+      "modName": "BeautySelectorAddon",
+      "version": "^2.0.0"
+    }
+  ],
+  "additionBinaryFile": []
+}
