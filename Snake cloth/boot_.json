@@ -1,57 +1,37 @@
 {
-  "name": "Snake cloth",
-  "version": "1.40.1",
+  "name": "Snakecloth",
+  "version": "1.0.32",
   "styleFileList": [],
+  "scriptFileList_earlyload": [],
+  "scriptFileList_inject_early": [],
+  "scriptFileList_preload": [],
   "scriptFileList": [],
   "tweeFileList": [],
+  "imgFileList": [],
+  "additionFile": [
+    "cloth_addon/haltersundress_s_lower.json",
+    "cloth_addon/haltersundress_s_upper.json",
+    "cloth_addon/invisible_mask.json",
+    "cloth_addon/king_pant.json",
+    "cloth_addon/nun_t1_lo.json",
+    "cloth_addon/nun_t1_up.json",
+    "cloth_addon/nun_t2_lo.json",
+    "cloth_addon/nun_t2_up.json"
+  ],
   "addonPlugin": [
     {
-      "modName": "ModdedClothesAddon",
-      "addonName": "ModdedClothesAddon",
-      "modVersion": "^1.1.0",
-      "params": {
-        "clothes": [
-          {
-            "key": "upper",
-            "filePath": "cloth_addon/haltersundress_s_upper.json"
-          },
-          {
-            "key": "lower",
-            "filePath": "cloth_addon/haltersundress_s_lower.json"
-          },
-          {
-            "key": "lower",
-            "filePath": "cloth_addon/king_pant.json"
-          },
-          {
-            "key": "upper",
-            "filePath": "cloth_addon/nun_t1_up.json"
-          },
-          {
-            "key": "lower",
-            "filePath": "cloth_addon/nun_t1_lo.json"
-          },
-          {
-            "key": "upper",
-            "filePath": "cloth_addon/nun_t2_up.json"
-          },
-          {
-            "key": "lower",
-            "filePath": "cloth_addon/nun_t2_lo.json"
-          },
-          {
-            "key": "face",
-            "filePath": "cloth_addon/invisible_mask.json"
-          }
-        ]
-      }
+      "modName": "ModLoader DoL ImageLoaderHook",
+      "addonName": "ImageLoaderAddon",
+      "modVersion": "^2.3.0",
+      "params": []
     },
+    
     {
       "modName": "BeautySelectorAddon",
       "addonName": "BeautySelectorAddon",
       "modVersion": "^2.0.0",
       "params": {
-        "type": "Snake cloth",
+        "type": "Snakecloth",
         "imgFileList": [
           "img/clothes/face/kingmask/frayed_gray.png",
           "img/clothes/face/kingmask/full_gray.png",
@@ -346,21 +326,30 @@
   ],
   "dependenceInfo": [
     {
+      "modName": "ModLoader",
+      "version": ">=1.1.0"
+    },
+    {
+      "modName": "TweeReplacer",
+      "version": ">=1.0.0"
+    },
+    {
+      "modName": "ReplacePatcher",
+      "version": ">=1.0.0"
+    },
+    {
+      "modName": "ModdedClothesAddon",
+      "version": "^1.1.0"
+    },
+    {
+      "modName": "ModLoader DoL ImageLoaderHook",
+      "version": "^2.3.0"
+    },
+    {
       "modName": "BeautySelectorAddon",
       "version": "^2.0.0"
     }
   ],
-  "additionFile": [
-    "cloth_addon/haltersundress_s_lower.json",
-    "cloth_addon/haltersundress_s_upper.json",
-    "cloth_addon/invisible_mask.json",
-    "cloth_addon/king_pant.json",
-    "cloth_addon/nun_t1_lo.json",
-    "cloth_addon/nun_t1_up.json",
-    "cloth_addon/nun_t2_lo.json",
-    "cloth_addon/nun_t2_up.json"
-  ],
-  "imgFileList": [],
   "additionBinaryFile": [
     "img/clothes/face/kingmask/frayed_gray.png",
     "img/clothes/face/kingmask/full_gray.png",

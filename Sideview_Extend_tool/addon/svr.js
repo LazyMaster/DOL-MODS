@@ -10,6 +10,10 @@ setup.SE = {
             for (let key in this.buttums) {
                 if (V.SE[key] === undefined) V.SE[key] = false;
             }
+            for (let name in this.layers) {
+                this.layer_replacer(name)
+            }
+            
             this.key_dict.updated = true
         }
 
@@ -32,7 +36,7 @@ setup.SE = {
         
         
     },
-    'Canvas_add':{
+    'canvas':{
         'always':{
             condition(){
                 return true
@@ -68,13 +72,16 @@ setup.SE = {
     assign_buttums(n_buttums){
         Object.assign(this.buttums, n_buttums)
     },
+    assign_canvas(n_canvas){
+        Object.assign(this.canvas, n_canvas)
+    },
     layer_replacer(name){
         this.layers[name].vanila_src = Renderer.CanvasModels.main.layers[name].srcfn;
         const self = this;
-        Renderer.CanvasModels.main.layers[name].srcfn = function(...args) {
+        Renderer.CanvasModels.main.layers[name].srcfn = function(options) {
             return self.layers[name].condition() 
-                ? self.layers[name].srcfn()
-                : self.layers[name].vanila_src.call(this, ...args);
+                ? self.layers[name].srcfn(options)
+                : self.layers[name].vanila_src(options);
         };    
     },
     text_addbuttum(){
@@ -83,12 +90,12 @@ setup.SE = {
             if (this.buttums[key].type === 'checkbox'){
                 _text += `<laSEl><<checkbox "$SE.${key}" false true autocheck>> ${this.buttums[key].name}</laSEl><br>`
             }
-            else if (this.buttums.key.type === 'listbox'){
+            else if (this.buttums[key].type === 'listbox'){
                 _text +=`
                 ${this.buttums[key].name}
                 <<listbox "$SE.${key}" autoselect>>`
                 for (let opt in this.buttums[key].list){
-                    `<<option "${opt}" "${this.buttums[key].list.opt}">>`
+                    _text +=`<<option "${opt}" "${this.buttums[key].list[opt]}">>`
                 }
                 _text +=`<</listbox>><br><br>`
             }
@@ -98,8 +105,8 @@ setup.SE = {
 }
 DefineMacro("SE_Canvas_add", function () {
     setup.SE.update()
-        for (let key in setup.SE.Canvas_add){
-            if (setup.SE.Canvas_add[key].condition()) setup.SE.Canvas_add[key].effect()
+        for (let key in setup.SE.canvas){
+            if (setup.SE.canvas[key].condition()) setup.SE.canvas[key].effect()
         }
         }
     )

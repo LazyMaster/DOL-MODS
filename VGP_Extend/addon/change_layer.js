@@ -1,163 +1,56 @@
-
-Renderer.CanvasModels["main"].layers.sclera.srcfn=function(options) {
-    return 'img/face/' + options.facestyle +'/' + (options.SE_eyes_type||"")  + (options.eyes_bloodshot ? "sclerabloodshot" : "sclera") + '.png'
-}
-Renderer.CanvasModels["main"].layers.left_iris.srcfn=function(options) {
-    const iris = options.trauma ? "irisempty" : "iris";
-	const half = options.SE_eyeorg ? "_org" : (options.eyes_half ? "_halfclosed" : "");
-    return 'img/face/' + options.facestyle +'/' + (options.SE_eyes_type||"")  + iris  + half + '_left.png'
-}
-Renderer.CanvasModels["main"].layers.right_iris.srcfn=function(options) {
-    const iris = options.trauma ? "irisempty" : "iris";
-	const half = options.SE_eyeorg ? "_org" : (options.eyes_half ? "_halfclosed" : "");
-    return 'img/face/' + options.facestyle +'/' + (options.SE_eyes_type||"")  + iris  + half + '_right.png'
-}
-Renderer.CanvasModels["main"].layers.eyelids.srcfn=function(options) {
-    return 'img/face/' + options.facestyle +'/' + (options.SE_eyes_type||"")  + 'eyelids' + (options.eyes_half ? "_halfclosed" : "") + '.png'
-}
-Renderer.CanvasModels["main"].layers.lashes.srcfn=function(options) {
-    return 'img/face/' + options.facestyle +'/' + (options.SE_eyes_type||"")  + 'lashes' + (options.eyes_half ? "_halfclosed" : "") + '.png'
-}
-Renderer.CanvasModels["main"].layers.brows.srcfn=function(options) {
-    return 'img/face/' + options.facestyle +'/'+ (options.SE_brows_type||"")  + 'brow' + options.brows + '.png'
-}
-Renderer.CanvasModels["main"].layers.mouth.srcfn=function(options) {
-    return 'img/face/' + options.facestyle +'/' + (options.SE_mouth_type||"") + 'mouth' + options.mouth + '.png'
-}
-Renderer.CanvasModels["main"].layers.breasts.srcfn=function(options){
-    if (options.mannequin) {
-        return "img/body/mannequin/breasts/" +
-            (options.breast_size - 1 > 0 ? options.breast_size - 1 : 0) +
-            (options.breasts === "cleavage" && options.breast_size >= 4 ? "_clothed" : "") + ".png"
-    } else {
-        if (options.breast_size <= 0) return "";
-        let fn = "breasts" + options.breast_size + (options.breasts === "cleavage" && options.breast_size >= 3 ? "_clothed" : "") + ".png";
-        return "img/body/breasts/" + (options.SE_breasts_type||'')  + fn;
+ 
+let e_buttuns={
+    'org_iris':{
+        'name':'高潮眼',
+        'type':'checkbox'},
+    'head_type':{
+        'name':'頭型',
+        'type':'listbox',
+        'list':{
+            'default' : 'default',
+            'type1' : '1',
+            'type2' : '2'
+        }
     }
-}
-//HOT-FIX for 5.3.7
-Renderer.CanvasModels["main"].layers.base.srcfn=function(options) {
-    return options.mannequin ? "img/body/mannequin/basenoarms.png" : `img/body/basenoarms-f.png`;
-}
-Renderer.CanvasModels["main"].layers.leftarm.srcfn=function(options) {
-    if (options.mannequin) return "img/body/mannequin/leftarmidle.png";
-    if (options.arm_left === "cover") return "img/body/leftarmcover.png";
-    return `img/body/leftarmidle-f.png`
-}
-Renderer.CanvasModels["main"].layers.rightarm.srcfn=function(options) {
-    if (options.mannequin && options.handheld_position) return `img/body/mannequin/rightarm${options.handheld_position === "right_cover" ? "cover" : options.handheld_position}.png`;
-    if (options.mannequin) return "img/body/mannequin/rightarmidle.png";
-    if (options.arm_right === "cover" || options.handheld_position === "right_cover") return "img/body/rightarmcover.png";
-    if (options.handheld_position) return `img/body/rightarm${options.handheld_position}.png`;
-    return `img/body/rightarmidle-f.png`
-}
-delete Renderer.CanvasModels["main"].layers.left_iris.masksrcfn
-delete Renderer.CanvasModels["main"].layers.right_iris.masksrcfn
-//-----------------
+    }
 
-//basehead
-Renderer.CanvasModels["main"].layers.basehead.srcfn=function(options) {
-    if (options.mannequin) return "img/body/mannequin/basehead.png"
-    if (!options.SE_head_type) return `img/body/basehead.png`
-    return `img/face/${options.facestyle}/${options.SE_head_type}basehead.png`
+let e_layers={
+    "left_iris": {
+        condition(){
+            return V.SE.org_iris_show
+        },
+        srcfn(options) {
+            return `img/svr/iris_org/iris_org.png`;
+        },
+    },
+    "right_iris": {
+        condition(){
+            return V.SE.org_iris_show
+        },
+        srcfn(options) {
+            return `img/svr/iris_org/iris_org.png`;
+        },
+    },
+    "basehead": {
+        condition(){
+            return (V.SE.head_type) && (V.SE.head_type !== 'default')
+        },
+        srcfn(options) {
+            return options.mannequin ? `img/body/mannequin/basehead.png` : `img/svr/head/basehead_${V.SE.head_type}.png`
+        },
+    },
 }
-
-//增加layer
-Renderer.CanvasModels["main"].layers.side_border={
-    srcfn(options) {
-        return 'img/face/' + options.facestyle+ '/' +(options.SE_side_type||'') + 'side_border.png'
-    },
-    showfn(options) {
-        return options.show_face
-    },
-    filters: ["SE_border"],
-    z: ZIndices.side_border , //120 
-    animation: "idle" 
-}
-
-//----------------------------------------
-//--修改
-
-
-setup.SE = {
-    'type_init' : {
-        "eyes_type" : "",
-        "breasts_type" : "",
-        "side_type" : "",
-        "head_type": "",
-        "mouth_type": "",
-        "brows_type": ""
-    },
-    'type_b_list' : {
-        "eyes_type" : false,
-        "breasts_type" : false,
-        "side_type" : false,
-        "pussy_type": false,
-        "head_type": false,
-        "mouth_type": false,
-        "brows_type": false
-    },
-    'init': {
-        "org_last_blush" : "0",
-        "easyerblush" : "0",
-        "left_lashes" : false,
-        "right_lashes" : false
-    },
-    update(){
-        if (V.SE === undefined)V.SE = {};
-        //update
-        for (let key in this.init) {
-            if (V.SE[key] === undefined) V.SE[key] = this.init[key];
+let e_canvas={
+    'eye_org':{
+        condition(){
+            return V.SE.org_iris
+        },
+        effect(){
+            V.SE.org_iris_show = V.orgasmdown >= 1
         }
-        for (let key in this.type_init) {
-            if (V.SE[key] === undefined) V.SE[key] = this.type_init[key];
-        }
-    },
-    layer_loader(){
-        let _text = ''
-        for(let key in this.type_init){
-            _text += '<<set _modeloptions.SE_'+ key +' to $SE.' + key +'>>'
-        }
-        return _text
-    },
-    simple_type_choice(type_name,num,buttum_name_list =false){
-        let _text = ''
-        _text += '<<listbox "$SE.' + type_name + '_type" autoselect>>'
-	    _text += '  <<option "Default" "">>'
-        if (buttum_name_list){
-            for(let i = 0;i < num;i ++){
-                _text += '  <<option "' + buttum_name_list[i] +'" "SE_' + type_name + '_' + i + '/">>'
-            }
-        }else{
-            for(let i = 0;i < num;i ++){
-                _text += '  <<option "SE_' + type_name+'_' + i + '" "SE_' + type_name + '_' + i + '/">>'
-            }
-        }
-        _text += '<</listbox>>'
-        _text += '<br><br>'
-        return _text
-    },
-    type_choice_b(vari,buttums){
-        let _text = ''
-        _text += '<<listbox \"' + vari + '\" autoselect>>'
-	    _text += '  <<option "Default" "">>'
-        for(let buttum in buttums){
-	        _text += '  <<option \"' + buttum + '\" \"' + buttums[buttum] + '\">>'
-        }
-        _text += '<</listbox>>'
-        _text += '<br>'
-        return _text
-    },
-    colour_choice(vari){
-        let _text = ''
-        _text += '<<listbox \"' + vari + '\" autoselect>>'
-        for(let buttum of ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow"]){
-	        _text += '  <<option \"' + buttum + '\" \"' + buttum + '\">>'
-        }
-        _text += '<</listbox>>'
-        _text += '<br><br>'
-        return _text
     }
 }
 
-
+setup.SE.assign_layers(e_layers)
+setup.SE.assign_buttums(e_buttuns)
+setup.SE.assign_canvas(e_canvas)
