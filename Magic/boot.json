@@ -1,12 +1,11 @@
 {
   "name": "DOL_Magic",
-  "version": "2.1.9",
+  "version": "2.1.41",
   "styleFileList": [],
   "scriptFileList": [
     "addon/DM.js"
   ],
   "tweeFileList": [
-    "addon/DM_perk.twee",
     "addon/DM_widget.twee"
   ],
   "imgFileList": [],
@@ -165,6 +164,11 @@
           {
             "from": "fragment.append(dailySchoolEffects());",
             "to": "fragment.append(wikifier(\"DM_daily\"));fragment.append(dailySchoolEffects());",
+            "fileName": "time.js"
+          },
+          {
+            "from": "const feats = earnHourlyFeats();",
+            "to": "setup.DM.hourlypass()\n\t;const feats = earnHourlyFeats();;",
             "fileName": "time.js"
           },
           {

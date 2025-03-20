@@ -3,24 +3,30 @@ setup.SE = {
         'enable':true,
         'updated':false,
     },
+    layers_update(){
+        for (let name in this.layers) {
+            this.layer_replacer(name)
+        }
+    },
     update(){
         //update
-        if (!this.key_dict.updated){
+        if (!this.key_dict.updated || V.SE.reupdate){
             if (V.SE === undefined)V.SE = {};
             for (let key in this.buttums) {
                 if (V.SE[key] === undefined) V.SE[key] = false;
             }
-            for (let name in this.layers) {
-                this.layer_replacer(name)
-            }
-            
             this.key_dict.updated = true
+            V.SE.reupdate = false
         }
 
     },
     'layers':{
     },
     'buttums':{
+        'reupdate':{
+            'name':'重更新',
+            'type':'checkbox'
+        },
         'easyerblush':{
             'name':'更容易臉紅',
             'type':'checkbox'
@@ -76,13 +82,17 @@ setup.SE = {
         Object.assign(this.canvas, n_canvas)
     },
     layer_replacer(name){
+        if (this.layers[name].replaced){
+            return false
+        }
         this.layers[name].vanila_src = Renderer.CanvasModels.main.layers[name].srcfn;
         const self = this;
         Renderer.CanvasModels.main.layers[name].srcfn = function(options) {
-            return self.layers[name].condition() 
+            return self.layers[name].condition(options) 
                 ? self.layers[name].srcfn(options)
                 : self.layers[name].vanila_src(options);
         };    
+        this.layers[name].replaced = true
     },
     text_addbuttum(){
         let _text = ''
@@ -97,7 +107,7 @@ setup.SE = {
                 for (let opt in this.buttums[key].list){
                     _text +=`<<option "${opt}" "${this.buttums[key].list[opt]}">>`
                 }
-                _text +=`<</listbox>><br><br>`
+                _text +=`<</listbox>><br>`
             }
         }
         return _text
@@ -111,3 +121,4 @@ DefineMacro("SE_Canvas_add", function () {
         }
     )
 
+setup.SE.layers_update()

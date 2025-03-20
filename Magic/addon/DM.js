@@ -1,15 +1,5 @@
 
 
-function DM_MinArousal_decorator(_f) {
-    return  function(){
-        let result = _f()
-        setup.DM.DM_update()
-        if (V.DM.shackles_arousal){
-            result += V.DM.shackles_arousal * 1000
-        }
-        return result
-    }   
-}
 // NEXT : 
 // 更多主動獲得點數機制
 //     奪取童貞 淨化腐化
@@ -89,19 +79,26 @@ setup.DM = {
         'mind control':{
             'dancestat':{
                 'name':'跳舞經驗',
-                'cost':10
+                'cost':1
             },
             'prostitutionstat':{
                 'name':'賣淫經驗',
-                'cost':1
+                'cost':0.1
             },
             'masseur_stat':{
                 'name':'按摩經驗',
-                'cost':1
+                'cost':0.2
             }
         },
         'alchemy':{
         },
+        'b_magic':{
+            'DM.shackles_arousal_reward':{
+                'name':'慾望枷鎖',
+                'cost':0.1
+            }
+        }
+
     },
     'init': {
         'Is_game_started':false,
@@ -121,9 +118,13 @@ setup.DM = {
         'stat_transform_history':{},
         'Foldout':{},
         'shackles_willpower':0,
+        'shackles_arousal_reward_start':false,
+        'shackles_arousal_reward_end':false,
+        'shackles_arousal_reward':0,
         'shackles_arousal':0,
         'milk_gain':0,
-        'effect_message':''
+        'effect_message':'',
+        'weekly_money':0
     },
     DM_update_spell_list:[]
     ,
@@ -136,12 +137,19 @@ setup.DM = {
                     V.DM[key] = this.init[key]
                 }
             }
+            for (let key in this.Perks) {
+                if (V.DM[key] === undefined){
+                    V.DM[key] = 0
+                }
+            }
             this.DM_update_spell_list = Object.keys(this.Perks).filter(key => this.Perks[key].update && typeof this.Perks[key].update === "function");
             if (V.backgroundTraits.includes("greenthumb")){V.DM["Greenthumb"] = 1}
+            if (V.backgroundTraits.includes("lustful")){V.DM["Lustful"] = 1}
         }
         //update
         V.milk_max = (V.cow >= 6 ? 6000 : 3000 )+ 300 * V.DM.milk_gain
         V.milk_amount = V.DM.perk_switch.milk_infinite ? (Math.max(V.milk_amount,Math.round(V.milk_volume/3)) || Math.round(V.milk_volume/3)) :(V.milk_amount || 0);
+        V.semen_max = (V.cow >= 6 ? 6000 : 3000 )+ 300 * V.DM.semen_gain || 500
         V.semen_amount = V.DM.perk_switch.semen_infinite ? (Math.max(V.semen_amount,Math.round(V.semen_volume*0.8)) || Math.round(V.semen_volume*0.8)) :(V.semen_volume || 0);
         V.milk_volume = V.milk_volume || 30;
         V.orgasmcount = V.DM.perk_switch.org_infinite ? (Math.min(V.orgasmcount , 3) || 0) : (V.orgasmcount||0)
@@ -158,6 +166,12 @@ setup.DM = {
         for (let key of this.DM_update_spell_list){
             if (V.DM.perk_switch[key]) this.Perks[key].update();
         }
+        if (V.DM.perk_switch.shackles_arousal && V.DM.shackles_arousal === 10){
+            V.DM.shackles_arousal_reward_end = false
+        }else{
+            V.DM.shackles_arousal_reward_start = false
+        }
+        
     },
     getValueByPath(obj, path) {
         let keys = path.split('.');
@@ -238,14 +252,16 @@ setup.DM = {
         },
         "shackles_arousal":{
             'class':'b_magic',
-            'max':9,
+            'max':10,
             'cost_type':'Class_PT',
             'name': '慾望枷鎖',
-            'descript':'慾望下限會上升<<print $DM.shackles_arousal*1000>>，法力恢復增加0.<<print $DM.shackles_arousal>>倍。',
+            descript(){
+                return `慾望下限會上升${(V.DM.shackles_arousal === 10 ?'9999' : V.DM.shackles_arousal+'000')}，法力恢復增加${(V.DM.shackles_arousal === 10 ?'4' :'0.'+ V.DM.shackles_arousal)}倍。`
+            },
             'cost': 0,
             'reducible' : true,
             'shackles':true,
-            update(){V.arousal = Math.max(V.arousal , V.DM.shackles_arousal*1000) || V.arousal}
+            update(){V.arousal = Math.max(V.arousal , Math.min(V.DM.shackles_arousal*1000 , 9999)) || V.arousal}
         },
         //點數補充方案
         "sa_mana":{
@@ -263,9 +279,66 @@ setup.DM = {
                 V.DM.Mana = V.DM.Mana %= 100
             },
             require_f(){
-                if (V.DM.Mana < 100) return '你沒有足夠的法力。'
+                if (V.DM.Mana < 100) return '沒有足夠的法力。'
             },
-            'effect_describe':'你變強了。'
+            'effect_describe':'法力被轉換了。'
+        },
+        "sa_mana_auto":{
+            'class':'base',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '法力自動精鍊',
+            'descript':'在法力滿值的時候自動精煉。',
+            cost_function(_){
+                return 100
+            },
+            update(){
+                if (V.DM.Mana_max - V.DM.Mana < V.DM.hourly_M){
+                    let _c = Math.ceil((V.DM.hourly_M + V.DM.Mana - V.DM.Mana_max)/100)
+                    V.DM.Mana -= _c*100
+                    V.DM.class_pt.base += _c
+                }
+            },
+            'effect_describe':'法力自動精鍊開始了。'
+        },
+        "ge_mana":{
+            'class':'base',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '應急法力',
+            'descript':'獲得應急的法力。',
+            cost_function(_){
+                return 1
+            },
+            'Effect_only':true,
+            'noswich':1,
+            Effect_f(){
+                V.DM.Mana += 30
+            },
+            'effect_describe':'法力被補充了。'
+        },
+        "sa_alchemy_change":{
+            'class':'alchemy',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '等價交易',
+            'descript':'把身上一半的金錢轉換成鍊金點數。',
+            cost_function(_){
+                return -10 * Math.floor(V.money / 200000)
+            },
+            'Effect_only':true,
+            'noswich':1,
+            Effect_f(){
+                V.DM.cost_money = -100000 * Math.floor(V.money / 200000)
+                wikifier('<<money $DM.cost_money "鍊金術">>')
+                wikifier('<<clamp>>')
+                wikifier('<<updatesidebarmoney>>')
+                delete V.DM.cost_money
+            },
+            require_f(){
+                if (V.money < 200000) return '沒有足夠的金錢。'
+            },
+            'effect_describe':'黃金變成了某種轉化的力量。'
         },
         "sa_physique":{
             'class':'meat',
@@ -274,7 +347,7 @@ setup.DM = {
             'name': '體能獻祭',
             'descript':'獻祭體能，讓你再次變成一個弱者。',
             cost_function(_){
-                return -10 * Math.floor(V.physique / 1000)
+                return -100 * Math.floor(V.physique / 1000)
             },
             'Effect_only':true,
             'noswich':1,
@@ -303,7 +376,7 @@ setup.DM = {
                 V.deviancy = 0
             },
             require_f(){
-                if ((V.promiscuity + V.exhibitionism + V.deviancy)>=20) return '你沒有足夠的癖好。'
+                if ((V.promiscuity + V.exhibitionism + V.deviancy)<=20) return '你沒有足夠的癖好。'
             },
             'effect_describe':'你感到某種存在從你的心靈中流失，你變軟弱了。'
         },
@@ -439,6 +512,25 @@ setup.DM = {
                     return '這個法術對你沒效'
                 }
             }
+        },
+        "virginity_kiss":{
+            'class':'meat',
+            'subclass':'virginity',
+            'max':1,
+            'cost_type':'M',
+            'name': '初吻修復',
+            'descript':'恢復初吻。',
+            'cost': 500,
+            'Effect_only':true,
+            'noswich':1,
+            'Effect':"<<set $player.virginity.kiss to true>>",
+            'perk_require':'virginity_control',
+            require_f(){
+                if (V.player.virginity.kiss === true){
+                    return '這個法術對你沒效'
+                }
+            },
+            'effect_describe':'世界線輕微的被干涉了，你從來沒有親吻過。'
         },
         //---------------------------------------------------------------------------------
         //塑能 對能量的控制
@@ -600,10 +692,20 @@ setup.DM = {
             'max':1,
             'cost_type':'Class_PT',
             'name': '園藝大師',
-            'descript':'精通園藝',
-            'cost': 0,
+            'descript':'精通園藝。',
+            'cost': 10,
             'noswich':1,
             'Effect':"<<set $backgroundTraits.pushUnique(\"greenthumb\")>>"
+        },        
+        "Lustful":{
+            'class':'meat',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '異常淫蕩',
+            'descript':'讓興奮隨時間上升(得到特性)。',
+            'cost': 50,
+            'noswich':1,
+            'Effect':"<<set $backgroundTraits.pushUnique(\"lustful\")>>"
         },
         //--------------------------------------------------------------------------
         //轉化 對轉化的控制------------------------------------------------------------------
@@ -786,6 +888,21 @@ setup.DM = {
             'descript':'轉化物質的能力',
             'cost': 100
         },
+        "spray_craft":{
+            'class':'alchemy',
+            'max':5,
+            'cost_type':'Class_PT',
+            'name': '噴霧生成',
+            descript(){
+                return `每小時能夠生成${V.DM.spray_craft}瓶噴霧。`
+            },
+            'cost': 100,
+            require_f(){
+                if (!V.DM.material_craft){
+                    return '需要物質創造'
+                }
+            }
+        },
         "slave_w":{
             'class':'alchemy',
             'max':1,
@@ -849,8 +966,8 @@ setup.DM = {
             'spell_end_effect':'',
             times_f(n){
                 if (n <= 3){return n}
-                return 3
-            }
+                return Math.ceil(n-3/2) + 3
+        }
         },
         "fastgun":{
             'class':'mind control',
@@ -928,6 +1045,24 @@ setup.DM = {
                 
                 if (V.cow >= 6){V.milk_max  = 6000 + 300 * V.DM.milk_gain}
                 else{V.milk_max  = 3000 + 300 * V.DM.milk_gain}
+            },
+        },
+        "semen_gain":{
+            'class':'meat',
+            'subclass':'liquid',
+            'max':40,
+            'cost_type':'Class_PT',
+            'name': '恐怖精囊',
+            'descript':'增加精液量。<br>現在精液容量:<<print $semen_volume>><br>現在精液容量最大值:<<print $semen_max>>',
+            'cost': 50,
+            'noswich':1,
+            Effect_f(){
+                
+                V.semen_volume += 300
+                V.semen_amount = V.semen_volume
+                
+                if (V.cow >= 6){V.milk_max  = 6000 + 300 * V.DM.semen_gain}
+                else{V.milk_max  = 3000 + 300 * V.DM.semen_gain}
             },
         },
         "milk_nofull":{
@@ -1220,6 +1355,7 @@ setup.DM = {
             },
             'require_m':2
         },
+
         "milk_volume_die":{
             'class':'meat',
             'subclass':'liquid',
@@ -1277,7 +1413,7 @@ setup.DM = {
             },
             'require_m':2
         },
-        "semen_volume_charge":{
+        "semen_volume_die":{
             'class':'meat',
             'subclass':'liquid',
             'max':1,
@@ -1335,7 +1471,9 @@ setup.DM = {
         let _perkdata = this.Perks[perk_name]
         let _text = "";
         //描述
-        _text += (_perkdata.name + ":" + _perkdata.descript );
+        _text += _perkdata.name + ":" 
+        _text +=  typeof _perkdata.descript === "function" ? _perkdata.descript() : _perkdata.descript
+
         if (_perkdata.spell){_text += this.printtimes(perk_name)}
         //LV顯示
         let _ismax = false;
@@ -1515,20 +1653,30 @@ setup.DM = {
         this.DM_update()
         V.DM.daily_M = 10 *((1 + V.DM.Mana_pool));
         let _modifier = 1;
-        _modifier *= (V.DM.shackles_willpower*0.1 + 1);
-        _modifier *= (V.DM.shackles_arousal*0.1 + 1);
+        if (V.DM.perk_switch.shackles_willpower) _modifier *= (V.DM.shackles_willpower*0.1 + 1);
+        if (V.DM.perk_switch.shackles_arousal) _modifier *= V.DM.shackles_arousal === 10 ? 5 : (V.DM.shackles_arousal*0.1 + 1);
         V.DM.daily_M *= _modifier;
         V.DM.daily_M = Math.floor(V.DM.daily_M)
+        V.DM.hourly_M = Math.floor(V.DM.daily_M/0.24)/100
+
     },
     willpower_modifier(){
         let _modifier = 1;
         if (V.DM.perk_switch.shackles_willpower)_modifier -= V.DM.shackles_willpower * 0.1;
         return _modifier
     },
-    mag_daily_get(){
+    hourlypass(){
         this.mag_daily()
-        V.DM.Mana += Math.floor(V.DM.daily_M)
-        if (V.DM.Mana > V.DM.Mana_max) V.DM.Mana = V.DM.Mana_max
+        V.DM.Mana += V.DM.hourly_M
+        if (V.DM.perk_switch.spray_craft && V.spray < V.spraymax){
+            wikifier('<<spray $DM.spray_craft>>')
+        }
+        if (V.DM.perk_switch.shackles_arousal && V.DM.shackles_arousal === 10) {
+            if (V.DM.shackles_arousal_reward_start & !V.DM.shackles_arousal_reward_end) {
+                V.DM.shackles_arousal_reward_end = true
+                V.DM.shackles_arousal_reward += 1}
+            V.DM.shackles_arousal_reward_start = true
+        }
     },
     weeklypass(){
         if (V.DM.perk_switch.Noforget){
@@ -1537,9 +1685,11 @@ setup.DM = {
                 V.maths_exam = Math.clamp(V.maths_exam + 7, -100, 200);
                 V.english_exam = Math.clamp(V.english_exam + 7, -100, 200);
                 V.history_exam = Math.clamp(V.history_exam + 7, -100, 200);
+
             }
         }
-        V.money += 100000 * (V.DM.slave_b + V.DM.slave_w)
+        V.DM.weekly_money = 100000 * (V.DM.slave_b + V.DM.slave_w)
+        wikifier('<<money $DM.weekly_money "難過人偶">>')
         V.DM.effect_message_weekly = true
     },
     effect_message(){
@@ -1606,15 +1756,6 @@ setup.DM = {
         _text += this.think_magic_history(_class_name)
         _text += (this.classes_cn[_class_name] + '點數: ' + "<span class=\"gold\">" + this.get_class_pt(_class_name) + "</span>");
         _text += '<br>';
-        if (V.DM._class_menu_chosen == 'alchemy' && V.money >= 100000){
-            _text += '現有金錢: <<print Math.trunc($money/100)>><br>'
-            _text += this.Linkbuttun('把£1000轉換成10點鍊金點數','<<set $money -= 100000>><<set $DM.class_pt.alchemy += 10>><<clamp>>')
-            _text += '<br>'
-        }
-        if (V.DM._class_menu_chosen == 'alchemy' && V.money >= 1000000){
-            _text += this.Linkbuttun('把£10000轉換成100點鍊金點數','<<set $money -= 1000000>><<set $DM.class_pt.alchemy += 100>><<clamp>>')
-            _text += '<br>'
-        }
         return _text
     },
     get_subclass(perk_name){

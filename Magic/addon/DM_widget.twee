@@ -44,10 +44,11 @@
 
 <<widget "DM_overlay_menu_front_page">>
 	<br>
-	法力池: <<print $DM.Mana>> / <<print $DM.Mana_max>>
+	法力池: <<print Math.floor($DM.Mana)>> / <<print $DM.Mana_max>>
 	<br>
 	<<=setup.DM.mag_daily()>>
 	每日恢復:<<print $DM.daily_M>><br>
+	每小時恢復:<<print $DM.hourly_M>><br>
 
 <</widget>>
 
@@ -59,12 +60,12 @@
 	<<=setup.DM.List_Generator(V.DM.f_pairs)>>
 <</widget>>
 <<widget "DM_overlay_menu_buy_list">>
-	法力池: <<print $DM.Mana>> / <<print $DM.Mana_max>>
+	法力池: <<print Math.floor($DM.Mana)>> / <<print $DM.Mana_max>>
 	<br><br>
 	<<=setup.DM.List_Generator(V.DM.f_pairs)>>
 <</widget>>
 <<widget "DM_class_menu">>
-	法力池: <<print $DM.Mana>> / <<print $DM.Mana_max>><br>
+	法力池: <<print Math.floor($DM.Mana)>> / <<print $DM.Mana_max>><br>
 	<<=setup.DM.class_describe(V.DM._class_menu_chosen)>>
 	<<=setup.DM.twee_class_list()>>
 <</widget>>
@@ -87,8 +88,6 @@
 
 
 <<widget "DM_daily">>
-	<<=setup.DM.mag_daily_get()>>
-
 	<<set $DM.daily.Convince to false>>
 	<<set $DM.daily.expel_idlers to false>>
 	<<if $DM.doll>>
@@ -99,11 +98,14 @@
 			<<set $doll_work_times += !Number(V.daily.school.attended.english)>>
 			<<set $doll_work_times += !Number(V.daily.school.attended.history)>>
 			<<set $doll_work_times += !Number(V.daily.school.attended.swimming)>>
+			<<set $doll_work_times += !Number(V.daily.school.attended.housekeeping)>>
+			
 			<<set V.daily.school.attended.science to true>>
 			<<set V.daily.school.attended.maths to true>>
 			<<set V.daily.school.attended.english to true>>
 			<<set V.daily.school.attended.history to true>>
 			<<set V.daily.school.attended.swimming to true>>
+			<<set V.daily.school.attended.housekeeping to true>>
 		<</if>>
 	<</if>>
 <</widget>>

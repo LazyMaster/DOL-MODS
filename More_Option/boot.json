@@ -1,6 +1,6 @@
 {
   "name": "Dol_MoreOption",
-  "version": "1.3.6",
+  "version": "1.3.8",
   "styleFileList": [],
   "scriptFileList_inject_early": [],
   "scriptFileList": [],
@@ -67,6 +67,18 @@
           "passage": "Monster Tower",
           "findString": "<<if $harpy gte 6 and $birdFly gte 1>>",
           "replace": "<<if $harpy gte 6 or ($EazierDol_fly and ($angel gte 6 or $demon gte 6 or $fallenangel gte 2))>>",
+          "all": true
+        },
+        {
+          "passage": "Widgets Bird",
+          "findString": "\t<<if $harpy gte 6>>\n\t\t<<if $birdFly isnot 1>>",
+          "replace": "\t<<if $harpy gte 6 or ($EazierDol_fly and ($angel gte 6 or $demon gte 6 or $fallenangel gte 2))>>\n\t\t<<if $EazierDol_fly isnot true and $birdFly isnot 1>>",
+          "all": true
+        },
+        {
+          "passage": "Widgets Bird",
+          "findString": "\t\t<<elseif $birdFly is 1>>\n\t\t\t<<flight_time_check 60>>",
+          "replace": "\t\t<<elseif $birdFly is 1 or $EazierDol_fly>>\n\t\t\t<<flight_time_check 60>>",
           "all": true
         },
         {
@@ -219,12 +231,6 @@
           }
         ]
       }
-    },
-    {
-      "modName": "ModLoader DoL ImageLoaderHook",
-      "addonName": "ImageLoaderAddon",
-      "modVersion": "^2.3.0",
-      "params": []
     }
   ],
   "dependenceInfo": [
@@ -240,5 +246,6 @@
       "modName": "ModLoader DoL ImageLoaderHook",
       "version": "^2.3.0"
     }
-  ]
+  ],
+  "additionBinaryFile": []
 }
