@@ -150,7 +150,7 @@ setup.DM = {
         V.milk_max = (V.cow >= 6 ? 6000 : 3000 )+ 300 * V.DM.milk_gain
         V.milk_amount = V.DM.perk_switch.milk_infinite ? (Math.max(V.milk_amount,Math.round(V.milk_volume/3)) || Math.round(V.milk_volume/3)) :(V.milk_amount || 0);
         V.semen_max = (V.cow >= 6 ? 6000 : 3000 )+ 300 * V.DM.semen_gain || 500
-        V.semen_amount = V.DM.perk_switch.semen_infinite ? (Math.max(V.semen_amount,Math.round(V.semen_volume*0.8)) || Math.round(V.semen_volume*0.8)) :(V.semen_volume || 0);
+        V.semen_amount = V.DM.perk_switch.semen_infinite ? (Math.max(V.semen_amount,Math.round(V.semen_volume*0.8)) || Math.round(V.semen_volume*0.8)) :(V.semen_amount || 0);
         V.milk_volume = V.milk_volume || 30;
         V.orgasmcount = V.DM.perk_switch.org_infinite ? (Math.min(V.orgasmcount , 3) || 0) : (V.orgasmcount||0)
         if (V.DM.perk_switch.milk_nofull && V.milk_amount >= V.milk_volume/2)  V.milk_amount = Math.round(V.milk_volume/2);
@@ -170,6 +170,12 @@ setup.DM = {
             V.DM.shackles_arousal_reward_end = false
         }else{
             V.DM.shackles_arousal_reward_start = false
+        }
+        V.DM.world_support_now = V.DM.world_support_now || 0
+        let w_d = V.DM.perk_switch.world_support ? V.DM.world_support - V.DM.world_support_now : -1 * V.DM.world_support_now
+        if (w_d) {
+            wikifier(`<<world_corruption "hard" ${-1 * w_d}>>`)
+            V.DM.world_support_now += w_d
         }
         
     },
@@ -263,6 +269,20 @@ setup.DM = {
             'shackles':true,
             update(){V.arousal = Math.max(V.arousal , Math.min(V.DM.shackles_arousal*1000 , 9999)) || V.arousal}
         },
+        "world_support":{
+            'class':'alchemy',
+            'max':10,
+            'cost_type':'Class_PT',
+            'name': '世界支柱',
+            descript(){
+                return `支撐世界，避免腐化。`
+            },
+            cost_function(n){
+                return 1000*(n+1)
+            },
+            'effect_describe':'世界更堅實了。',
+           
+        },
         //點數補充方案
         "sa_mana":{
             'class':'base',
@@ -316,6 +336,28 @@ setup.DM = {
                 V.DM.Mana += 30
             },
             'effect_describe':'法力被補充了。'
+        },
+        "mind_sa":{
+            'class':'b_magic',
+            'max':1,
+            'cost_type':'M',
+            'name': '心靈榨取',
+            'descript':'直接把法力補滿，但會造成巨大的心靈創傷。',
+            cost_function(_){
+                return 0
+            },
+            require_f(){
+                if (V.trauma > V.traumamax*(0.2))
+                return '你的心靈經不起搾取'
+            },
+            'Effect_only':true,
+            'noswich':1,
+            Effect_f(){
+                V.DM.Mana = V.DM.Mana_max
+                V.trauma = V.traumamax
+                V.DM.mind_sa_exp = V.DM.mind_sa_exp + 1 || 0
+            },
+            'effect_describe':'？？？？？？？？？？'
         },
         "sa_alchemy_change":{
             'class':'alchemy',
@@ -1525,7 +1567,7 @@ setup.DM = {
     ,
     getcost(perk_name){
         if (this.Perks[perk_name].cost_function){
-            return this.Perks[perk_name].cost_function(V.DM[perk_name])
+            return this.Perks[perk_name].cost_function(V.DM[perk_name || 0])
         }
         return this.Perks[perk_name].cost
     },
@@ -1674,7 +1716,8 @@ setup.DM = {
         if (V.DM.perk_switch.shackles_arousal && V.DM.shackles_arousal === 10) {
             if (V.DM.shackles_arousal_reward_start & !V.DM.shackles_arousal_reward_end) {
                 V.DM.shackles_arousal_reward_end = true
-                V.DM.shackles_arousal_reward += 1}
+                V.DM.shackles_arousal_reward = V.DM.shackles_arousal_reward + 1 || 0
+            }
             V.DM.shackles_arousal_reward_start = true
         }
     },

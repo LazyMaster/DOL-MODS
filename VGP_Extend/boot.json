@@ -1,6 +1,6 @@
 {
   "name": "VGP_Extend",
-  "version": "2.0.17",
+  "version": "2.0.18",
   "styleFileList": [],
   "scriptFileList": [
     "addon/change_layer.js"
@@ -185,6 +185,8 @@
           "img/face/default/sweet/makeup/mascara2.png",
           "img/face/default/sweet/makeup/mascara3.png",
           "img/face/default/sweet/makeup/mascara4.png",
+          "img/face/masks/left.png",
+          "img/face/masks/right.png",
           "img/hair/fringe/back/chest.png",
           "img/hair/fringe/back/feet.png",
           "img/hair/fringe/back/navel.png",
@@ -811,6 +813,8 @@
     "img/face/default/sweet/iris-empty.png~",
     "img/face/default/sweet/iris.png~",
     "img/face/default/sweet/lashes.png~",
+    "img/face/masks/left.png~",
+    "img/face/masks/right.png~",
     "img/hair/fringe/old_hime/feet.pdn",
     "img/svr/mouth-smile/1.png~",
     "img/svr/SE_head_1/basehead.png~"
@@ -988,6 +992,8 @@
     "img/face/default/sweet/makeup/mascara2.png",
     "img/face/default/sweet/makeup/mascara3.png",
     "img/face/default/sweet/makeup/mascara4.png",
+    "img/face/masks/left.png",
+    "img/face/masks/right.png",
     "img/hair/fringe/back/chest.png",
     "img/hair/fringe/back/feet.png",
     "img/hair/fringe/back/navel.png",
