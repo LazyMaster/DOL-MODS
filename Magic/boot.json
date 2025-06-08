@@ -1,6 +1,6 @@
 {
   "name": "DOL_Magic",
-  "version": "2.1.45",
+  "version": "2.1.46",
   "styleFileList": [],
   "scriptFileList": [
     "addon/DM.js"
@@ -162,13 +162,13 @@
       "params": {
         "js": [
           {
-            "from": "fragment.append(dailySchoolEffects());",
-            "to": "fragment.append(wikifier(\"DM_daily\"));fragment.append(dailySchoolEffects());",
+            "from": "dailySchoolEffects();",
+            "to": "setup.DM.dailypass();dailySchoolEffects();",
             "fileName": "time.js"
           },
           {
-            "from": "const feats = earnHourlyFeats();",
-            "to": "setup.DM.hourlypass()\n\t;const feats = earnHourlyFeats();;",
+            "from": "wikifier(\"orgasmHourlyRecovery\");",
+            "to": "setup.DM.hourlypass()\n\t\twikifier(\"orgasmHourlyRecovery\");",
             "fileName": "time.js"
           },
           {

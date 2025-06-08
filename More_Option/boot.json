@@ -1,6 +1,6 @@
 {
   "name": "Dol_MoreOption",
-  "version": "1.3.8",
+  "version": "1.3.9",
   "styleFileList": [],
   "scriptFileList_inject_early": [],
   "scriptFileList": [],
@@ -225,8 +225,8 @@
             "fileName": "bedroom-pills.js"
           },
           {
-            "from": "fragment.append(dailySchoolEffects());",
-            "to": "fragment.append(wikifier(\"MO_daily\"));fragment.append(dailySchoolEffects());",
+            "from": "dailySchoolEffects();",
+            "to": "wikifier(\"MO_daily\");dailySchoolEffects();",
             "fileName": "time.js"
           }
         ]

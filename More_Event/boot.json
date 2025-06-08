@@ -1,6 +1,6 @@
 {
   "name": "Dol_MoreEvent",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "styleFileList": [],
   "scriptFileList_inject_early": [],
   "scriptFileList": [],
@@ -36,8 +36,8 @@
       "params": {
         "js": [
           {
-            "from": "fragment.append(dailySchoolEffects());",
-            "to": "fragment.append(wikifier(\"ME_daily\"));fragment.append(dailySchoolEffects());",
+            "from": "dailySchoolEffects();",
+            "to": "wikifier(\"ME_daily\");dailySchoolEffects();",
             "fileName": "time.js"
           }
         ]
@@ -63,5 +63,6 @@
       "modName": "ModLoader DoL ImageLoaderHook",
       "version": "^2.3.0"
     }
-  ]
+  ],
+  "additionBinaryFile": []
 }

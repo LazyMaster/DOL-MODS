@@ -1354,7 +1354,7 @@ setup.DM = {
                 V.player.skin.layers = []
             },
             require_f(){
-                if (V.player.skin.layers === []){
+                if (!V.player.skin.layers){
                     return '似乎對你沒用'
                 }
             }
@@ -1706,6 +1706,20 @@ setup.DM = {
         let _modifier = 1;
         if (V.DM.perk_switch.shackles_willpower)_modifier -= V.DM.shackles_willpower * 0.1;
         return _modifier
+    },
+    dailypass(){
+	    V.DM.daily.Convince = false
+        V.DM.daily.expel_idlers = false
+        if (V.DM.doll){
+            if (Time.isSchoolDay(Time.yesterday) && $location !== "prison"){
+                V.daily.school.attended.science = true
+                V.daily.school.attended.maths = true
+                V.daily.school.attended.english = true
+                V.daily.school.attended.history = true
+                V.daily.school.attended.swimming = true
+                V.daily.school.attended.housekeeping = true
+            }
+        }
     },
     hourlypass(){
         this.mag_daily()
