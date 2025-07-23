@@ -1,6 +1,6 @@
 {
   "name": "DOL_Magic",
-  "version": "2.1.46",
+  "version": "2.1.54",
   "styleFileList": [],
   "scriptFileList": [
     "addon/DM.js"

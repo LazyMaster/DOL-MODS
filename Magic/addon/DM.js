@@ -178,6 +178,7 @@ setup.DM = {
             V.DM.world_support_now += w_d
         }
         
+        
     },
     getValueByPath(obj, path) {
         let keys = path.split('.');
@@ -268,6 +269,30 @@ setup.DM = {
             'reducible' : true,
             'shackles':true,
             update(){V.arousal = Math.max(V.arousal , Math.min(V.DM.shackles_arousal*1000 , 9999)) || V.arousal}
+        },
+        "world_end":{
+            'class':'b_magic',
+            'max':1,
+            'cost_type':'M',
+            'name': '魔法廢棄',
+            'Effect_only':true,
+            'noswich':1,
+            descript(){
+                return `失去一切的魔法，甚至記憶也會遺忘。`
+            },
+            'cost': 0,
+            'reducible' : true,
+            'shackles':true,
+            Effect_f(){
+                let w_d = -1 * V.DM.world_support_now
+                if (w_d) {
+                    wikifier(`<<world_corruption "hard" ${-1 * w_d}>>`)
+                    V.DM.world_support_now += w_d
+                }
+                delete V.DM
+                setup.DM.init.Is_game_started = false
+            },
+
         },
         "world_support":{
             'class':'alchemy',
@@ -601,9 +626,13 @@ setup.DM = {
                 <<for _active_bodypart range setup.bodyparts>>
                     <<if $skin[_active_bodypart].pen === "marker">>
                         <<bodywriting_clear _active_bodypart>>
+                        <<bodywriting_clear _active_bodypart>>
                     <</if>>
                 <</for>>
-                <<>>`,
+                `,
+            Effect_f(){
+                if (V.skin['undefined']) delete V.skin['undefined'];
+            },
             'base':1
         },
         "repair_cloth":{
@@ -1590,6 +1619,7 @@ setup.DM = {
         return "可用"+ _use_limit +"次。"
     },
     t_levelup(perk_name){
+        let _text = ''
         if (this.Perks[perk_name].cost_type === 'Class_PT'){
             V.DM.class_pt[this.Perks[perk_name].class] -= this.getcost(perk_name)
         }
@@ -1602,8 +1632,9 @@ setup.DM = {
         if(this.Perks[perk_name].effect_describe){
             V.DM.desctibe_perk = perk_name
         }
-        if(this.Perks[perk_name].Effect ){return this.Perks[perk_name].Effect}
-        if(this.Perks[perk_name].Effect_f){return '<<=setup.DM.Perks.'+perk_name+'.Effect_f()>>'}
+        if(this.Perks[perk_name].Effect ){_text += this.Perks[perk_name].Effect}
+        if(this.Perks[perk_name].Effect_f){_text += '<<=setup.DM.Perks.'+perk_name+'.Effect_f()>>'}
+        return _text
     },
     t_perk_switch(perk_name){
         let _text = "";
@@ -1711,7 +1742,7 @@ setup.DM = {
 	    V.DM.daily.Convince = false
         V.DM.daily.expel_idlers = false
         if (V.DM.doll){
-            if (Time.isSchoolDay(Time.yesterday) && $location !== "prison"){
+            if (Time.isSchoolDay(Time.yesterday) && V.location !== "prison"){
                 V.daily.school.attended.science = true
                 V.daily.school.attended.maths = true
                 V.daily.school.attended.english = true
