@@ -1,6 +1,6 @@
 {
   "name": "DOL_Magic",
-  "version": "2.1.54",
+  "version": "2.1.59",
   "styleFileList": [],
   "scriptFileList": [
     "addon/DM.js"
@@ -23,18 +23,18 @@
         },
         {
           "passage": "Transformation Widgets",
-          "findString": "<<widget \"fallenTransform\">>\n\t<<if $angel gte 6>>",
-          "replace": "<<widget \"fallenTransform\">>\n\t<<if $angel gte 6 and !$DM.perk_switch.Angel_NoFallen>>"
+          "findString": "<<widget \"fallenTransform\">>\n\t<<if $angel gte 6",
+          "replace": "<<widget \"fallenTransform\">>\n\t<<if $angel gte 6 and !$DM.perk_switch.Angel_NoFallen"
         },
         {
           "passage": "Transformation Widgets",
-          "findString": "\t\t<<earnFeat \"Fallen Angel\">>\n\t<<elseif $angel gte 4>>",
-          "replace": "\t\t<<earnFeat \"Fallen Angel\">>\n\t<<elseif $angel gte 4 and !$DM.perk_switch.Angel_NoFallen>>"
+          "findString": "\t\t<<earnFeat \"Fallen Angel\">>\n\t<<elseif $angel gte 4",
+          "replace": "\t\t<<earnFeat \"Fallen Angel\">>\n\t<<elseif $angel gte 4 and !$DM.perk_switch.Angel_NoFallen"
         },
         {
           "passage": "Transformation Widgets",
-          "findString": "\t<<if $angel gt 0>>\n\t\t<<angelTransform 99>>\n\t<</if>>",
-          "replace": "\t<<if $angel gt 0 and !$DM.perk_switch.Angel_NoFallen>>\n\t\t<<angelTransform 99>>\n\t<</if>>"
+          "findString": "</span>\n\t<</if>>\n\t<<if $angel gt 0",
+          "replace": "</span>\n\t<</if>>\n\t<<if $angel gt 0 and !$DM.perk_switch.Angel_NoFallen"
         },
         {
           "passage": "Transformation Widgets",

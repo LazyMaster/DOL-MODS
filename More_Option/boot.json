@@ -1,6 +1,6 @@
 {
   "name": "Dol_MoreOption",
-  "version": "1.3.9",
+  "version": "1.3.14",
   "styleFileList": [],
   "scriptFileList_inject_early": [],
   "scriptFileList": [],
@@ -180,6 +180,31 @@
           "passage": "Widgets Island",
           "findString": "$islander_language += (_args[0] * 3)",
           "replace": "$islander_language += (_args[0] * 3 * ($MO_islander_language ? $MO_islander_language : 1))"
+        },
+        {
+          "passage": "Widgets Hopeless Cycle",
+          "findString": "_itemsHeld.length gte 2",
+          "replace": "_itemsHeld.length gte ($MO_eazierhc ? 10:2)"
+        },
+        {
+          "passage": "Widgets Hopeless Cycle",
+          "findString": "_itemsHeld.length lt 2",
+          "replace": "_itemsHeld.length lt ($MO_eazierhc ? 10:2)"
+        },
+        {
+          "passage": "Transformation Widgets",
+          "findString": "<<widget \"fallenTransform\">>\n\t<<if $angel gte 6",
+          "replace": "<<widget \"fallenTransform\">>\n\t<<if $angel gte 6 and !$MO_Angel_NoFallen"
+        },
+        {
+          "passage": "Transformation Widgets",
+          "findString": "\t\t<<earnFeat \"Fallen Angel\">>\n\t<<elseif $angel gte 4",
+          "replace": "\t\t<<earnFeat \"Fallen Angel\">>\n\t<<elseif $angel gte 4 and !$MO_Angel_NoFallen"
+        },
+        {
+          "passage": "Transformation Widgets",
+          "findString": "</span>\n\t<</if>>\n\t<<if $angel gt 0",
+          "replace": "</span>\n\t<</if>>\n\t<<if $angel gt 0 and !$MO_Angel_NoFallen"
         }
       ]
     },
@@ -228,6 +253,11 @@
             "from": "dailySchoolEffects();",
             "to": "wikifier(\"MO_daily\");dailySchoolEffects();",
             "fileName": "time.js"
+          },
+          {
+            "from": "return V.hcItems.filter(items => items.location === \"held\" && items.twoHanded) && V.hcItems.filter(items => items.location === \"held\").length < 2;",
+            "to": "return V.hcItems.filter(items => items.location === \"held\" && items.twoHanded) && V.hcItems.filter(items => items.location === \"held\").length < (V.MO_eazierhc ? 10:2);",
+            "fileName": "paintings.js"
           }
         ]
       }

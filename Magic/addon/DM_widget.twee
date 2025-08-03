@@ -87,28 +87,7 @@
 <</widget>>
 
 
-<<widget "DM_daily">>
-	<<set $DM.daily.Convince to false>>
-	<<set $DM.daily.expel_idlers to false>>
-	<<if $DM.doll>>
-		<<if Time.isSchoolDay(Time.yesterday) and $location isnot "prison">> 
-			<<set $doll_work_times to 0>>
-			<<set $doll_work_times += !Number(V.daily.school.attended.science)>>
-			<<set $doll_work_times += !Number(V.daily.school.attended.maths)>>
-			<<set $doll_work_times += !Number(V.daily.school.attended.english)>>
-			<<set $doll_work_times += !Number(V.daily.school.attended.history)>>
-			<<set $doll_work_times += !Number(V.daily.school.attended.swimming)>>
-			<<set $doll_work_times += !Number(V.daily.school.attended.housekeeping)>>
-			
-			<<set V.daily.school.attended.science to true>>
-			<<set V.daily.school.attended.maths to true>>
-			<<set V.daily.school.attended.english to true>>
-			<<set V.daily.school.attended.history to true>>
-			<<set V.daily.school.attended.swimming to true>>
-			<<set V.daily.school.attended.housekeeping to true>>
-		<</if>>
-	<</if>>
-<</widget>>
+
 
 
 

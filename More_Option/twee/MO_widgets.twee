@@ -11,12 +11,16 @@
     <label><<checkbox "$EazierDol_fox" false true autocheck>> 狐狸偷東西更容易提升</label><br>
     <label><<checkbox "$EazierDol_fly" false true autocheck>> 天使惡魔翅膀加強</label><br>
 	<label><<checkbox "$MO_puritymax" false true autocheck>> 純潔上限不被童貞影響</label><br>
+	<<if $DM is undefined>>
+	<label><<checkbox "$MO_Angel_NoFallen" false true autocheck>> 不墮落天使</label><br>
+	<</if>>
 	<label><<checkbox "$MO_enhance_pray" false true autocheck>> 神殿祈禱增強</label><br>
 	<label><<checkbox "$MO_Farm_event_eazier" false true autocheck>> 農場事件更容易發生(WIP)</label><br>
 	<label><<checkbox "$MO_niceanimal" false true autocheck>> 農場動物的尊敬不會自動衰減</label><br>
 	<label><<checkbox "$MO_farm_collect" false true autocheck>> 農場副產物每日自動收取</label><br>
 	<label><<checkbox "$EazierDol_TentacleForest" false true autocheck>> 觸手森林需求-1</label><br>
-	
+	<label><<checkbox "$MO_eazierhc" false true autocheck>> 更簡單的絕望輪迴(更多手)</label><br>
+
 	<br>
 	羅賓賺的錢<br>
 	<label><<radiobutton "$EazierDol_Robinrich" 300 autocheck>> 300(預設)</label>|
@@ -111,6 +115,10 @@
 	<<if $MO_pubfame is undefined>>
 		<<set $MO_pubfame to 1>>
 	<</if>>
+	<<if $MO_eazierhc is undefined>>
+		<<set $MO_eazierhc to false>>
+	<</if>>
+	
 <</widget>>
 <<widget "MO_Containers_mult">>
 	<<set _container to $container.home>>

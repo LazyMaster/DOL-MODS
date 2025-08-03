@@ -346,6 +346,38 @@ setup.DM = {
             },
             'effect_describe':'法力自動精鍊開始了。'
         },
+        "temperature_forever":{
+            'class':'base',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '自動保溫',
+            'descript':'總是讓身體的溫度保持正常。',
+            cost_function(_){
+                return 200
+            },
+            update(){
+                V.player.bodyTemperature = 37
+            },
+            'effect_describe':'自動保溫開始了。'
+        },
+        "auto_dry":{
+            'class':'base',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '自動烘乾',
+            'descript':'防止衣服太濕。',
+            cost_function(_){
+                return 200
+            },
+            update(){
+                V.upperwet = Math.min(V.upperwet,80)
+                V.lowerwet = Math.min(V.lowerwet,80)
+                V.underlowerwet = Math.min(V.underlowerwet,80)
+                V.underupperwet = Math.min(V.underupperwet,80)
+            },
+            'effect_describe':'自動烘乾開始了。'
+        },	
+
         "ge_mana":{
             'class':'base',
             'max':1,
@@ -653,6 +685,18 @@ setup.DM = {
                 ,
             'base':1
         },
+        "temperature_37":{
+            'class':'base',
+            'max':1,
+            'cost_type':'M',
+            'name': '恆溫',
+            'descript':'讓身體的溫度回到正常。',
+            'cost': 10,
+            'Effect_only':true,
+            'noswich':1,
+            'Effect':`<<set $player.bodyTemperature to 37>>`,
+            'base':1
+        },
         "tiredness_remove":{
             'class':'base',
             'max':1,
@@ -808,6 +852,15 @@ setup.DM = {
             'descript':'不因為隱藏轉化而受害。',
             'cost': 20
         },
+        "tansform_knowlege":{
+            'class':'meat',
+            'subclass':'transform',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '血脈學識',
+            'descript':'理解轉化。',
+            'cost': 1000
+        },
         "transform_angel":{
             'class':'meat',
             'subclass':'transform',
@@ -818,6 +871,7 @@ setup.DM = {
             'cost': 10,
             'hardness' : 5,
             require_f(){
+                if (V.DM.perk_switch.tansform_knowlege) return false
                 if (V.feats.currentSave['Angel'] === undefined) return '你不曾變成天使，無法解鎖這個能力'
             },
             'Effect_only':true,
@@ -839,6 +893,7 @@ setup.DM = {
             'cost': 10,
             'hardness' : 5,
             require_f(){
+                if (V.DM.perk_switch.tansform_knowlege) return false
                 if (V.feats.currentSave['Demon'] === undefined) return '你不曾變成惡魔，無法解鎖這個能力'
             },
             'Effect_only':true,
@@ -861,11 +916,30 @@ setup.DM = {
             'cost': 10,
             'hardness' : 5,
             require_f(){
+                if (V.DM.perk_switch.tansform_knowlege) return false
                 if (V.feats.currentSave['Neko'] === undefined) return '你不曾變成貓，無法解鎖這個能力'
             },
             'Effect_only':true,
             'noswich':1,
             'Effect':"<<transform 'cat' 70>><<DM_transform>><<clamp>><<updatesidebarimg>>",
+
+        },
+        "transform_fox":{
+            'class':'meat',
+            'subclass':'transform',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '狐化',
+            'descript':'增強狐化',
+            'cost': 10,
+            'hardness' : 5,
+            require_f(){
+                if (V.DM.perk_switch.tansform_knowlege) return false
+                if (V.feats.currentSave['Fox'] === undefined) return '你不曾變成狐，無法解鎖這個能力'
+            },
+            'Effect_only':true,
+            'noswich':1,
+            'Effect':`<<transform 'fox' 70>><<DM_transform>><<clamp>><<updatesidebarimg>>`,
 
         },
         "transform_wolf":{
@@ -878,6 +952,7 @@ setup.DM = {
             'cost': 10,
             'hardness' : 5,
             require_f(){
+                if (V.DM.perk_switch.tansform_knowlege) return false
                 if (V.feats.currentSave['Wolf'] === undefined) return '你不曾變成狼，無法解鎖這個能力'
             },
             'Effect_only':true,
@@ -895,6 +970,7 @@ setup.DM = {
             'cost': 10,
             'hardness' : 5,
             require_f(){
+                if (V.DM.perk_switch.tansform_knowlege) return false
                 if (V.feats.currentSave['Cattle'] === undefined) return '你不曾變成牛，無法解鎖這個能力'
             },
             'Effect_only':true,
@@ -912,6 +988,7 @@ setup.DM = {
             'cost': 10,
             'hardness' : 5,
             require_f(){
+                if (V.DM.perk_switch.tansform_knowlege) return false
                 if (V.feats.currentSave['Harpy'] === undefined) return '你不曾變成哈比，無法解鎖這個能力'
             },
             'Effect_only':true,
