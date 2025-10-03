@@ -15,5 +15,12 @@ Sideview Extend 設定
 :: SE Widgets [widget]
 
 <<widget "Sideview_Extend_setting">>
-    <br><<link [[Sideview Extend 設定|SE setting]]>><</link>>
+    <<=setup.SE.update()>>
+    <hr>
+    <div class="settingsGrid">
+		<div class="settingsHeader">Sideview Extend setting</div>
+        <div class="settingsToggleItemWide">
+		    <<=setup.SE.text_addbuttum()>>
+        </div>
+	</div>
 <</widget>>

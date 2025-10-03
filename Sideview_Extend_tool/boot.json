@@ -1,6 +1,6 @@
 {
   "name": "Sideview_Extend_Tool",
-  "version": "0.0.16",
+  "version": "0.0.20",
   "styleFileList": [],
   "scriptFileList_earlyload": [],
   "scriptFileList_inject_early": [],
@@ -20,9 +20,9 @@
       "modVersion": "1.0.0",
       "params": [
         {
-          "passage": "Widgets Attitudes",
-          "findString": "<<loveInterestFunction>>",
-          "replace": "<<loveInterestFunction>><<Sideview_Extend_setting>>"
+          "passage": "Widgets Mirror",
+          "findString": "<<mirrorSkin>>",
+          "replace": "<<mirrorSkin>><<Sideview_Extend_setting>>"
         },
         {
           "passage": "Widgets Canvas Model Main",
