@@ -44,9 +44,6 @@ setup.SE = {
     },
     'canvas':{
         'always':{
-            condition(){
-                return true
-            },
             effect(){
                 V._blush_flow_target = Math.min(5, Math.floor(V.arousal / 2000) + 1 + V.SE.easyerblush)
                 V._blush_flow_target = ( V._blush_flow_target < 2 && V.exposed >= 2) ? 2 : V._blush_flow_target
@@ -63,9 +60,6 @@ setup.SE = {
             }
         },
         'eye':{
-            condition(){
-                return true
-            },
             effect(){
                 if( V.SE.eye_half_close)T.modeloptions.eyes_half = true
             }
@@ -88,37 +82,45 @@ setup.SE = {
         this.layers[name].vanila_src = Renderer.CanvasModels.main.layers[name].srcfn;
         const self = this;
         Renderer.CanvasModels.main.layers[name].srcfn = function(options) {
-            return self.layers[name].condition(options) 
+            return self.layers[name].condition === undefined || self.layers[name].condition(options) 
                 ? self.layers[name].srcfn(options)
                 : self.layers[name].vanila_src(options);
         };    
         this.layers[name].replaced = true
     },
-    text_addbuttum(){
-        let _text = ''
-        for (let key in this.buttums){
-            if (this.buttums[key].type === 'checkbox'){
-                _text += `<laSEl><<checkbox "$SE.${key}" false true autocheck>> ${this.buttums[key].name}</laSEl><br>`
-            }
-            else if (this.buttums[key].type === 'listbox'){
-                _text +=`
-                ${this.buttums[key].name}
-                <<listbox "$SE.${key}" autoselect>>`
-                for (let opt in this.buttums[key].list){
-                    _text +=`<<option "${opt}" "${this.buttums[key].list[opt]}">>`
-                }
-                _text +=`<</listbox>><br>`
-            }
+text_addbuttum() {
+    let _text = '';
+    for (let key in this.buttums) {
+
+        if (this.buttums[key].type === 'checkbox') {
+            _text += `<label>
+                        <<checkbox "$SE.${key}" false true autocheck>> 
+                        ${this.buttums[key].name}
+                      </label><br>`;
+
         }
-        return _text
+        else if (this.buttums[key].type === 'listbox') {
+            _text += `
+                ${this.buttums[key].name}
+                <<listbox "$SE.${key}" autoselect>>
+            `;
+            for (let opt in this.buttums[key].list) {
+                _text += `<<option "${opt}" "${this.buttums[key].list[opt]}">>`;
+            }
+            _text += `<</listbox>><br>`;
+
+        }
     }
+    return _text;
+}
+
 }
 DefineMacro("SE_Canvas_add", function () {
     setup.SE.update()
         for (let key in setup.SE.canvas){
-            if (setup.SE.canvas[key].condition()) setup.SE.canvas[key].effect()
+            if (setup.SE.canvas[key].condition === undefined || setup.SE.canvas[key].condition()) setup.SE.canvas[key].effect()
         }
-        }
-    )
+    }
+)
 
 setup.SE.layers_update()
