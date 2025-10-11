@@ -23,16 +23,16 @@ setup.SE = {
     'layers':{
     },
     'buttums':{
-        'reupdate':{
-            'name':'重更新',
-            'type':'checkbox'
-        },
         'easyerblush':{
             'name':'更容易臉紅',
             'type':'checkbox'
         },
         'eye_half_close':{
             'name':'眼睛總是半開',
+            'type':'checkbox'
+        },
+        'force_trauma':{
+            'name':'強制創傷表情',
             'type':'checkbox'
         },
         'orgtear':{
@@ -60,8 +60,19 @@ setup.SE = {
             }
         },
         'eye':{
+            condition(){
+                return V.SE.eye_half_close
+            },
             effect(){
-                if( V.SE.eye_half_close)T.modeloptions.eyes_half = true
+                T.modeloptions.eyes_half = true
+            }
+        },
+        'truama':{
+            condition(){
+                return V.SE.force_trauma
+            },
+            effect(){
+                T.modeloptions.trauma = true
             }
         }
 
@@ -91,7 +102,6 @@ setup.SE = {
 text_addbuttum() {
     let _text = '';
     for (let key in this.buttums) {
-
         if (this.buttums[key].type === 'checkbox') {
             _text += `<label>
                         <<checkbox "$SE.${key}" false true autocheck>> 
