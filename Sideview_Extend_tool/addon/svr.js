@@ -15,8 +15,8 @@ setup.SE = {
             for (let key in this.buttums) {
                 if (V.SE[key] === undefined) V.SE[key] = false;
             }
-            this.key_dict.updated = true
-            V.SE.reupdate = false
+            this.key_dict.updated = true;
+            V.SE.reupdate = false;
         }
 
     },
@@ -88,42 +88,63 @@ setup.SE = {
     },
     layer_replacer(name){
         if (this.layers[name].replaced){
-            return false
+            return false;
         }
-        this.layers[name].vanila_src = Renderer.CanvasModels.main.layers[name].srcfn;
+        const mainLayer = Renderer.CanvasModels.main.layers[name];
+        const layer = this.layers[name];
         const self = this;
-        Renderer.CanvasModels.main.layers[name].srcfn = function(options) {
-            return self.layers[name].condition === undefined || self.layers[name].condition(options) 
-                ? self.layers[name].srcfn(options)
-                : self.layers[name].vanila_src(options);
-        };    
-        this.layers[name].replaced = true
+        for (const key of ["srcfn", "showfn"]) {
+            layer[`vanila_${key}`] = mainLayer[key];
+            if (layer[key]){
+                Renderer.CanvasModels.main.layers[name][key] = layer.condition === undefined ?
+                layer[key]:
+                function(options) {
+                    return layer.condition === undefined || layer.condition(options) 
+                        ? layer[key](options)
+                        : self.layers[name][`vanila_${key}`](options);
+                }
+            };    
+        }
+        for (const key of ["filters", "z"]) {
+            if (layer[key] !== undefined) mainLayer[key] = layer[key]
+        }
+        layer.replaced = true
     },
-text_addbuttum() {
-    let _text = '';
-    for (let key in this.buttums) {
-        if (this.buttums[key].type === 'checkbox') {
-            _text += `<label>
-                        <<checkbox "$SE.${key}" false true autocheck>> 
-                        ${this.buttums[key].name}
-                      </label><br>`;
+    text_addbuttum() {
+        let _text = '';
+        for (let key in this.buttums) {
+            if (this.buttums[key].type === 'checkbox') {
+                _text += `<label>
+                            <<checkbox "$SE.${key}" false true autocheck>> 
+                            ${this.buttums[key].name}
+                        </label><br>`;
 
-        }
-        else if (this.buttums[key].type === 'listbox') {
-            _text += `
-                ${this.buttums[key].name}
-                <<listbox "$SE.${key}" autoselect>>
-            `;
-            for (let opt in this.buttums[key].list) {
-                _text += `<<option "${opt}" "${this.buttums[key].list[opt]}">>`;
             }
-            _text += `<</listbox>><br>`;
+            else if (this.buttums[key].type === 'listbox') {
+                _text += `
+                    ${this.buttums[key].name}
+                    <<listbox "$SE.${key}" autoselect>>
+                `;
+                for (let opt in this.buttums[key].list) {
+                    _text += `<<option "${opt}" "${this.buttums[key].list[opt]}">>`;
+                }
+                _text += `<</listbox>><br>`;
 
+            }
+            else if (this.buttums[key].type === 'colour') {
+                _text += `
+                    ${this.buttums[key].name}
+                    <<listbox "$SE.${key}" autoselect>>
+                `;
+                for(let buttum of ["gray","black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow"]){
+                    _text += `<<option "${buttum}" "${buttum}">>`
+                }
+                _text += '<</listbox>><br>'
+                if (V.SE[key] ===undefined) V.SE[key] = "gray"
+            }
         }
+        return _text;
     }
-    return _text;
-}
-
 }
 DefineMacro("SE_Canvas_add", function () {
     setup.SE.update()
