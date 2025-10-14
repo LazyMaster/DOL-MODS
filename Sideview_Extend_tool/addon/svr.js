@@ -94,16 +94,14 @@ setup.SE = {
         const layer = this.layers[name];
         const self = this;
         for (const key of ["srcfn", "showfn"]) {
-            layer[`vanila_${key}`] = mainLayer[key];
-            if (layer[key]){
-                Renderer.CanvasModels.main.layers[name][key] = layer.condition === undefined ?
-                layer[key]:
-                function(options) {
-                    return layer.condition === undefined || layer.condition(options) 
+            if (layer[key]) {
+                layer[`vanila_${key}`] = mainLayer[key];
+                mainLayer[key] = function(options) {
+                    return V.SE !== undefined && (layer.condition === undefined || layer.condition(options))
                         ? layer[key](options)
                         : self.layers[name][`vanila_${key}`](options);
-                }
-            };    
+                };
+            }
         }
         for (const key of ["filters", "z"]) {
             if (layer[key] !== undefined) mainLayer[key] = layer[key]
@@ -143,6 +141,7 @@ setup.SE = {
                 if (V.SE[key] ===undefined) V.SE[key] = "gray"
             }
         }
+        _text += `<<link "應用">><<updatesidebarimg true>><</link>>`
         return _text;
     }
 }
