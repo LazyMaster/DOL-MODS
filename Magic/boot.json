@@ -1,6 +1,6 @@
 {
   "name": "DOL_Magic",
-  "version": "2.1.59",
+  "version": "2.1.60",
   "styleFileList": [],
   "scriptFileList": [
     "addon/DM.js"
@@ -208,8 +208,8 @@
             "fileName": "ingame.js"
           },
           {
-            "from": "if (V.effectsmessage && !V.statFreeze) {",
-            "to": "sWikifier(setup.DM.effect_message());\tif (V.effectsmessage && !V.statFreeze) {",
+            "from": "if (V.effectsmessage && !V.statFreeze",
+            "to": "sWikifier(setup.DM.effect_message());\tif (V.effectsmessage && !V.statFreeze",
             "fileName": "effect.js"
           }
         ]

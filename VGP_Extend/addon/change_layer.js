@@ -12,6 +12,15 @@ let e_buttuns={
             'type2' : '2'
         },
     },
+    'breasts_type':{
+        'name':'胸型',
+        'type':'listbox',
+        'list':{
+            'default' : '',
+            'wax' : '1',
+            'wax_clothed' : '2'
+        },
+    },
     'brow_type':{
             'name':'眉毛',
             'type':'listbox',
@@ -38,7 +47,9 @@ let e_buttuns={
             }
     }
 }
-
+const side_hair_condition_dict={
+    "default":{"head_type":"1"}
+    }
 let e_layers={
     "left_iris": {
         condition(options){
@@ -81,6 +92,33 @@ let e_layers={
         },
 
     },
+    "breasts": {
+        condition(options){
+            return V.SE.breasts_type && !options.mannequin
+        },
+		srcfn(options) {
+			const suffix = options.breasts === "cleavage" && options.breast_size >= 3 ? "_clothed.png" : ".png";
+			return `img/svr/breasts/SE_breasts_${V.SE.breasts_type}/breasts${options.breast_size}${suffix}`;
+		},
+    },
+    "hair_sides": {
+        condition(options){
+            const cond = side_hair_condition_dict[options.hair_sides_type];
+            if (cond){
+                for(let key in cond){
+                    if (V.SE[key] === cond[key]){
+                        options.SE_hairsidetype_1 =key
+                        options.SE_hairsidetype_2 =V.SE[key]
+                        return true
+                    }
+                }
+            }
+            return false
+        },
+		srcfn(options) {
+			return `img/hair/sides/${options.hair_sides_type}/${options.SE_hairsidetype_1}_${options.SE_hairsidetype_2}/${options.hair_sides_length}.png`;
+		},
+    }
 }
 let e_canvas={
     'eye_org':{
