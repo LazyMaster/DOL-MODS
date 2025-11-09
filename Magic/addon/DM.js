@@ -145,6 +145,10 @@ setup.DM = {
             this.DM_update_spell_list = Object.keys(this.Perks).filter(key => this.Perks[key].update && typeof this.Perks[key].update === "function");
             if (V.backgroundTraits.includes("greenthumb")){V.DM["Greenthumb"] = 1}
             if (V.backgroundTraits.includes("lustful")){V.DM["Lustful"] = 1}
+            if (V.DM.fatahenshin){
+                V.DM.futa_to_me = 1;
+                delete V.DM.fatahenshin;
+            }
         }
         //update
         V.milk_max = (V.cow >= 6 ? 6000 : 3000 )+ 300 * V.DM.milk_gain
@@ -155,7 +159,7 @@ setup.DM = {
         V.orgasmcount = V.DM.perk_switch.org_infinite ? (Math.min(V.orgasmcount , 3) || 0) : (V.orgasmcount||0)
         if (V.DM.perk_switch.milk_nofull && V.milk_amount >= V.milk_volume/2)  V.milk_amount = Math.round(V.milk_volume/2);
         V.DM.Mana_max = 100 * (1 + V.DM.Mana_pool);
-        if (V.DM.Mana > V.DM.Mana_max) V.DM.Mana = V.DM.Mana_max
+        if (V.DM.Mana > V.DM.Mana_max) V.DM.Mana = V.DM.Mana_max;
         if (V.player.penisExist) {
             V.semen_volume = V.semen_volume || V.semen_max;
             V.semen_amount = V.semen_amount || V.semen_volume;
@@ -667,11 +671,27 @@ setup.DM = {
             },
             'base':1
         },
+        "repair_cloth_auto":{
+            'class':'base',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '服裝自動修復',
+            'descript':'總是自動修復服裝。',
+            'cost': 100,
+            update(){
+                wikifier(`
+                    <<set _equip to setup.clothingLayer.all>>
+                    <<for _i to 0; _i lt _equip.length; _i++>>
+                        <<set $worn[_equip[_i]].integrity = clothingData(_equip[_i],$worn[_equip[_i]],'integrity_max')>>
+                    <</for>>
+                    <<dry>>`)
+            },
+        },
         "repair_cloth":{
             'class':'base',
             'max':1,
             'cost_type':'M',
-            'name': '修復',
+            'name': '服裝修復',
             'descript':'用魔法修復自己身上的服裝（順便烘乾）。',
             'cost': 10,
             'Effect_only':true,
@@ -869,7 +889,6 @@ setup.DM = {
             'name': '天使化',
             'descript':'增強天使化',
             'cost': 10,
-            'hardness' : 5,
             require_f(){
                 if (V.DM.perk_switch.tansform_knowlege) return false
                 if (V.feats.currentSave['Angel'] === undefined) return '你不曾變成天使，無法解鎖這個能力'
@@ -891,7 +910,6 @@ setup.DM = {
             'name': '惡魔化',
             'descript':'增強惡魔化',
             'cost': 10,
-            'hardness' : 5,
             require_f(){
                 if (V.DM.perk_switch.tansform_knowlege) return false
                 if (V.feats.currentSave['Demon'] === undefined) return '你不曾變成惡魔，無法解鎖這個能力'
@@ -914,7 +932,6 @@ setup.DM = {
             'name': '貓化',
             'descript':'增強貓化',
             'cost': 10,
-            'hardness' : 5,
             require_f(){
                 if (V.DM.perk_switch.tansform_knowlege) return false
                 if (V.feats.currentSave['Neko'] === undefined) return '你不曾變成貓，無法解鎖這個能力'
@@ -932,7 +949,6 @@ setup.DM = {
             'name': '狐化',
             'descript':'增強狐化',
             'cost': 10,
-            'hardness' : 5,
             require_f(){
                 if (V.DM.perk_switch.tansform_knowlege) return false
                 if (V.feats.currentSave['Fox'] === undefined) return '你不曾變成狐，無法解鎖這個能力'
@@ -950,7 +966,6 @@ setup.DM = {
             'name': '狼化',
             'descript':'增強狼化',
             'cost': 10,
-            'hardness' : 5,
             require_f(){
                 if (V.DM.perk_switch.tansform_knowlege) return false
                 if (V.feats.currentSave['Wolf'] === undefined) return '你不曾變成狼，無法解鎖這個能力'
@@ -968,7 +983,6 @@ setup.DM = {
             'name': '牛化',
             'descript':'增強牛化',
             'cost': 10,
-            'hardness' : 5,
             require_f(){
                 if (V.DM.perk_switch.tansform_knowlege) return false
                 if (V.feats.currentSave['Cattle'] === undefined) return '你不曾變成牛，無法解鎖這個能力'
@@ -986,7 +1000,6 @@ setup.DM = {
             'name': '鷹化',
             'descript':'增強鷹化',
             'cost': 10,
-            'hardness' : 5,
             require_f(){
                 if (V.DM.perk_switch.tansform_knowlege) return false
                 if (V.feats.currentSave['Harpy'] === undefined) return '你不曾變成哈比，無法解鎖這個能力'
@@ -1003,7 +1016,6 @@ setup.DM = {
             'name': '性轉換',
             'descript':'轉換成對立的性別。',
             'cost': 1000,
-            'hardness' : 5,
             require_f(){
                 if(V.sexStats.vagina.menstruation.currentState !== 'normal') return V.sexStats.vagina.menstruation.currentState === 'recovering' ? '你的身體正從懷孕中恢復。' : '你的胎兒阻止了你。'
                 if(V.earSlime.growth >= 50) return '耳朵史萊姆正在阻止你。'
@@ -1141,14 +1153,14 @@ setup.DM = {
             'spell_end_effect':'',
             times_f(_){return 1},
             spell_condition_f(){
-                return V.NPCList[V.mouthtarget] && V.NPCList[V.mouthtarget].gender === 'f'
+                return V.NPCList[V.mouthtarget]?.gender === 'f'
             }
         },
-        "fatahenshin":{
+        "futa_to_me":{
             'class':'meat',
             'max':1,
             'cost_type':'Class_PT',
-            'name': '扶他化(暫)',
+            'name': '扶他化(自身)',
             'descript':'暫時長出陰莖，只有沒有陰莖的人能用。',
             'cost': 200,
             'spell':true,
@@ -1171,6 +1183,24 @@ setup.DM = {
             times_f(_){return 1},
             spell_condition_f(){
                 return V.player.gender === 'f'
+            }
+        },
+        "futa_to_partner":{
+            'class':'meat',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '扶他化(他人)',
+            'descript':'暫時長出陰莖，只對沒有陰莖的人有用。',
+            'cost': 200,
+            'spell':true,
+            'spell_effect':`
+                對象長出了陰莖。
+                <<set $NPCList[$mouthtarget].penis to 'idle'>>`,
+            'spell_end_effect':`
+                對象的陰莖消失了。`,
+            times_f(_){return 1},
+            spell_condition_f(){
+                return V.NPCList[V.mouthtarget]?.penis === 'none'
             }
         },
         //---------------------------------------------------
@@ -1585,7 +1615,7 @@ setup.DM = {
             'max':1,
             'cost_type':'M',
             'name': '苗床生長',
-            'descript':'讓寄生蟲的孕育時間加速',
+            'descript':'讓寄生蟲的孕育時間加速。',
             'cost': 100,
             'Effect_only':true,
             'noswich':1,
@@ -1610,6 +1640,30 @@ setup.DM = {
 	            parasiteProgressTime(900, "vagina")
             },
             'require_m':3
+        },
+        "slime_begone":{
+            'class':'meat',
+            'max':1,
+            'cost_type':'M',
+            'name': '耳史再見',
+            'descript':'消除耳內史萊姆。',
+            'cost': 300,
+            'Effect_only':true,
+            'noswich':1,
+            'Effect':`
+                <<if $parasite.left_ear.name is "slime">>
+                    <<removeparasite left_ear>>
+                <</if>>
+                <<if $parasite.right_ear.name is "slime">>
+                    <<removeparasite right_ear>>
+                <</if>>`,
+            'require_m':3,
+            'effect_describe':'再見了朋友。',
+            require_f(){
+                if (V.parasite.left_ear?.name !== "slime" && V.parasite.right_ear?.name !== "slime"){
+                    return '沒有效果。'
+                }
+            }
         },
         //----------------------------
         

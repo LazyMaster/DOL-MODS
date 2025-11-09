@@ -93,14 +93,20 @@ setup.SE = {
         const mainLayer = Renderer.CanvasModels.main.layers[name];
         const layer = this.layers[name];
         const self = this;
-        for (const key of ["srcfn", "showfn"]) {
+        if (mainLayer === undefined) mainLayer=layer
+        for (const key of ["srcfn", "showfn","masksrcfn"]) {
             if (layer[key]) {
-                layer[`vanila_${key}`] = mainLayer[key];
-                mainLayer[key] = function(options) {
-                    return V.SE !== undefined && (layer.condition === undefined || layer.condition(options))
-                        ? layer[key](options)
-                        : self.layers[name][`vanila_${key}`](options);
-                };
+                if (mainLayer[key]){
+                    layer[`vanila_${key}`] = mainLayer[key];
+                    mainLayer[key] = function(options) {
+                        return V.SE !== undefined && (layer.condition === undefined || layer.condition(options))
+                            ? layer[key](options)
+                            : self.layers[name][`vanila_${key}`](options);
+                    }
+                }
+                else{
+                    mainLayer[key] = layer[key];
+                }
             }
         }
         for (const key of ["filters", "z"]) {
