@@ -8,7 +8,6 @@
     更多設定MOD
 	<br>
     <<EazierDol_setting_init>>
-    <label><<checkbox "$EazierDol_fox" false true autocheck>> 狐狸偷東西更容易提升</label><br>
     <label><<checkbox "$EazierDol_fly" false true autocheck>> 天使惡魔翅膀加強</label><br>
 	<label><<checkbox "$MO_puritymax" false true autocheck>> 純潔上限不被童貞影響</label><br>
 	<<if $DM is undefined>>
@@ -20,7 +19,7 @@
 	<label><<checkbox "$MO_farm_collect" false true autocheck>> 農場副產物每日自動收取</label><br>
 	<label><<checkbox "$EazierDol_TentacleForest" false true autocheck>> 觸手森林需求-1</label><br>
 	<label><<checkbox "$MO_eazierhc" false true autocheck>> 更簡單的絕望輪迴(更多手)</label><br>
-
+	<label><<checkbox "$MO_Stage_No_strip" false true autocheck>> 跳舞時不會因為高潮自動脫衣</label><br>
 	<br>
 	羅賓賺的錢<br>
 	<label><<radiobutton "$EazierDol_Robinrich" 300 autocheck>> 300(預設)</label>|

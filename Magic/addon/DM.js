@@ -1,10 +1,7 @@
 
 
-// NEXT : 
-// 更多主動獲得點數機制
-//     奪取童貞 淨化腐化
-//     扶他化
-//試煉 達成試煉獲得點數
+//NEXT 試煉 達成試煉獲得點數 儀式 敏感度調整
+
 
 
 setup.DM = {
@@ -167,6 +164,7 @@ setup.DM = {
             V.semen_volume = 0;
             V.semen_amount = 0;
         }
+        V.DM.alluremod = 1
         for (let key of this.DM_update_spell_list){
             if (V.DM.perk_switch[key]) this.Perks[key].update();
         }
@@ -181,6 +179,8 @@ setup.DM = {
             wikifier(`<<world_corruption "hard" ${-1 * w_d}>>`)
             V.DM.world_support_now += w_d
         }
+        
+
         
         
     },
@@ -261,6 +261,18 @@ setup.DM = {
             'reducible' : true,
             'shackles':true
         },
+        "allure_hide":{
+            'class':'mind control',
+            'max':4,
+            'cost_type':'Class_PT',
+            'name': '心理學隱身',
+            'descript':'降低誘惑。',
+            'cost': 50,
+            update(){
+                V.DM.alluremod = 1 - 0.2*V.DM.allure_hide
+            }
+        },
+        
         "shackles_arousal":{
             'class':'b_magic',
             'max':10,

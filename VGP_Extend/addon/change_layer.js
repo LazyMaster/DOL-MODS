@@ -45,28 +45,52 @@ let e_buttuns={
                 'default' : '',
                 'type1' : '1',
             }
-    }
+    },
+    'iris_light':{
+            'name':'眼睛反光',
+            'type':'listbox',
+            'list':{
+                '高' : 'h',
+                '低' : 'l',
+            }
+    },
+    'pussy_show':{
+            'name':'小穴特寫(WIP)',
+            'type':'checkbox',
+    },
 }
 const side_hair_condition_dict={
     "default":{"head_type":"1"}
     }
 let e_layers={
     "left_iris": {
-        condition(options){
-            return V.SE.org_iris_show
-        },
         srcfn(options) {
-            return `img/svr/iris_org/iris_org.png`;
+            if (V.SE.org_iris_show){
+                return `img/svr/iris_org/iris_org.png`;
+            }
+            return `img/svr/iris/iris.png`;
         },
     },
     "right_iris": {
-        condition(options){
-            return V.SE.org_iris_show
-        },
         srcfn(options) {
-            return `img/svr/iris_org/iris_org.png`;
+            if (V.SE.org_iris_show){
+                return `img/svr/iris_org/iris_org.png`;
+            }
+            return `img/svr/iris/iris.png`;
         },
     },
+	"iris_highlight": {
+		z: ZIndices.iris,
+		animation: "idle",
+
+		srcfn(options) {
+                const place = V.SE.iris_light || 'h'
+				return `img/svr/iris/iris_highlight_${place}.png`;
+		},
+		showfn(options) {
+				return options.show_face && !options.trauma;
+		}
+	},
     "basehead": {
         condition(options){
             return (V.SE.head_type)
@@ -118,6 +142,39 @@ let e_layers={
 		srcfn(options) {
 			return `img/hair/sides/${options.hair_sides_type}/${options.SE_hairsidetype_1}_${options.SE_hairsidetype_2}/${options.hair_sides_length}.png`;
 		},
+    },
+    "pussy_cum":{
+        srcfn(options) {
+            return `img/svr/pussy/pussy_cum.png`
+        },
+        showfn(options) {
+            return options.show_face && V.SE.pussy_show && V.SE.drip_vaginal >= 1
+        },
+        filters: ["body"],
+        z: 199.5,
+        animation: "idle" 
+    },
+    "pussy_org":{
+        srcfn(options) {
+            return `img/svr/pussy/pussy_org.png`
+        },
+        showfn(options) {
+            return options.show_face && V.SE.pussy_show && V.orgasmdown >= 1
+        },
+        filters: ["body"],
+        z: 200,
+        animation: "idle" 
+    },
+    "pussy":{
+        srcfn(options) {
+            return `img/svr/pussy/pussy.png`
+        },
+        showfn(options) {
+            return options.show_face && V.SE.pussy_show
+        },
+        filters: ["body"],
+        z: 199,
+        animation: "idle" 
     }
 }
 let e_canvas={
@@ -127,9 +184,18 @@ let e_canvas={
         },
         effect(){
             V.SE.org_iris_show = V.orgasmdown >= 1
-        }
+        },
+    },
+    'pussy_show':{
+        condition(){
+            return V.SE.pussy_show
+        },
+        effect(){
+            V.SE.drip_vaginal = Math.clamp(setup.bodyliquid.combined("vagina"), 0, 5);
+        },
     }
 }
+
 
 setup.SE.assign_layers(e_layers)
 setup.SE.assign_buttums(e_buttuns)

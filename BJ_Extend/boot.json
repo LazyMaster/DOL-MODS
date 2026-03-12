@@ -1,6 +1,6 @@
 {
   "name": "BJ_Extend",
-  "version": "1.3.66",
+  "version": "1.3.79",
   "styleFileList": [],
   "scriptFileList_earlyload": [],
   "scriptFileList_inject_early": [],
@@ -8,10 +8,7 @@
   "scriptFileList": [
     "addon/scripts/change_layer.js"
   ],
-  "tweeFileList": [
-    "addon/twees/setting.twee",
-    "addon/twees/widge.twee"
-  ],
+  "tweeFileList": [],
   "imgFileList": [],
   "additionFile": [
     "img/face/default/BE_eyes_0/lashes.png~",
@@ -28,41 +25,14 @@
       "modName": "TweeReplacer",
       "addonName": "TweeReplacerAddon",
       "modVersion": "1.0.0",
-      "params": [
-        {
-          "passage": "Widgets Attitudes",
-          "findString": "<<loveInterestFunction>>",
-          "replace": "<<loveInterestFunction>><<BJ_Extend_setting>>"
-        },
-        {
-          "passage": "Widgets Canvas Model Main",
-          "findString": "<<modelprepare-player-clothes>>",
-          "replace": "<<BJ_Canvas_add>><<modelprepare-player-clothes>>"
-        }
-      ]
+      "params": []
     },
     {
       "modName": "ReplacePatcher",
       "addonName": "ReplacePatcherAddon",
       "modVersion": "1.0.0",
       "params": {
-        "js": [
-          {
-            "from": "old_over_upper: 164,",
-            "to": "old_over_upper: 164,pussy:199,pussy_cum: 200,side_border: 120,side_border_pussy: 201,BE_left_lashes: 134,BE_left_lashes: 134 ,",
-            "fileName": "00-canvasmodel-data.js"
-          },
-          {
-            "from": "blush: 50,",
-            "to": "blush: 50,blush_cover: 135,",
-            "fileName": "00-canvasmodel-data.js"
-          },
-          {
-            "from": "this.preprocess(options);",
-            "to": "this.preprocess(options);setup.BE.preprocess_add(options)",
-            "fileName": "00-canvasmodel.js"
-          }
-        ]
+        "js": []
       }
     },
     {
@@ -125,6 +95,7 @@
           "img/face/default/browtop.png",
           "img/face/default/eyelids.png",
           "img/face/default/eyelids_halfclosed.png",
+          "img/face/default/full_mask.png",
           "img/face/default/irisempty_halfclosed_left.png",
           "img/face/default/irisempty_halfclosed_right.png",
           "img/face/default/irisempty_left.png",
@@ -442,6 +413,7 @@
     "img/face/default/browtop.png",
     "img/face/default/eyelids.png",
     "img/face/default/eyelids_halfclosed.png",
+    "img/face/default/full_mask.png",
     "img/face/default/irisempty_halfclosed_left.png",
     "img/face/default/irisempty_halfclosed_right.png",
     "img/face/default/irisempty_left.png",

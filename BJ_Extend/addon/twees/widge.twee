@@ -1,5 +1,0 @@
-:: BE Widgets [widget]
-
-<<widget "BJ_Extend_setting">>
-    <br><<link [[BJ Extend 設定|BE setting]]>><</link>>
-<</widget>>

@@ -10,15 +10,14 @@ setup.SE = {
     },
     update(){
         //update
-        if (!this.key_dict.updated || V.SE.reupdate){
+        if (!this.key_dict.updated){
             if (V.SE === undefined)V.SE = {};
             for (let key in this.buttums) {
                 if (V.SE[key] === undefined) V.SE[key] = false;
             }
             this.key_dict.updated = true;
-            V.SE.reupdate = false;
         }
-
+        this.layers_update()
     },
     'layers':{
     },
@@ -39,8 +38,29 @@ setup.SE = {
             'name':'高潮時流淚',
             'type':'checkbox'
         },
-        
-        
+        'actexp_brow':{
+            'name':'做表情-眉',
+            'type':'listbox',
+            'list':{
+                '不做' : '',
+                'top' : 'top',
+                'mid' : 'mid',
+                'low' : 'low',
+                'orgasm' : 'orgasm',
+            }
+        },
+        'actexp_mouth':{
+            'name':'做表情-嘴',
+            'type':'listbox',
+            'list':{
+                '不做' : '',
+                'chew' : 'chew',
+                'frown' : 'frown',
+                'neutral' : 'neutral',
+                'cry' : 'cry',
+                'smile' : 'smile',
+            }
+        }
     },
     'canvas':{
         'always':{
@@ -74,6 +94,22 @@ setup.SE = {
             effect(){
                 T.modeloptions.trauma = true
             }
+        },
+        'actexp_brow':{
+            condition(){
+                return V.SE.actexp_brow
+            },
+            effect(){
+                T.modeloptions.brows = V.SE.actexp_brow;
+            }
+        },
+        'actexp_mouth':{
+            condition(){
+                return V.SE.actexp_mouth
+            },
+            effect(){
+                T.modeloptions.mouth = V.SE.actexp_mouth;
+            }
         }
 
     },
@@ -87,17 +123,20 @@ setup.SE = {
         Object.assign(this.canvas, n_canvas)
     },
     layer_replacer(name){
-        if (this.layers[name].replaced){
-            return false;
-        }
-        const mainLayer = Renderer.CanvasModels.main.layers[name];
+        let mainLayer = Renderer.CanvasModels.main.layers[name];
         const layer = this.layers[name];
         const self = this;
-        if (mainLayer === undefined) mainLayer=layer
+
+        if (layer.replaced) return;
+        if (mainLayer === undefined){ 
+            Renderer.CanvasModels.main.layers[name] = layer;
+            layer.replaced = true
+            return true
+        }
         for (const key of ["srcfn", "showfn","masksrcfn"]) {
             if (layer[key]) {
                 if (mainLayer[key]){
-                    layer[`vanila_${key}`] = mainLayer[key];
+                    layer[`vanila_${key}`] = layer[`vanila_${key}`] || mainLayer[key];
                     mainLayer[key] = function(options) {
                         return V.SE !== undefined && (layer.condition === undefined || layer.condition(options))
                             ? layer[key](options)
@@ -135,24 +174,29 @@ setup.SE = {
                 _text += `<</listbox>><br>`;
 
             }
-            else if (this.buttums[key].type === 'colour') {
-                _text += `
-                    ${this.buttums[key].name}
-                    <<listbox "$SE.${key}" autoselect>>
-                `;
-                for(let buttum of ["gray","black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow"]){
-                    _text += `<<option "${buttum}" "${buttum}">>`
-                }
-                _text += '<</listbox>><br>'
-                if (V.SE[key] ===undefined) V.SE[key] = "gray"
-            }
         }
-        _text += `<<link "應用">><<updatesidebarimg true>><</link>>`
+        _text += `
+            <<link "應用">><<updatesidebarimg true>><</link>><br>
+            <<link "重設">><<=setup.SE.reset_setting()>><</link>>
+        `
         return _text;
+        
+    },
+    reset_setting() {
+        if (!V.SE) V.SE = {};
+
+        for (let key in this.buttums) {
+            const b = this.buttums[key];
+
+            if (b.type === "checkbox") V.SE[key] = false;
+            else if (b.type === "listbox") V.SE[key] = b.defaule || "";
+            else V.SE[key] = null;
+        }
     }
 }
 DefineMacro("SE_Canvas_add", function () {
     setup.SE.update()
+
         for (let key in setup.SE.canvas){
             if (setup.SE.canvas[key].condition === undefined || setup.SE.canvas[key].condition()) setup.SE.canvas[key].effect()
         }

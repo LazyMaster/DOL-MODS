@@ -1,6 +1,6 @@
 {
   "name": "DOL_Magic",
-  "version": "2.1.70",
+  "version": "2.1.74",
   "styleFileList": [],
   "scriptFileList": [
     "addon/DM.js"
@@ -211,6 +211,11 @@
             "from": "if (V.effectsmessage && !V.statFreeze",
             "to": "sWikifier(setup.DM.effect_message());\tif (V.effectsmessage && !V.statFreeze",
             "fileName": "effect.js"
+          },
+          {
+            "from": "V.allure = Math.floor(allure);",
+            "to": "allure *= V?.DM?.alluremod || 1 ;\tV.allure = Math.floor(allure);",
+            "fileName": "widgets.js"
           }
         ]
       }
