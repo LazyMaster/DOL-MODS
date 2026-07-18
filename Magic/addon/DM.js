@@ -59,10 +59,6 @@ setup.DM = {
                 'name':'生育經驗',
                 'cost':0.02
             },
-            'pregnancyStats.playerChildren':{
-                'name':'生育經驗',
-                'cost':0.02
-            },
             'sexStats.vagina.pregnancy.parasiteBirthEvents':{
                 'name':'陰道寄生蟲生育經驗',
                 'cost':0.1
@@ -165,9 +161,11 @@ setup.DM = {
             V.semen_amount = 0;
         }
         V.DM.alluremod = 1
+        V.DM.is_Orgasm_Threshold = 0
         for (let key of this.DM_update_spell_list){
             if (V.DM.perk_switch[key]) this.Perks[key].update();
         }
+        
         if (V.DM.perk_switch.shackles_arousal && V.DM.shackles_arousal === 10){
             V.DM.shackles_arousal_reward_end = false
         }else{
@@ -284,7 +282,21 @@ setup.DM = {
             'cost': 0,
             'reducible' : true,
             'shackles':true,
-            update(){V.arousal = Math.max(V.arousal , Math.min(V.DM.shackles_arousal*1000 , 9999)) || V.arousal}
+            update(){
+  
+                V.arousal = Math.max(V.arousal , Math.min(V.DM.shackles_arousal*1000 , 9999) * (V.combat?  1 - V.DM.shackles_arousal_small * 0.1 : 1 )) || V.arousal
+            }
+        },
+        
+        "shackles_arousal_small":{
+            'class':'b_magic',
+            'max':5,
+            'cost_type':'Class_PT',
+            'name': '慾望枷鎖耐受',
+            descript(){
+                return `戰鬥中慾望枷鎖的效力會減少${V.DM.shackles_arousal_small * 10}%。`
+            },
+            'cost': 100,
         },
         "world_end":{
             'class':'b_magic',
@@ -645,7 +657,26 @@ setup.DM = {
                     return '這個法術對你沒效'
                 }
             },
-            'effect_describe':'世界線輕微的被干涉了，你從來沒有親吻過。'
+            'effect_describe':'時間線輕微地被干涉了，你從來沒有親吻過。'
+        },
+        "virginity_handholding":{
+            'class':'meat',
+            'subclass':'virginity',
+            'max':1,
+            'cost_type':'M',
+            'name': '牽手修復',
+            'descript':'恢復牽手。',
+            'cost': 500,
+            'Effect_only':true,
+            'noswich':1,
+            'Effect':"<<set $player.virginity.handholding to true>>",
+            'perk_require':'virginity_control',
+            require_f(){
+                if (V.player.virginity.handholding === true){
+                    return '這個法術對你沒效'
+                }
+            },
+            'effect_describe':'時間線輕微地被干涉了，你從來沒有牽手過。'
         },
         //---------------------------------------------------------------------------------
         //塑能 對能量的控制
@@ -843,7 +874,7 @@ setup.DM = {
             'cost': 10,
             'noswich':1,
             'Effect':"<<set $backgroundTraits.pushUnique(\"greenthumb\")>>"
-        },        
+        },
         "Lustful":{
             'class':'meat',
             'max':1,
@@ -853,6 +884,33 @@ setup.DM = {
             'cost': 50,
             'noswich':1,
             'Effect':"<<set $backgroundTraits.pushUnique(\"lustful\")>>"
+        },
+        "Orgasm_Threshold":{
+            'class':'meat',
+            'max':5,
+            'cost_type':'Class_PT',
+            'name': '高潮閾',
+            'descript':'高潮後一定時間內不會高潮。(<<print V.DM.Orgasm_Threshold>>分鐘)',
+            'cost': 50,
+            update(){
+                if (V.DM.perk_switch.Orgasm_Threshold){
+                    V.DM.is_Orgasm_Threshold = Time.date.timeStamp - V.orgasmTimeStat < V.DM.Orgasm_Threshold * 60 * (V.DM.perk_switch.Orgasm_Threshold_ex && !V.combat ? 5 : 1) ? 1 : 0
+                    }
+            }
+        },
+        "Orgasm_Threshold_ex":{
+            'class':'meat',
+            'max':1,
+            'cost_type':'Class_PT',
+            'name': '高潮閾EX',
+            'descript':'非戰鬥狀態高潮閾的時間變成5倍。',
+            'cost': 500,
+            require_f(){
+                if (!V.DM.Orgasm_Threshold){
+                    return '需要先解鎖「高潮閾」才能解鎖這個能力。'
+                }
+                return false
+            }
         },
         //--------------------------------------------------------------------------
         //轉化 對轉化的控制------------------------------------------------------------------
@@ -1735,8 +1793,7 @@ setup.DM = {
         }
         _text = '<div style="border: 1px solid var(--300); padding: 0.3rem; margin: 0.15rem">' + _text + '</div>';
         return _text
-    }
-    ,
+    },
     getcost(perk_name){
         if (this.Perks[perk_name].cost_function){
             return this.Perks[perk_name].cost_function(V.DM[perk_name || 0])

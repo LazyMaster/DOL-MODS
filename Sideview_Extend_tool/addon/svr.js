@@ -60,7 +60,7 @@ setup.SE = {
                 'cry' : 'cry',
                 'smile' : 'smile',
             }
-        }
+        },
     },
     'canvas':{
         'always':{

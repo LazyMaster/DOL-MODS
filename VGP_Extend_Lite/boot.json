@@ -1,6 +1,6 @@
 {
   "name": "VGP_Extend_Lite",
-  "version": "1.0.8",
+  "version": "1.0.14",
   "styleFileList": [],
   "scriptFileList": [
     "addon/change_layer.js"

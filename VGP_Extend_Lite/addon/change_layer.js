@@ -28,8 +28,28 @@ const allowed_hair_fringe_list = Object.fromEntries(allowed_hair_fringe_types.ma
 const allowed_hair_sides_list = Object.fromEntries(allowed_hair_sides_types.map(x => [x, x]));
 
 let e_buttuns={
+    'actexp_mouth':{
+        'name':'做表情-嘴',
+        'type':'listbox',
+        'list':{
+            '不做' : '',
+            'chew' : 'chew',
+            'frown' : 'frown',
+            'neutral' : 'neutral',
+            'cry' : 'cry',
+            'smile' : 'smile',
+            'org' : 'org',
+        }
+    },
     'org_iris':{
         'name':'高潮眼',
+        'type':'checkbox'},
+    'act_org_iris':{
+        'name':'做高潮眼',
+        'type':'checkbox',
+    },
+    'org_mouth':{
+        'name':'高潮嘴',
         'type':'checkbox'},
     'head_type':{
         'name':'頭型',
@@ -63,6 +83,15 @@ let e_buttuns={
             'list':{
                 'default' : '',
                 'type1' : '1',
+            }
+    },
+    'mouth_org_type':{
+            'name':'嘴型 高潮',
+            'type':'listbox',
+            'list':{
+                'default' : '0',
+                'type1' : '1',
+                'type2' : '2',
             }
     },
     'eyestype':{
@@ -185,7 +214,8 @@ let e_layers={
 		},
 
         srcfn(options) {
-            return `img/svr/mouth-${options.mouth}/${V.SE[`mouth_${options.mouth}_type`]||"0"}.png`;
+            let _omouth_type = V.SE.org_mouth_show ? 'org':options.mouth;
+            return `img/svr/mouth-${_omouth_type}/${V.SE[`mouth_${_omouth_type}_type`]||"0"}.png`;
         },
 
     },
@@ -334,12 +364,20 @@ let e_layers={
     }
 }
 let e_canvas={
+    'org_mouth':{
+        condition(){
+            return V.SE.org_mouth
+        },
+        effect(){
+            V.SE.org_mouth_show = V.SE.actexp_mouth=='org' || V.orgasmdown >= 1
+        } 
+    },
     'eye_org':{
         condition(){
             return V.SE.org_iris
         },
         effect(){
-            V.SE.org_iris_show = V.orgasmdown >= 1
+            V.SE.org_iris_show = V.SE.act_org_iris || V.orgasmdown >= 1 
         },
     },
     'pussy_show':{
@@ -349,6 +387,14 @@ let e_canvas={
         effect(){
             V.SE.drip_vaginal = Math.clamp(setup.bodyliquid.combined("vagina"), 0, 5);
         },
+    },
+    'actexp_mouth':{
+        condition(){
+            return V.SE.actexp_mouth
+        },
+        effect(){
+            T.modeloptions.mouth = V.SE.actexp_mouth=='org' ? 'cry' : V.SE.actexp_mouth
+        }
     }
 }
 

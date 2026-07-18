@@ -1,6 +1,6 @@
 {
   "name": "DOL_Magic",
-  "version": "2.1.74",
+  "version": "2.1.90",
   "styleFileList": [],
   "scriptFileList": [
     "addon/DM.js"
@@ -216,6 +216,11 @@
             "from": "V.allure = Math.floor(allure);",
             "to": "allure *= V?.DM?.alluremod || 1 ;\tV.allure = Math.floor(allure);",
             "fileName": "widgets.js"
+          },
+          {
+            "from": "V.arousal = Math.clamp(V.arousal, minArousal(), V.arousalmax);",
+            "to": "V.arousal = Math.clamp(V.arousal, minArousal(), V.arousalmax - V.DM?.is_Orgasm_Threshold || 0 );",
+            "fileName": "stat-changes.js"
           }
         ]
       }
